@@ -13,7 +13,8 @@
   --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
-/* 💡 폰트를 맑은 고딕 등 기본 가독성 폰트로 전면 교체 */
+
+/* 💡 가독성을 위한 맑은 고딕 기본 폰트 적용 */
 html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', sans-serif;user-select:none;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 90% 55% at 50% -5%,rgba(45,212,200,.09),transparent),
@@ -33,90 +34,93 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 ═══════════════════════ */
 #hub{justify-content:center;padding:20px;gap:20px;}
 .hub-title{font-size:42px;color:var(--gold);font-weight:900;text-shadow:0 0 20px rgba(255,212,59,.4);text-align:center;margin-bottom:10px;}
-.hub-grid{display:grid;grid-template-columns:1fr;gap:16px;width:100%;max-width:340px;}
+.hub-grid{display:grid;grid-template-columns:1fr;gap:16px;width:100%;max-width:500px;} /* 태블릿 크기 대응 */
 .hub-btn{background:var(--card);border:2px solid var(--bdr);border-radius:24px;padding:24px 20px;
          display:flex;align-items:center;gap:16px;cursor:pointer;transition:transform .15s;box-shadow:0 8px 20px rgba(0,0,0,.3);}
 .hub-btn:active{transform:scale(0.92);}
 .hub-btn.quiz{border-color:var(--teal);background:linear-gradient(135deg,#0c1d34,rgba(45,212,200,.1));}
 .hub-btn.puzzle{border-color:var(--purple);background:linear-gradient(135deg,#0c1d34,rgba(181,132,250,.1));}
 .hub-btn.dic{border-color:var(--gold);background:linear-gradient(135deg,#0c1d34,rgba(255,212,59,.1));}
-.hub-icon{font-size:48px;}
+.hub-icon{font-size:55px;}
 .hub-info{display:flex;flex-direction:column;align-items:flex-start;}
-.hub-name{font-size:24px;color:var(--text);font-weight:900;margin-bottom:4px;}
-.hub-desc{font-size:14px;color:var(--muted);font-weight:bold;}
-.fs-btn{margin-top:20px;background:none;border:1px solid var(--muted);color:var(--muted);padding:8px 16px;border-radius:12px;font-weight:bold;cursor:pointer;}
+.hub-name{font-size:26px;color:var(--text);font-weight:900;margin-bottom:4px;}
+.hub-desc{font-size:16px;color:var(--muted);font-weight:bold;}
+.fs-btn{margin-top:20px;background:none;border:1px solid var(--muted);color:var(--muted);padding:10px 20px;border-radius:12px;font-weight:bold;cursor:pointer;}
 
 /* ═══════════════════════
-   도감 (COLLECTION)
+   도감 (COLLECTION) - 5열
 ═══════════════════════ */
 #collection{justify-content:flex-start;}
-.dic-stats{font-size:18px;color:var(--teal);font-weight:bold;margin-bottom:16px;}
+.dic-stats{font-size:20px;color:var(--teal);font-weight:bold;margin-bottom:16px;}
 .dic-grid{
-  display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; 
-  width:100%; max-width:600px; padding:0 16px 40px;
+  display:grid; grid-template-columns:repeat(5, 1fr); gap:12px; 
+  width:100%; max-width:800px; padding:0 20px 40px; /* 태블릿 꽉 차게 */
 }
 .dic-item{
   background:var(--card); border:1px solid var(--bdr); border-radius:12px; 
-  padding:8px 2px; display:flex; flex-direction:column; align-items:center; gap:4px;
+  padding:12px 2px; display:flex; flex-direction:column; align-items:center; gap:6px;
 }
 .dic-item.locked .dic-e{filter:brightness(0) opacity(0.2) !important;}
 .dic-item.locked .dic-n{color:var(--muted);}
-.dic-e{font-size:32px; transition:transform .2s;}
-.dic-n{font-size:11px; color:var(--text); font-weight:bold; text-align:center; word-break:keep-all; line-height:1.2;}
+.dic-e{font-size:40px; transition:transform .2s;}
+.dic-n{font-size:13px; color:var(--text); font-weight:bold; text-align:center; word-break:keep-all; line-height:1.2;}
 .dic-item.unlocked:active .dic-e{transform:scale(1.2);}
-.reset-btn{background:rgba(255,100,84,.1);border:1px solid var(--coral);color:var(--coral);padding:10px 20px;border-radius:16px;font-weight:bold;margin-bottom:30px;cursor:pointer;}
+.reset-btn{background:rgba(255,100,84,.1);border:1px solid var(--coral);color:var(--coral);padding:12px 24px;border-radius:16px;font-weight:bold;margin-bottom:30px;cursor:pointer;}
 
 /* ═══════════════════════
    동물퀴즈
 ═══════════════════════ */
 #quiz{justify-content:flex-start;padding-bottom:16px;}
-.lives-wrap{display:flex;align-items:center;gap:3px}
-.heart{font-size:20px;transition:transform .2s;display:inline-block}
+.lives-wrap{display:flex;align-items:center;gap:4px}
+.heart{font-size:22px;transition:transform .2s;display:inline-block}
 .heart.lost{filter:grayscale(1);opacity:.3}
 .heart.pop{animation:heart-pop .4s ease}
 @keyframes heart-pop{0%{transform:scale(1)}30%{transform:scale(1.5)}60%{transform:scale(.8)}100%{transform:scale(1)}}
 .sil-wrap{flex:1 1 0;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;position:relative;margin:10px 0;}
-.sil{font-size:clamp(88px,35vmin,160px);line-height:1;display:inline-block;transition:filter 1.2s ease,transform 1.2s ease;cursor:pointer;}
+.sil{font-size:clamp(120px,40vmin,250px);line-height:1;display:inline-block;transition:filter 1.2s ease,transform 1.2s ease;cursor:pointer;}
 .sil:active{transform:scale(0.9) !important;} 
 .sil.show{filter:var(--hr)!important;transform:scale(1.18)!important;animation:bigpop .65s cubic-bezier(.2,1.6,.35,1)}
 @keyframes bigpop{0%{transform:scale(.6) rotate(-10deg)}55%{transform:scale(1.3) rotate(5deg)}78%{transform:scale(1.14) rotate(-2deg)}100%{transform:scale(1.18)}}
-.hint-box{flex:0 0 auto;width:calc(100% - 32px);background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);position:relative;padding:16px 22px;min-height:70px;display:flex;align-items:center;justify-content:center;text-align:center;margin-bottom:12px;}
 
-/* 💡 힌트 박스 깜빡임(Pulse) 애니메이션 추가 */
-.hint-pulse { animation: hintBlink 1.8s infinite alternate; }
+/* 💡 힌트 박스 크기 키우고 부드러운 깜빡임(Pulse) 적용 */
+.hint-box{flex:0 0 auto;width:90%;max-width:600px;background:var(--card);border:2px solid var(--bdr);border-radius:var(--r);position:relative;padding:24px 22px;min-height:80px;display:flex;align-items:center;justify-content:center;text-align:center;margin-bottom:16px;}
+.hint-pulse { animation: hintBlink 1.5s infinite alternate; }
 @keyframes hintBlink {
-  0% { opacity: 0.65; }
-  100% { opacity: 1; }
+  0% { box-shadow: 0 0 0 rgba(125,211,252,0); border-color: var(--bdr); }
+  100% { box-shadow: 0 0 15px rgba(125,211,252,0.4); border-color: var(--sky); }
 }
+.hl-tag{position:absolute;top:-14px;left:20px;background:var(--gold);color:#1a0800;font-size:14px;font-weight:900;padding:4px 16px;border-radius:20px;}
+.ht{font-size:20px;line-height:1.5;color:var(--text);font-weight:bold;word-break:keep-all}
 
-.hl-tag{position:absolute;top:-13px;left:18px;background:var(--gold);color:#1a0800;font-size:12px;font-weight:900;padding:3px 14px;border-radius:20px;}
-.ht{font-size:17px;line-height:1.5;color:var(--text);font-weight:bold;word-break:keep-all}
-.act{flex:0 0 auto;width:calc(100% - 32px);display:flex;flex-direction:column;gap:8px}
-.abtn{width:100%;padding:15px;border-radius:var(--r);border:none;font-weight:bold;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:transform .12s}
+.act{flex:0 0 auto;width:90%;max-width:600px;display:flex;flex-direction:column;gap:10px}
+.abtn{width:100%;padding:18px;border-radius:var(--r);border:none;font-weight:bold;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:transform .12s}
 .abtn:active{transform:scale(.92)}
 .abtn.pri{background:linear-gradient(135deg,var(--gold),#ffb01e);color:#1a0800;}
-.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-.cbtn{background:var(--card);border:2px solid var(--bdr);border-radius:var(--r);padding:10px 6px;cursor:pointer;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cbtn{background:var(--card);border:2px solid var(--bdr);border-radius:var(--r);padding:14px 6px;cursor:pointer;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:6px;}
 .cbtn:active{transform:scale(.88)}
-.ce{font-size:36px;}.cn{font-size:13px;color:var(--text);text-align:center;}
+.ce{font-size:45px;}.cn{font-size:16px;color:var(--text);text-align:center;}
 .cbtn.ok{border-color:var(--green)!important;background:rgba(61,232,136,.18)!important;}
 .cbtn.ng{background:rgba(255,100,84,.25);border-color:var(--coral);opacity:0.4;pointer-events:none;}
 
 /* ═══════════════════════
-   조각 퍼즐 (JIGSAW)
+   조각 퍼즐 (JIGSAW) - 반응형 최적화
 ═══════════════════════ */
 #puzzle{justify-content:flex-start;}
-.pz-diff-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px;max-width:320px;}
-.diff-btn{background:var(--card);border:1px solid var(--muted);color:var(--muted);padding:8px 12px;border-radius:12px;font-weight:bold;cursor:pointer;font-size:14px;}
+.pz-diff-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:16px;width:90%;max-width:600px;}
+.diff-btn{background:var(--card);border:1px solid var(--muted);color:var(--muted);padding:10px 16px;border-radius:12px;font-weight:bold;cursor:pointer;font-size:16px;}
 .diff-btn.active{background:rgba(255,212,59,.15);border-color:var(--gold);color:var(--gold);}
-.pz-top-area { display:flex; justify-content:space-between; align-items:flex-end; width:100%; max-width:320px; margin-bottom:16px; }
-.pz-time { font-size:22px; font-weight:bold; color:var(--sky); margin-bottom:4px;}
-.pz-thumb-wrap { width:60px; height:60px; background:var(--card); border:2px solid var(--bdr); border-radius:12px; padding:2px; box-shadow:0 4px 10px rgba(0,0,0,0.3); }
-.pz-thumb-inner { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:38px; line-height:1; border-radius:8px;
+.pz-top-area { display:flex; justify-content:space-between; align-items:flex-end; width:90%; max-width:600px; margin-bottom:16px; }
+.pz-time { font-size:26px; font-weight:bold; color:var(--sky); margin-bottom:4px;}
+.pz-thumb-wrap { width:80px; height:80px; background:var(--card); border:2px solid var(--bdr); border-radius:14px; padding:3px; box-shadow:0 4px 10px rgba(0,0,0,0.3); }
+.pz-thumb-inner { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:45px; line-height:1; border-radius:10px;
   background: radial-gradient(circle at 0% 0%, #FFD43B 0%, transparent 60%), radial-gradient(circle at 100% 100%, #3de888 0%, transparent 60%), radial-gradient(circle at 100% 0%, #ff6454 0%, transparent 60%), radial-gradient(circle at 0% 100%, #7dd3fc 0%, transparent 60%), #b584fa;
 }
+
+/* 💡 퍼즐 크기를 태블릿 화면에 맞게 반응형으로 수정 */
 .pz-grid-wrap{
-  width:320px; height:320px; background:var(--bdr); border:4px solid var(--card); 
+  width: 90vmin; max-width: 600px; aspect-ratio: 1/1; height: auto;
+  background:var(--bdr); border:6px solid var(--card); 
   border-radius:16px; position:relative; box-shadow:0 8px 24px rgba(0,0,0,0.3);
 }
 .pz-grid{
@@ -127,11 +131,11 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   transition:transform 0.15s, box-shadow 0.3s; box-sizing:border-box;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,0.25);
 }
-.pz-piece.sel{ outline:3px solid var(--coral); transform:scale(0.9); z-index:10; }
+.pz-piece.sel{ outline:4px solid var(--coral); transform:scale(0.9); z-index:10; }
 .pz-piece.ok{ box-shadow:none; pointer-events:none; } 
 .pz-inner{
-  position:absolute; width:320px; height:320px; display:flex; align-items:center; 
-  justify-content:center; font-size:240px; line-height:1; pointer-events:none;
+  position:absolute; display:flex; align-items:center; justify-content:center; 
+  font-size:clamp(80px, 45vmin, 350px); line-height:1; pointer-events:none;
   background: radial-gradient(circle at 0% 0%, #FFD43B 0%, transparent 60%), radial-gradient(circle at 100% 100%, #3de888 0%, transparent 60%), radial-gradient(circle at 100% 0%, #ff6454 0%, transparent 60%), radial-gradient(circle at 0% 100%, #7dd3fc 0%, transparent 60%), #b584fa;
 }
 
@@ -140,14 +144,15 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 ═══════════════════════ */
 .overlay{position:fixed;inset:0;z-index:20;background:rgba(4,9,22,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;backdrop-filter:blur(6px);}
 .overlay.hidden{display:none!important}
-.mbox{background:linear-gradient(155deg,#0c1d36,#0b1c32);border:1.5px solid var(--bdr);border-radius:28px;padding:28px 22px;max-width:320px;width:100%;text-align:center;}
-.micon{font-size:64px;margin-bottom:10px;}
-.mtitle{font-size:26px;color:var(--gold);font-weight:900;margin-bottom:6px;}
-.msub{font-weight:bold;font-size:15px;color:var(--muted);margin-bottom:20px;line-height:1.5;word-break:keep-all;}
-.mbtn{width:100%;padding:16px;border-radius:20px;border:none;font-weight:900;font-size:18px;cursor:pointer;margin-bottom:8px;background:linear-gradient(135deg,var(--gold),#ff9a2c);color:#1a0800;transition:all 0.2s;}
+.mbox{background:linear-gradient(155deg,#0c1d36,#0b1c32);border:1.5px solid var(--bdr);border-radius:28px;padding:32px 26px;max-width:360px;width:100%;text-align:center;}
+.micon{font-size:75px;margin-bottom:12px;}
+.mtitle{font-size:30px;color:var(--gold);font-weight:900;margin-bottom:8px;}
+.msub{font-weight:bold;font-size:17px;color:var(--muted);margin-bottom:24px;line-height:1.5;word-break:keep-all;}
+.mbtn{width:100%;padding:18px;border-radius:20px;border:none;font-weight:900;font-size:20px;cursor:pointer;margin-bottom:10px;background:linear-gradient(135deg,var(--gold),#ff9a2c);color:#1a0800;transition:all 0.2s;}
 .mbtn:active{transform:scale(.92)}
 .mbtn.sec{background:var(--card);border:1px solid var(--bdr);color:var(--text);}
 
+/* 다음 문제 버튼 시선 유도 깜빡임(Pulse) */
 .blink-btn { animation: pulseBtn 0.9s infinite alternate !important; }
 @keyframes pulseBtn {
   0% { transform: scale(1); box-shadow: 0 0 0 rgba(255,212,59,0); filter: brightness(1); }
@@ -182,7 +187,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 <div class="screen hidden" id="quiz">
   <div class="top-bar">
     <button class="back-btn" onclick="goHub()">← 뒤로</button>
-    <div class="title-text" id="q-streak" style="font-size:16px;">🔥 0연속 정답!</div>
+    <div class="title-text" id="q-streak" style="font-size:18px;">🔥 0연속 정답!</div>
     <div class="lives-wrap" id="lives-wrap"></div>
   </div>
   <div class="sil-wrap" onclick="pokeSilhouette()"><span class="sil" id="sil">❓</span></div>
@@ -235,7 +240,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </div>
 
 <script>
-// 💡 공룡을 완벽히 삭제하고 헷갈림을 없앤 동물 DB (약 80종)
+// 💡 공룡을 뺀 100% 무결성 동물 DB
 const DB=[
   {n:'강아지',e:'🐕',f:'코가 킁킁! 냄새를 아주 잘 맡는 똑똑한 친구예요!', h:['네 발로 걸어다녀요.','복슬복슬한 털이 있어요.','멍멍 하고 짖어요.']},
   {n:'푸들',e:'🐩',f:'털이 뽀글뽀글 파마한 것처럼 생겼고 아주 영리해요!', h:['털이 뽀글뽀글하게 곱슬거려요.','프랑스에서 온 영리한 강아지예요.','강아지 중에서 아주 똑똑해요.']},
@@ -253,11 +258,10 @@ const DB=[
   {n:'알파카',e:'🦙',f:'화가 나면 푸푸! 하고 침을 뱉으니 조심해야 해요!', h:['몸이 복슬복슬한 털로 덮여 있어요.','목이 길고 얼굴이 귀여워요.','낙타와 친척이에요.']},
   {n:'낙타',e:'🐪',f:'등에 있는 볼록한 혹 덕분에 사막에서도 끄떡없어요!', h:['뜨거운 사막에서 살아요.','등에 볼록한 혹이 하나 있어요.','속눈썹이 아주 길어요.']},
   {n:'쌍봉낙타',e:'🐫',f:'등에 커다란 혹이 두 개나 있어서 더 튼튼해요!', h:['사막에서 무거운 짐을 날라줘요.','등에 볼록한 혹이 두 개 있어요.','낙타의 친구예요.']},
-  
-  {n:'사자',e:'🦁',hR:0, f:'어흥! 용감하게 가족을 지키는 멋진 동물의 왕이에요!', h:['수컷은 얼굴 주변에 멋진 갈기가 있어요.','동물의 왕이라고 불려요.','으르렁 소리가 엄청 커요.']},
-  {n:'호랑이',e:'🐅',hR:0, f:'어흥! 멋진 줄무늬 옷을 입은 숲속의 용감한 대장이에요!', h:['주황색 털에 검은 줄무늬가 뚜렷해요.','아시아 밀림에 사는 용맹한 동물이에요.','어흥! 하고 아주 크게 울어요.']},
-  {n:'표범',e:'🐆',hR:0, f:'나무를 아주 잘 타서 높은 나무 위에서 쉬는 걸 좋아해요!', h:['나무 위에 올라가는 걸 좋아해요.','몸에 검은 꽃 모양 점무늬가 있어요.','달리기도 아주 빨라요.']},
-  {n:'늑대',e:'🐺',hR:0, f:'아우우~ 밤하늘의 달을 보며 친구들과 노래를 불러요!', h:['강아지보다 크고 야생에서 살아요.','밤이 되면 달을 보며 아우우~ 울어요.','가족과 무리 지어 다녀요.']},
+  {n:'사자',e:'🦁',f:'어흥! 용감하게 가족을 지키는 멋진 동물의 왕이에요!', h:['수컷은 얼굴 주변에 멋진 갈기가 있어요.','동물의 왕이라고 불려요.','으르렁 소리가 엄청 커요.']},
+  {n:'호랑이',e:'🐅',f:'어흥! 멋진 줄무늬 옷을 입은 숲속의 용감한 대장이에요!', h:['주황색 털에 검은 줄무늬가 뚜렷해요.','아시아 밀림에 사는 용맹한 동물이에요.','어흥! 하고 아주 크게 울어요.']},
+  {n:'표범',e:'🐆',f:'나무를 아주 잘 타서 높은 나무 위에서 쉬는 걸 좋아해요!', h:['나무 위에 올라가는 걸 좋아해요.','몸에 검은 꽃 모양 점무늬가 있어요.','달리기도 아주 빨라요.']},
+  {n:'늑대',e:'🐺',f:'아우우~ 밤하늘의 달을 보며 친구들과 노래를 불러요!', h:['강아지보다 크고 야생에서 살아요.','밤이 되면 달을 보며 아우우~ 울어요.','가족과 무리 지어 다녀요.']},
   {n:'여우',e:'🦊',f:'꼬리가 아주 풍성하고 무척 영리한 숲속 친구예요!', h:['주황빛 붉은 털을 가졌어요.','영리하기로 유명해요.','날쌔게 뛰어다녀요.']},
   {n:'코끼리',e:'🐘',f:'뿌우~ 길쭉한 코가 손처럼 아주 힘이 세고 물놀이도 해요!', h:['육지에서 가장 몸집이 큰 동물이에요.','코가 길어서 손처럼 써요.','귀가 부채처럼 아주 커요.']},
   {n:'코뿔소',e:'🦏',f:'코 위에 아주아주 단단하고 커다란 뿔이 있어요!', h:['몸이 아주 두꺼워요.','코에 큰 뿔이 있어요.','아프리카 초원에서 풀을 먹어요.']},
@@ -266,7 +270,6 @@ const DB=[
   {n:'얼룩말',e:'🦓',f:'얼룩덜룩 멋진 줄무늬 옷을 입고 초원을 다같이 달려요!',h:['몸에 검은 줄무늬가 있어요.','말처럼 생겼어요.','초원을 무리 지어 달려요.']},
   {n:'사슴',e:'🦌',f:'머리에 나뭇가지처럼 멋진 뿔이 쑥쑥 자라나요!', h:['수컷에게 나뭇가지 같은 뿔이 있어요.','눈이 크고 예뻐요.','깡충깡충 뛰는 날쌘 동물이에요.']},
   {n:'멧돼지',e:'🐗',f:'튼튼한 코로 땅을 팍팍 파서 맛있는 먹이를 쏙 찾아요!', h:['돼지를 닮은 야생 동물이에요.','털이 거칠고 뻣뻣해요.','어금니가 뾰족하게 튀어나와 있어요.']},
-  
   {n:'곰',e:'🐻',f:'아주 추운 겨울에는 동굴 속에서 쿨쿨 긴 잠을 자요!', h:['덩치 큰 동물이에요.','꿀과 연어를 좋아해요.','두 발로 일어서기도 해요.']},
   {n:'북극곰',e:'🐻‍❄️',f:'추운 얼음 나라에 살고 바다에서 수영을 아주 잘해요!', h:['하얀 털을 가졌어요.','눈과 얼음 위에서 살아요.','수영을 아주 잘해요.']},
   {n:'판다',e:'🐼',f:'냠냠 쩝쩝! 대나무를 제일 좋아하는 오동통 귀염둥이예요!', h:['흰색과 검은색 털이 반반 섞여 있어요.','눈 주위가 까매서 안경을 쓴 것 같아요.','대나무를 아주 좋아해요.']},
@@ -276,15 +279,13 @@ const DB=[
   {n:'스컹크',e:'🦨',f:'무서운 적이 오면 꽁무니에서 방귀 냄새 폭탄을 뿡! 쏴요!', h:['검은 털에 하얀색 줄무늬가 있어요.','위험해지면 냄새 폭탄을 쏴요.','꼬리가 북슬북슬해요.']},
   {n:'박쥐',e:'🦇',f:'깜깜한 밤에도 소리를 잘 듣고 요리조리 잘 날아다녀요!', h:['밤에만 활동해요.','동굴에서 거꾸로 매달려 자요.','날개가 있는 유일한 포유류예요.']},
   {n:'나무늘보',e:'🦥',f:'세상에서 제~일 느릿느릿 천천히 움직이는 친구예요!', h:['세상에서 가장 느린 동물이에요.','나무에 거꾸로 매달려 살아요.','발톱이 갈고리처럼 아주 길어요.']},
-  {n:'비버',e:'🦫',hR:0, f:'튼튼한 앞니로 나무를 쓱싹 잘라서 강 위에 튼튼한 집을 지어요!', h:['꼬리가 넓적한 노처럼 생겼어요.','수영을 아주 잘하는 건축가예요.','나뭇가지로 강에 집을 지어요.']},
+  {n:'비버',e:'🦫',f:'튼튼한 앞니로 나무를 쓱싹 잘라서 강 위에 튼튼한 집을 지어요!', h:['꼬리가 넓적한 노처럼 생겼어요.','수영을 아주 잘하는 건축가예요.','나뭇가지로 강에 집을 지어요.']},
   {n:'해달',e:'🦦',f:'물 위에 둥둥 누워서 돌맹이로 조개를 쾅쾅 깨서 냠냠 먹어요!',h:['물 위에 누워서 둥둥 떠요.','털이 아주 빽빽해서 젖지 않아요.','잘 때 물에 떠내려가지 않게 친구와 손을 잡고 자요.']},
-  
   {n:'원숭이',e:'🐒',f:'우끼끼! 나무 타기를 좋아하고 친구들과 장난도 잘 쳐요!', h:['나무 위를 아주 잘 타요.','바나나를 좋아해요.','장난치는 걸 좋아해요.']},
   {n:'고릴라',e:'🦍',f:'가슴을 쿵쿵 두드리며 아주아주 강한 힘자랑을 해요!',h:['영장류 중에 덩치가 제일 커요.','팔이 아주 길고 튼튼해요.','가족을 지키는 멋진 아빠예요.']},
   {n:'오랑우탄',e:'🦧',f:'비가 오면 나뭇잎을 따서 커다란 우산을 만들 줄 알아요!',h:['주황빛 갈색 털이 있어요.','팔이 엄청 길어요.','나무 위에서 생활해요.']},
   {n:'캥거루',e:'🦘',f:'엄마 배에 있는 따뜻한 주머니 속에 아기 캥거루가 쏙 타고 있어요!', h:['뒷다리가 아주 강해서 높이 뛰어요.','배에 새끼를 넣는 주머니가 있어요.','호주에 살아요.']},
   {n:'코알라',e:'🐨',f:'나무에 꼭 매달려서 쿨쿨 하루 종일 잠만 자는 잠꾸러기예요!', h:['나무 위에서 떨어지지 않고 자요.','귀가 복슬복슬하고 둥글어요.','유칼립투스 잎만 먹어요.']},
-
   {n:'참새',e:'🐦',f:'짹짹! 우리 동네 공원이나 길에서 자주 볼 수 있는 귀여운 새예요!',h:['크기가 아주 작아요.','짹짹 하고 귀여운 소리를 내요.','쌀이나 씨앗을 좋아해요.']},
   {n:'닭',e:'🐔',f:'꼬끼오! 아침이 밝았다고 큰 소리로 모두에게 알려줘요!', h:['날개가 있지만 잘 날지 못해요.','머리에 빨간 볏이 있어요.','우리에게 맛있는 달걀을 줘요.']},
   {n:'병아리',e:'🐤',f:'삐약삐약! 알에서 막 톡 깨고 나온 노랗고 보송보송한 아기 새예요!', h:['삐약삐약 하고 울어요.','노랗고 보송보송한 털이 있어요.','커서 닭이 되어요.']},
@@ -298,13 +299,11 @@ const DB=[
   {n:'공작',e:'🦚',f:'꼬리를 부채처럼 쫘악 펼치면 무지개처럼 반짝반짝 예뻐요!', h:['몸이 파란빛과 초록빛으로 반짝여요.','화려한 꼬리 깃털을 쫙 펼쳐요.','가장 아름다운 새 중 하나예요.']},
   {n:'앵무새',e:'🦜',f:'안녕! 사람의 말을 듣고 앵무새도 똑같이 따라 할 수 있어요!', h:['깃털이 빨강, 노랑, 초록색으로 화려해요.','사람 말을 흉내 내요.','구부러진 부리로 씨앗을 까먹어요.']},
   {n:'펭귄',e:'🐧',f:'뒤뚱뒤뚱! 하늘은 날지 못하지만 바다에서 멋지게 수영해요!', h:['새이지만 날지 못해요.','배는 하얗고 등은 검어요.','뒤뚱뒤뚱 귀엽게 걸어다녀요.']},
-
   {n:'개구리',e:'🐸',f:'개굴개굴! 긴 혀를 쭈욱 내밀어 날아가는 파리를 쏙 잡아요!',h:['깡충깡충 점프해요.','연못 근처에 살아요.','개굴개굴 울어요.']},
   {n:'악어',e:'🐊',f:'엉금엉금! 입이 엄청 크고 뾰족뾰족한 이빨이 아주 무서워요!',h:['큰 입과 날카로운 이빨이 있어요.','물속과 땅을 모두 다녀요.','강가에 사는 무서운 사냥꾼이에요.']},
   {n:'거북이',e:'🐢',f:'딱딱한 껍질 집을 지고 느릿느릿 걷는 할아버지 거북이예요!',h:['단단한 등껍질이 있어요.','아주 천천히 걸어요.','위험하면 몸을 껍질 안에 숨겨요.']},
   {n:'도마뱀',e:'🦎',f:'위험하면 꼬리를 자르고 슉! 도망가도 나중에 꼬리가 다시 쑥쑥 자라나요!',h:['몸이 길쭉해요.','네 발로 빠르게 달려요.','돌 위에서 햇볕을 쬐어요.']},
   {n:'뱀',e:'🐍',f:'스르륵 스르륵~ 다리도 없이 땅을 스르르 기어다니는 친구예요!',h:['다리가 없어요.','몸을 구불구불 움직여요.','혀를 날름거리며 냄새를 맡아요.']},
-
   {n:'고래',e:'🐋',f:'푸우~ 머리 위에 있는 구멍으로 커다란 물기둥을 뿜어내요!', h:['바다에서 사는 아주 큰 동물이에요.','머리 위 구멍으로 물을 뿜어요.','지구에서 가장 큰 동물이에요.']},
   {n:'돌고래',e:'🐬',f:'바다 위로 폴짝폴짝 점프하며 친구들과 노는 걸 제일 좋아해요!', h:['바다에 사는 아주 똑똑한 친구예요.','초음파를 쏴서 물속을 탐색해요.','물 위로 점프하며 노는 걸 좋아해요.']},
   {n:'바다표범',e:'🦭',f:'추운 얼음 위에서 코오 쉬고 바다에 들어가서 물고기를 냠냠 잡아요!',h:['몸이 둥글둥글하고 귀여워요.','수영을 아주 잘해요.','지느러미 같은 발이 있어요.']},
@@ -318,7 +317,6 @@ const DB=[
   {n:'바닷가재',e:'🦞',f:'아주 단단하고 커다란 집게발을 가진 빨간색 바다 친구예요!', h:['빨갛고 단단한 껍질이 있어요.','위험하면 꼬리를 이용해 뒤로 엄청 빨리 헤엄쳐요.','랍스터라고 불려요.']},
   {n:'새우',e:'🦐',f:'긴 수염을 가지고 통통 튀어 오르는 작고 귀여운 친구예요!', h:['바닷속에서 헤엄치는 작은 갑각류예요.','익히면 빨갛게 변해요.','수염이 아주 길어요.']},
   {n:'해파리',e:'🪼',f:'투명한 젤리처럼 바닷속을 둥둥 떠다니는 신기한 친구예요!', h:['몸이 투명한 우산처럼 생겼어요.','물 흐름을 타고 둥둥 떠다녀요.','촉수에 닿으면 따끔하고 독이 있어요.']},
-
   {n:'나비',e:'🦋',f:'팔랑팔랑~ 예쁜 날개를 펴고 꽃에 앉아 달콤한 꿀을 마셔요!', h:['곤충이에요.','화려하고 예쁜 날개를 가졌어요.','꽃에 앉아 긴 입으로 꿀을 마셔요.']},
   {n:'애벌레',e:'🐛',f:'나뭇잎을 아삭아삭 갉아 먹고 나중에 짠! 하고 예쁜 나비가 돼요!', h:['나뭇잎을 아삭아삭 갉아 먹어요.','꼬물꼬물 기어 다녀요.','커서 날개가 생겨요.']},
   {n:'꿀벌',e:'🐝',f:'윙윙~ 예쁜 꽃에서 꿀을 모아 아주 맛있는 꿀을 만들어요!', h:['노란색과 검은색 줄무늬가 있어요.','꽃에서 꿀을 모아요.','여왕벌과 수만 마리가 벌집에 살아요.']},
@@ -334,20 +332,22 @@ const DB=[
 let unlocked = JSON.parse(localStorage.getItem('animal_dic')||'[]');
 let ax=null;
 let streak=0;
-let qPitch = 1.35; // 💡 퀴즈마다 목소리(톤)를 바꿔줄 변수
+let qPitch = 1.35; 
+let qRate = 0.92;
 
 function initA(){ try{if(!ax) ax=new(window.AudioContext||window.webkitAudioContext)();}catch(e){} }
 
-/* 💡 정답 시 딩동댕 소리 (모바일 버그 우회 방어코드 ax.resume 추가) */
+/* 💡 정답 시 딩동댕 화음 (모바일 강제 재생 패치) */
 function playDingDongDang(){
+  initA();
+  if(ax && ax.state === 'suspended') ax.resume();
   if(!ax)return;
-  if(ax.state === 'suspended') ax.resume();
   const t=ax.currentTime;
   [[523.25, 0], [659.25, 0.15], [783.99, 0.3], [1046.5, 0.45]].forEach(([f, dl])=>{
     const o=ax.createOscillator(),g=ax.createGain();
     o.connect(g);g.connect(ax.destination);o.type='sine';o.frequency.value=f;
     g.gain.setValueAtTime(0,t+dl);
-    g.gain.linearRampToValueAtTime(.3,t+dl+.02);
+    g.gain.linearRampToValueAtTime(.4,t+dl+.02);
     g.gain.linearRampToValueAtTime(0,t+dl+.3);
     o.start(t+dl);o.stop(t+dl+.3);
   });
@@ -355,59 +355,59 @@ function playDingDongDang(){
 
 /* 💡 오답 시 땡! 소리 */
 function playDdaeng(){
+  initA();
+  if(ax && ax.state === 'suspended') ax.resume();
   if(!ax)return;
-  if(ax.state === 'suspended') ax.resume();
   const t=ax.currentTime;
   const o=ax.createOscillator(),g=ax.createGain();
   o.connect(g);g.connect(ax.destination);o.type='triangle';o.frequency.value=220; 
   g.gain.setValueAtTime(0,t);
-  g.gain.linearRampToValueAtTime(.3,t+.02);
+  g.gain.linearRampToValueAtTime(.4,t+.02);
   g.gain.linearRampToValueAtTime(0,t+.4);
   o.start(t);o.stop(t+.4);
 }
 
 function playTada(){
+  initA();
+  if(ax && ax.state === 'suspended') ax.resume();
   if(!ax)return;
-  if(ax.state === 'suspended') ax.resume();
   const t=ax.currentTime;
   [[523.25,0,.15], [659.25,0,.15], [783.99,0,.15], 
    [1046.5,0.2,.4], [1318.51,0.2,.4], [1567.98,0.2,.4]].forEach(([f,dl,d])=>{
     const o=ax.createOscillator(),g=ax.createGain();
     o.connect(g);g.connect(ax.destination);o.type='triangle';o.frequency.value=f;
-    g.gain.setValueAtTime(0,t+dl);g.gain.linearRampToValueAtTime(.15,t+dl+.05);g.gain.linearRampToValueAtTime(0,t+dl+d);
+    g.gain.setValueAtTime(0,t+dl);g.gain.linearRampToValueAtTime(.2,t+dl+.05);g.gain.linearRampToValueAtTime(0,t+dl+d);
     o.start(t+dl);o.stop(t+dl+d+.1);
   });
 }
 function playPop(){ 
+  initA();
+  if(ax && ax.state === 'suspended') ax.resume();
   if(!ax)return; 
-  if(ax.state === 'suspended') ax.resume();
-  const o=ax.createOscillator(),g=ax.createGain(); o.connect(g);g.connect(ax.destination); o.type='sine';o.frequency.setValueAtTime(400,ax.currentTime); o.frequency.exponentialRampToValueAtTime(800,ax.currentTime+.1); g.gain.setValueAtTime(.2,ax.currentTime); g.gain.exponentialRampToValueAtTime(0.01,ax.currentTime+.1); o.start();o.stop(ax.currentTime+.1); 
+  const o=ax.createOscillator(),g=ax.createGain(); o.connect(g);g.connect(ax.destination); o.type='sine';o.frequency.setValueAtTime(400,ax.currentTime); o.frequency.exponentialRampToValueAtTime(800,ax.currentTime+.1); g.gain.setValueAtTime(.3,ax.currentTime); g.gain.exponentialRampToValueAtTime(0.01,ax.currentTime+.1); o.start();o.stop(ax.currentTime+.1); 
 }
 
-/* 💡 동요 톤의 새로운 배경음악 (BGM) */
+/* 💡 동요 톤의 새로운 배경음악 (아이들이 좋아하는 멜로디) */
 let mOn=true, mt=null;
-// C E G E A G ... 가벼운 멜로디 루프
 const ML=[
-  [523.25,.5], [659.25,.5], [783.99,.5], [659.25,.5], 
-  [880.00,.5], [783.99,.5], [0,.5], 
-  [523.25,.5], [659.25,.5], [783.99,.5], [659.25,.5], 
-  [587.33,.5], [523.25,1.0]
+  [329.63,1], [293.66,1], [261.63,1], [293.66,1],
+  [329.63,1], [329.63,1], [329.63,2],
+  [293.66,1], [293.66,1], [293.66,2],
+  [329.63,1], [392.00,1], [392.00,2]
 ];
-const BT=.33;
+const BT=0.22;
 function bgm(){
   if(!ax||!mOn)return;
   let t=ax.currentTime+.05;
   ML.forEach(([f,b])=>{
-    if(f > 0) {
-      const o=ax.createOscillator(),g=ax.createGain();
-      o.connect(g);g.connect(ax.destination);o.type='sine';o.frequency.value=f;
-      const d=b*BT;
-      g.gain.setValueAtTime(0,t);
-      g.gain.linearRampToValueAtTime(.025,t+.04);
-      g.gain.linearRampToValueAtTime(.015,t+d*.6);
-      g.gain.linearRampToValueAtTime(0,t+d-.02);
-      o.start(t);o.stop(t+d);
-    }
+    const o=ax.createOscillator(),g=ax.createGain();
+    o.connect(g);g.connect(ax.destination);o.type='sine';o.frequency.value=f;
+    const d=b*BT;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(.04,t+.02); 
+    g.gain.linearRampToValueAtTime(.01,t+d*.7);
+    g.gain.linearRampToValueAtTime(0,t+d-.01);
+    o.start(t);o.stop(t+d);
     t+=b*BT;
   });
   mt=setTimeout(()=>{if(mOn)bgm();},ML.reduce((a,[,b])=>a+b,0)*BT*1000+200);
@@ -443,8 +443,8 @@ function unlockMedia() {
 document.body.addEventListener('touchstart', unlockMedia, {once:true});
 document.body.addEventListener('click', unlockMedia, {once:true});
 
-// 💡 목소리 출력 함수
-function speak(t, pitch=qPitch, rate=0.92, onEndCallback=null){
+// 💡 텍스트 정리 및 랜덤 목소리 적용
+function speak(t, pitch=qPitch, rate=qRate, onEndCallback=null){
   if(!window.speechSynthesis) {
     if(onEndCallback) onEndCallback();
     return; 
@@ -522,7 +522,7 @@ function throwConfetti() {
 let qLives=7, qCur=null, qHi=0, qPhase='hint';
 let qChoices = []; 
 // 💡 실루엣 흐림 대폭 하향 (잘 보이게)
-const BLUR=[12, 6, 2, 0]; const SCL=[.8,.9,1.0,1.1];
+const BLUR=[5, 2, 0, 0]; const SCL=[.8,.9,1.0,1.1];
 
 function getPraiseByStreak(s) {
   if (s < 3) return "정답이에요!";
@@ -535,8 +535,9 @@ function getPraiseByStreak(s) {
 function startQuiz(){
   qLives=7; renderHearts();
   
-  // 💡 매 퀴즈마다 목소리 피치를 랜덤하게 조절하여 다양한 동물 친구 연출 (1.1 ~ 1.7)
-  qPitch = 1.1 + Math.random() * 0.6;
+  // 💡 매 퀴즈마다 목소리 피치/속도를 랜덤하게 조절하여 다양한 동물 친구 연출
+  qPitch = parseFloat((0.8 + Math.random() * 0.8).toFixed(1)); // 0.8 ~ 1.6
+  qRate = parseFloat((0.85 + Math.random() * 0.2).toFixed(1)); // 0.85 ~ 1.05
   
   const sil=document.getElementById('sil');
   sil.style.transition = 'none'; 
@@ -598,7 +599,6 @@ function qNextHint(isFirst = false){
   
   let speakText = displayText;
   if(isFirst) {
-    // 💡 첫 번째 힌트 시 유나 맞춤 인사 추가
     speakText = '유나야 안녕? 나는 누구게~~? ' + speakText;
   }
 
@@ -620,7 +620,7 @@ function qCheck(ans, btn){
     streak++;
     btn.classList.add('ok'); 
     
-    // 💡 정답 시: 딩동댕 화음 -> 꽃가루 폭죽 -> TTS
+    // 💡 정답 시: 실로폰 -> 꽃가루 -> TTS
     playDingDongDang(); 
     throwConfetti();
     
@@ -631,15 +631,17 @@ function qCheck(ans, btn){
     if(!unlocked.includes(qCur.n)){ unlocked.push(qCur.n); localStorage.setItem('animal_dic',JSON.stringify(unlocked)); }
     
     const praise = getPraiseByStreak(streak);
-    let nextPrompt = "또 풀 거면, 반짝이는 노란색 버튼을 눌러!";
-    let fullVoiceText = `딩동댕! 정답은, ${qCur.n}예요! ${qCur.f} ${praise} ${nextPrompt}`;
+    let nextPrompt = "더 하고 싶으면, 반짝이는 노란색 버튼을 눌러!";
+    
+    // 워딩 삭제 반영 ("딩동댕!" 제거)
+    let fullVoiceText = `정답은, ${qCur.n}예요! ${qCur.f} ${praise} ${nextPrompt}`;
     
     setTimeout(()=>{
-      speak(fullVoiceText, qPitch, 0.92, () => {
+      speak(fullVoiceText, qPitch, qRate, () => {
          const nbtn = document.getElementById('md-btn1');
          if(nbtn) nbtn.classList.add('blink-btn');
       });
-    }, 600); // 딩동댕 소리 끝날 때쯤 재생
+    }, 600); 
     
     setTimeout(()=>{
       openModal(qCur.e, praise, qCur.f, '다음 문제', startQuiz, '그만하기', goHub, qCur.hR||0);
@@ -655,7 +657,7 @@ function qCheck(ans, btn){
     streak = 0; document.getElementById('q-streak').textContent = `🔥 0연속 정답!`;
     btn.classList.add('ng'); 
     
-    // 💡 오답 시: 땡! 소리 -> TTS
+    // 💡 오답 시: 땡! -> TTS
     playDdaeng(); 
     qLives--; renderHearts();
     
@@ -664,9 +666,10 @@ function qCheck(ans, btn){
         speak('아함~ 동물 친구들이 코오 낮잠 자러 갔어요.');
         setTimeout(()=>openModal('😴', '낮잠 시간', '다음에 다시 놀아요!', '확인', goHub), 1000);
       } else { 
-        speak('으음~ 아니에요. 다시 한번 골라볼까요?'); 
+        // 워딩 삭제 반영 ("으음" 제거)
+        speak('아니에요. 다시 한번 골라볼까요?'); 
       }
-    }, 400); // 땡 소리 끝날 때쯤
+    }, 400);
   }
 }
 
@@ -679,7 +682,7 @@ function pokeSilhouette(){
 }
 
 /* ═══════════════════════
-   2. 조각 맞추기 퍼즐 
+   2. 조각 맞추기 퍼즐 (반응형 최적화)
 ═══════════════════════ */
 let pzTime=0, pzTimerInterval=null, curPzSize=3; 
 let pzSelectedPiece=null;
@@ -690,7 +693,7 @@ function startPiecePuzzle(size = curPzSize){
   document.getElementById(`db${size}`).classList.add('active');
 
   let c = DB[~~(Math.random()*DB.length)];
-  qPitch = 1.1 + Math.random() * 0.6; // 퍼즐에서도 목소리 랜덤
+  qPitch = parseFloat((0.8 + Math.random() * 0.8).toFixed(1)); 
   
   let thumb = document.getElementById('pz-thumb');
   thumb.textContent = c.e;
@@ -701,7 +704,6 @@ function startPiecePuzzle(size = curPzSize){
   grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
   grid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
   
-  let pieceSize = 320 / size; 
   let arr = [];
   for(let i=0; i<size*size; i++) arr.push(i);
   arr.sort(()=>Math.random()-.5);
@@ -713,10 +715,13 @@ function startPiecePuzzle(size = curPzSize){
     el.className = 'pz-piece';
     el.dataset.idx = val;
     
+    // 💡 px 대신 %로 반응형 마스킹
     let inner = document.createElement('div');
     inner.className = 'pz-inner';
-    inner.style.left = `-${correctX * pieceSize}px`;
-    inner.style.top = `-${correctY * pieceSize}px`;
+    inner.style.width = `${size * 100}%`;
+    inner.style.height = `${size * 100}%`;
+    inner.style.left = `-${correctX * 100}%`;
+    inner.style.top = `-${correctY * 100}%`;
     inner.style.filter = `hue-rotate(${c.hR||0}deg)`;
     inner.textContent = c.e;
     
@@ -767,7 +772,7 @@ function checkJigsaw(isInit=false) {
   let correctCount = 0;
   pieces.forEach((p, i) => {
     if(parseInt(p.dataset.idx) === i) {
-      if(!p.classList.contains('ok')) { p.classList.add('ok'); if(!isInit) playDing(); }
+      if(!p.classList.contains('ok')) { p.classList.add('ok'); if(!isInit) playDingDongDang(); }
       correctCount++;
     } else { p.classList.remove('ok'); }
   });
