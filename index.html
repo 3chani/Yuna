@@ -47,7 +47,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .fs-btn{margin-top:20px;background:none;border:1px solid var(--muted);color:var(--muted);padding:8px 16px;border-radius:12px;font-family:'Gugi';cursor:pointer;}
 
 /* ═══════════════════════
-   도감 (COLLECTION) - 5열
+   도감 (COLLECTION)
 ═══════════════════════ */
 #collection{justify-content:flex-start;}
 .dic-stats{font-size:18px;color:var(--teal);margin-bottom:16px;}
@@ -89,6 +89,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .abtn.pri{background:linear-gradient(135deg,var(--gold),#ffb01e);color:#1a0800;}
 .abtn.sec{background:var(--card);border:1px solid var(--bdr);color:var(--text);font-size:15px;padding:12px}
 .abtn.gue{background:rgba(181,132,250,.16);border:1.5px solid var(--purple);color:var(--purple);font-size:16px;padding:13px}
+.clabel{font-size:16px;font-weight:800;color:var(--sky);text-align:center;}
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
 .cbtn{background:var(--card);border:2px solid var(--bdr);border-radius:var(--r);padding:10px 6px;cursor:pointer;font-family:'Gugi',sans-serif;display:flex;flex-direction:column;align-items:center;gap:4px;}
 .cbtn:active{transform:scale(.88)}
@@ -103,14 +104,12 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .pz-diff-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px;max-width:320px;}
 .diff-btn{background:var(--card);border:1px solid var(--muted);color:var(--muted);padding:8px 12px;border-radius:12px;font-family:'Gugi';cursor:pointer;font-size:14px;}
 .diff-btn.active{background:rgba(255,212,59,.15);border-color:var(--gold);color:var(--gold);}
-
 .pz-top-area { display:flex; justify-content:space-between; align-items:flex-end; width:100%; max-width:320px; margin-bottom:16px; }
 .pz-time { font-size:22px; color:var(--sky); margin-bottom:4px;}
 .pz-thumb-wrap { width:60px; height:60px; background:var(--card); border:2px solid var(--bdr); border-radius:12px; padding:2px; box-shadow:0 4px 10px rgba(0,0,0,0.3); }
 .pz-thumb-inner { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:38px; line-height:1; border-radius:8px;
   background: radial-gradient(circle at 0% 0%, #FFD43B 0%, transparent 60%), radial-gradient(circle at 100% 100%, #3de888 0%, transparent 60%), radial-gradient(circle at 100% 0%, #ff6454 0%, transparent 60%), radial-gradient(circle at 0% 100%, #7dd3fc 0%, transparent 60%), #b584fa;
 }
-
 .pz-grid-wrap{
   width:320px; height:320px; background:var(--bdr); border:4px solid var(--card); 
   border-radius:16px; position:relative; box-shadow:0 8px 24px rgba(0,0,0,0.3);
@@ -124,7 +123,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,0.25);
 }
 .pz-piece.sel{ outline:3px solid var(--coral); transform:scale(0.9); z-index:10; }
-.pz-piece.ok{ box-shadow:none; pointer-events:none; }
+.pz-piece.ok{ box-shadow:none; pointer-events:none; } 
 .pz-inner{
   position:absolute; width:320px; height:320px; display:flex; align-items:center; 
   justify-content:center; font-size:240px; line-height:1; pointer-events:none;
@@ -132,7 +131,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 }
 
 /* ═══════════════════════
-   공통 모달 & 깜빡이는 버튼 애니메이션
+   공통 모달 & 애니메이션
 ═══════════════════════ */
 .overlay{position:fixed;inset:0;z-index:20;background:rgba(4,9,22,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;backdrop-filter:blur(6px);}
 .overlay.hidden{display:none!important}
@@ -144,7 +143,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .mbtn:active{transform:scale(.92)}
 .mbtn.sec{background:var(--card);border:1px solid var(--bdr);color:var(--text);}
 
-/* 💡 추가된 다음 문제 깜빡임(Pulse) 애니메이션 */
+/* 💡 다음 문제 버튼 시선 유도 깜빡임(Pulse) */
 .blink-btn {
   animation: pulseBtn 1s infinite alternate !important;
 }
@@ -164,7 +163,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <div class="hub-grid">
     <div class="hub-btn quiz" onclick="startQuiz()">
       <div class="hub-icon">🕵️</div>
-      <div class="hub-info"><div class="hub-name">스무고개</div><div class="hub-desc">누구일까? 맞춰봐요!</div></div>
+      <div class="hub-info"><div class="hub-name">동물 퀴즈</div><div class="hub-desc">누구일까? 맞춰봐요!</div></div>
     </div>
     <div class="hub-btn puzzle" onclick="startPiecePuzzle()">
       <div class="hub-icon">🧩</div>
@@ -234,8 +233,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </div>
 
 <script>
-// 110종 순도 100% 무결성 동물 DB
+// 💡 110종 순도 100% 무결성 동물 DB
 const DB=[
+  /* ── 포유류 (반려동물 & 농장) ── */
   {n:'강아지',e:'🐕',f:'코는 사람보다 10000배나 냄새를 잘 맡아요!', h:['네 발로 걸어다녀요.','복슬복슬한 털이 있어요.','멍멍 하고 짖어요.']},
   {n:'푸들',e:'🐩',f:'털이 잘 빠지지 않고 머리가 아주 똑똑한 강아지예요!', h:['털이 뽀글뽀글하게 곱슬거려요.','프랑스에서 온 영리한 강아지예요.','강아지 중에서 아주 똑똑해요.']},
   {n:'고양이',e:'🐈',f:'하루에 16시간씩 자기도 해요!', h:['살금살금 조용히 걸어요.','수염이 있고 귀가 뾰족해요.','야옹 하고 소리를 내요.']},
@@ -268,7 +268,7 @@ const DB=[
   
   {n:'곰',e:'🐻',f:'겨울잠을 자는 동안 아무것도 먹지 않아도 살 수 있어요!', h:['덩치 큰 동물이에요.','꿀과 연어를 좋아해요.','두 발로 일어서기도 해요.']},
   {n:'북극곰',e:'🐻‍❄️',f:'북극의 사냥꾼! 털은 투명하고, 피부는 까만색이에요!', h:['하얀 털을 가졌어요.','눈과 얼음 위에서 살아요.','수영을 아주 잘해요.']},
-  {n:'대왕판다',e:'🐼',f:'하루의 절반을 대나무 먹는 데 사용해요!', h:['흰색과 검은색 털이 반반 섞여 있어요.','눈 주위가 까매서 안경을 쓴 것 같아요.','대나무를 아주 좋아해요.']},
+  {n:'판다',e:'🐼',f:'하루의 절반을 대나무 먹는 데 사용해요!', h:['흰색과 검은색 털이 반반 섞여 있어요.','눈 주위가 까매서 안경을 쓴 것 같아요.','대나무를 아주 좋아해요.']},
   {n:'다람쥐',e:'🐿️',f:'겨울을 위해 도토리를 땅에 숨겨요!',h:['꼬리가 빗자루처럼 풍성해요.','나무를 아주 잘 타요.','도토리를 두 손으로 잡고 먹어요.']},
   {n:'오소리',e:'🦡',f:'땅속에 여러 방이 있는 커다란 굴 집을 만들어요!',h:['몸이 통통해요.','얼굴에 검은색과 흰색 줄무늬가 있어요.','땅을 아주 잘 파요.']},
   {n:'고슴도치',e:'🦔',f:'위험하면 몸을 동그랗게 밤송이처럼 말아요!',h:['등에 뾰족한 가시가 가득해요.','작고 귀여워요.','위험하면 공처럼 굴러요.']},
@@ -358,14 +358,47 @@ let streak=0;
 
 function initA(){ try{if(!ax) ax=new(window.AudioContext||window.webkitAudioContext)();}catch(e){} }
 function playDing(){ if(!ax)return; const o=ax.createOscillator(),g=ax.createGain(); o.connect(g);g.connect(ax.destination); o.type='sine';o.frequency.setValueAtTime(800,ax.currentTime); g.gain.setValueAtTime(0,ax.currentTime); g.gain.linearRampToValueAtTime(.2,ax.currentTime+.05); g.gain.linearRampToValueAtTime(0,ax.currentTime+.3); o.start();o.stop(ax.currentTime+.3); }
-function playFanfare(){ if(!ax)return; [[523,.15],[659,.15],[783,.15],[1046,.4]].forEach(([f,d],i)=>{ const t=ax.currentTime+i*.15; const o=ax.createOscillator(),g=ax.createGain(); o.connect(g);g.connect(ax.destination); o.type='triangle';o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.2,t+.05); g.gain.linearRampToValueAtTime(0,t+d); o.start(t);o.stop(t+d+.1); }); }
+
+/* 💡 새로운 '짜-잔~!' 효과음 (도-미-솔 화음 연주) */
+function playTada(){
+  if(!ax)return;
+  const t=ax.currentTime;
+  [[523.25,0,.15], [659.25,0,.15], [783.99,0,.15], 
+   [1046.5,0.2,.4], [1318.51,0.2,.4], [1567.98,0.2,.4]].forEach(([f,dl,d])=>{
+    const o=ax.createOscillator(),g=ax.createGain();
+    o.connect(g);g.connect(ax.destination);o.type='triangle';o.frequency.value=f;
+    g.gain.setValueAtTime(0,t+dl);g.gain.linearRampToValueAtTime(.15,t+dl+.05);g.gain.linearRampToValueAtTime(0,t+dl+d);
+    o.start(t+dl);o.stop(t+dl+d+.1);
+  });
+}
+
 function playPop(){ if(!ax)return; const o=ax.createOscillator(),g=ax.createGain(); o.connect(g);g.connect(ax.destination); o.type='sine';o.frequency.setValueAtTime(400,ax.currentTime); o.frequency.exponentialRampToValueAtTime(800,ax.currentTime+.1); g.gain.setValueAtTime(.2,ax.currentTime); g.gain.exponentialRampToValueAtTime(0.01,ax.currentTime+.1); o.start();o.stop(ax.currentTime+.1); }
 
+/* 💡 BGM 개선: 소리를 더 부드럽고 잔잔하게 */
+let mOn=true, mt=null;
+const ML=[[523.25,.5],[659.26,.5],[783.99,.5],[659.26,.5],[523.25,.25],[587.33,.25],[659.26,.5],[523.25,.5],[440,.5],[523.25,.5],[587.33,.5],[523.25,.5],[392,.5],[440,.5],[523.25,.5],[659.26,.25],[523.25,.25],[783.99,.5],[880,.5],[783.99,.5],[659.26,.5],[587.33,.5],[659.26,.5],[523.25,1]];
+const BT=.33;
+function bgm(){
+  if(!ax||!mOn)return;
+  let t=ax.currentTime+.05;
+  ML.forEach(([f,b])=>{
+    const o=ax.createOscillator(),g=ax.createGain();
+    o.connect(g);g.connect(ax.destination);o.type='sine';o.frequency.value=f;
+    const d=b*BT;
+    g.gain.setValueAtTime(0,t);
+    g.gain.linearRampToValueAtTime(.015,t+.04); // BGM 볼륨 아주 작게
+    g.gain.linearRampToValueAtTime(.01,t+d*.75);
+    g.gain.linearRampToValueAtTime(0,t+d-.02);
+    o.start(t);o.stop(t+d);t+=d;
+  });
+  mt=setTimeout(()=>{if(mOn)bgm();},ML.reduce((a,[,b])=>a+b,0)*BT*1000+200);
+}
+
 /* ═══════════════════════════════════════
-   TTS (모바일 브라우저 호환성 & 안드로이드 버그 패치)
+   TTS & 화면 첫 터치 로직 (모바일 버그 패치 및 BGM 시작)
 ═══════════════════════════════════════ */
 let vko=null;
-let ttsUnlocked = false; 
+let mediaUnlocked = false; 
 
 function loadV(){ 
   const ko=(window.speechSynthesis?.getVoices()||[]).filter(v=>v.lang.startsWith('ko')); 
@@ -373,18 +406,27 @@ function loadV(){
 }
 loadV(); if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged=loadV;
 
-// 💡 모바일 브라우저 터치 시 TTS 잠금 강제 해제 (무음 재생)
-function unlockTTS() {
-  if(ttsUnlocked || !window.speechSynthesis) return;
-  const u = new SpeechSynthesisUtterance('');
-  u.volume = 0; 
-  window.speechSynthesis.speak(u);
-  ttsUnlocked = true;
+// 💡 화면 첫 터치 시 TTS 잠금 해제 + BGM 자동 재생
+function unlockMedia() {
+  if(mediaUnlocked) return;
+  mediaUnlocked = true;
+  
+  if(window.speechSynthesis) {
+    const u = new SpeechSynthesisUtterance('');
+    u.volume = 0; 
+    window.speechSynthesis.speak(u);
+  }
+  
+  initA();
+  if(ax && ax.state === 'suspended') {
+    ax.resume().then(() => { if(mOn) bgm(); });
+  } else if(ax && ax.state === 'running') {
+    if(mOn) bgm();
+  }
 }
-document.body.addEventListener('touchstart', unlockTTS, {once:true});
-document.body.addEventListener('click', unlockTTS, {once:true});
+document.body.addEventListener('touchstart', unlockMedia, {once:true});
+document.body.addEventListener('click', unlockMedia, {once:true});
 
-// 💡 TTS 콜백 기능 추가 (읽기 완료 후 버튼 깜빡임 구현을 위함)
 function speak(t, pitch=1.1, rate=0.85, onEndCallback=null){
   if(!window.speechSynthesis) {
     if(onEndCallback) onEndCallback();
@@ -417,7 +459,7 @@ function openModal(icon, title, sub, btn1Txt, btn1Cb, btn2Txt=null, btn2Cb=null,
   document.getElementById('md-sub').textContent=sub;
   
   const b1=document.getElementById('md-btn1'); 
-  b1.classList.remove('blink-btn'); // 💡 모달 열 때 깜빡임 초기화
+  b1.classList.remove('blink-btn'); 
   b1.textContent=btn1Txt; 
   b1.onclick=()=>{closeModal(); if(btn1Cb)btn1Cb();};
   
@@ -431,6 +473,7 @@ function closeModal(){ document.getElementById('modal').classList.add('hidden');
    1. 스무고개 로직
 ═══════════════════════ */
 let qLives=7, qCur=null, qHi=0, qPhase='hint';
+let qChoices = []; // 💡 선택지 고정용 배열
 const BLUR=[40,25,12,0]; const SCL=[.8,.9,1.0,1.1];
 
 function getPraiseByStreak(s) {
@@ -455,6 +498,10 @@ function startQuiz(){
   const hR = qCur.hR || 0;
   sil.style.setProperty('--hr', `hue-rotate(${hR}deg)`);
 
+  // 💡 문제 시작 시 선택지 4개를 미리 만들어서 고정
+  const others=DB.filter(a=>a.n!==qCur.n).sort(()=>Math.random()-.5).slice(0,3);
+  qChoices=[...others,qCur].sort(()=>Math.random()-.5);
+
   document.getElementById('ht').textContent='버튼을 눌러 힌트를 들어봐요! 🔊';
   renderQuizBtns(); 
   show('quiz'); 
@@ -470,20 +517,23 @@ function renderHearts(){
   const w=document.getElementById('lives-wrap'); w.innerHTML='';
   for(let i=0;i<7;i++){ const s=document.createElement('span'); s.className=i<qLives?'heart':'heart lost'; s.textContent=i<qLives?'❤️':'🖤'; w.appendChild(s); }
 }
+
 function renderQuizBtns(){
   const act=document.getElementById('act');
-  if(qPhase==='hint'){
-    const canG=qHi>=1; const hasM=qHi<qCur.h.length;
-    act.innerHTML=`
-      ${hasM?`<button class="abtn pri" onclick="qNextHint()">🔊 ${qHi===0?'힌트 듣기':'다음 힌트'}</button>`:''}
-      ${canG?`<button class="abtn gue" onclick="qShowChoices()">🤔 맞춰볼래요!</button>`:''}
-    `;
-  } else if(qPhase==='choices'){
-    const others=DB.filter(a=>a.n!==qCur.n).sort(()=>Math.random()-.5).slice(0,3);
-    const ch=[...others,qCur].sort(()=>Math.random()-.5);
-    act.innerHTML=`<div class="cgrid">${ch.map(c=>`<button class="cbtn" onclick="qCheck('${c.n}',this)"><span class="ce" style="filter:hue-rotate(${c.hR||0}deg)">${c.e}</span><span class="cn">${c.n}</span></button>`).join('')}</div>`;
-  }
+  const hasM=qHi<qCur.h.length;
+  
+  // 💡 보기 상시 노출 ("맞춰볼래요!" 버튼 제거)
+  act.innerHTML=`
+    ${hasM?`<button class="abtn pri" onclick="qNextHint()" style="margin-bottom:6px;">🔊 ${qHi===0?'힌트 듣기':'다음 힌트 듣기'}</button>`:''}
+    <div style="font-size:15px; font-weight:800; color:var(--sky); text-align:center; margin-bottom:8px;">어떤 동물일까요? 골라봐요! 👇</div>
+    <div class="cgrid">
+      ${qChoices.map(c=>`<button class="cbtn" onclick="qCheck('${c.n}',this)">
+        <span class="ce" style="filter:hue-rotate(${c.hR||0}deg)">${c.e}</span><span class="cn">${c.n}</span>
+      </button>`).join('')}
+    </div>
+  `;
 }
+
 function qNextHint(){
   if(qHi>=qCur.h.length)return;
   const t=qCur.h[qHi]; document.getElementById('ht').textContent=t;
@@ -493,12 +543,18 @@ function qNextHint(){
   sil.style.transform=`scale(${SCL[step]})`;
   speak(t); renderQuizBtns();
 }
-function qShowChoices(){ qPhase='choices'; renderQuizBtns(); speak('누구일까요?'); }
 
 function qCheck(ans, btn){
+  if(qPhase==='done') return;
+
   if(ans===qCur.n){
+    qPhase = 'done';
     streak++;
-    btn.classList.add('ok'); playFanfare();
+    btn.classList.add('ok'); 
+    
+    // 💡 새로운 짜잔 화음 재생
+    playTada(); 
+    
     document.getElementById('q-streak').textContent = `🔥 ${streak}연속 정답!`;
     const sil = document.getElementById('sil');
     sil.style.filter = `hue-rotate(${qCur.hR||0}deg)`;
@@ -507,17 +563,17 @@ function qCheck(ans, btn){
     
     const praise = getPraiseByStreak(streak);
     
-    // 💡 1차 음성: 딩동댕! 코끼리예요!
-    speak(`딩동댕! ${qCur.n}예요!`);
+    // 💡 1차 음성: 명확하게 정답을 얘기해줌
+    speak(`딩동댕! 정답은, ${qCur.n}예요!`);
     
     setTimeout(()=>{
       openModal(qCur.e, praise, qCur.f, '다음 문제', startQuiz, '그만하기', goHub, qCur.hR||0);
       
-      // 💡 2차 음성: 모달이 뜨면 동물 설명을 읽어주고, 완료 시 버튼 깜빡임(Pulse) 실행
+      // 💡 2차 음성: 모달이 뜨면 동물 설명을 읽어주고, 완료 시 버튼 깜빡임
       speak(`${qCur.f} ${praise}`, 1.1, 0.85, () => {
          document.getElementById('md-btn1').classList.add('blink-btn');
       });
-    }, 1500);
+    }, 1800);
 
   } else {
     streak = 0; document.getElementById('q-streak').textContent = `🔥 0연속 정답!`;
@@ -528,7 +584,6 @@ function qCheck(ans, btn){
     } else { speak('아니에요. 다시 골라봐요.'); }
   }
 }
-
 function pokeSilhouette(){
   if(qPhase==='done') return;
   playPop();
@@ -538,7 +593,7 @@ function pokeSilhouette(){
 }
 
 /* ═══════════════════════
-   2. 조각 맞추기 퍼즐
+   2. 조각 맞추기 퍼즐 
 ═══════════════════════ */
 let pzTime=0, pzTimerInterval=null, curPzSize=3; 
 let pzSelectedPiece=null;
@@ -632,13 +687,13 @@ function checkJigsaw(isInit=false) {
   
   if(correctCount === pieces.length && !isInit) {
     clearInterval(pzTimerInterval);
-    playFanfare();
+    playTada(); // 💡 퍼즐 완성 시 짜잔 화음!
+    
     let nextSize = curPzSize < 8 ? curPzSize + 1 : 8; 
     
     setTimeout(()=>{
       openModal('🏆', '퍼즐 완성!', `${pzTime}초 만에 멋지게 완성했어요!`, '더 어려운 퍼즐!', ()=>startPiecePuzzle(nextSize), '홈으로', goHub);
       
-      // 💡 퍼즐 완성 후 TTS 읽고 버튼 깜빡임
       speak(`우와! ${pzTime}초 만에 완성했어요! 정말 대단해요!`, 1.1, 0.85, () => {
          document.getElementById('md-btn1').classList.add('blink-btn');
       });
@@ -647,7 +702,7 @@ function checkJigsaw(isInit=false) {
 }
 
 /* ═══════════════════════
-   3. 도감 로직 
+   3. 도감 로직
 ═══════════════════════ */
 function showCollection(){
   const grid=document.getElementById('dic-grid'); grid.innerHTML='';
