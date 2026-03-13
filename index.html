@@ -47,7 +47,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .fs-btn{margin-top:20px;background:none;border:1px solid var(--muted);color:var(--muted);padding:8px 16px;border-radius:12px;font-family:'Gugi';cursor:pointer;}
 
 /* ═══════════════════════
-   도감 (COLLECTION)
+   도감 (COLLECTION) - 5열
 ═══════════════════════ */
 #collection{justify-content:flex-start;}
 .dic-stats{font-size:18px;color:var(--teal);margin-bottom:16px;}
@@ -163,7 +163,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   <div class="hub-grid">
     <div class="hub-btn quiz" onclick="startQuiz()">
       <div class="hub-icon">🕵️</div>
-      <div class="hub-info"><div class="hub-name">동물 퀴즈</div><div class="hub-desc">누구일까? 맞춰봐요!</div></div>
+      <div class="hub-info"><div class="hub-name">스무고개</div><div class="hub-desc">누구일까? 맞춰봐요!</div></div>
     </div>
     <div class="hub-btn puzzle" onclick="startPiecePuzzle()">
       <div class="hub-icon">🧩</div>
@@ -233,9 +233,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </div>
 
 <script>
-// 💡 110종 순도 100% 무결성 동물 DB
+// 110종 순도 100% 무결성 동물 DB
 const DB=[
-  /* ── 포유류 (반려동물 & 농장) ── */
   {n:'강아지',e:'🐕',f:'코는 사람보다 10000배나 냄새를 잘 맡아요!', h:['네 발로 걸어다녀요.','복슬복슬한 털이 있어요.','멍멍 하고 짖어요.']},
   {n:'푸들',e:'🐩',f:'털이 잘 빠지지 않고 머리가 아주 똑똑한 강아지예요!', h:['털이 뽀글뽀글하게 곱슬거려요.','프랑스에서 온 영리한 강아지예요.','강아지 중에서 아주 똑똑해요.']},
   {n:'고양이',e:'🐈',f:'하루에 16시간씩 자기도 해요!', h:['살금살금 조용히 걸어요.','수염이 있고 귀가 뾰족해요.','야옹 하고 소리를 내요.']},
@@ -473,7 +472,7 @@ function closeModal(){ document.getElementById('modal').classList.add('hidden');
    1. 스무고개 로직
 ═══════════════════════ */
 let qLives=7, qCur=null, qHi=0, qPhase='hint';
-let qChoices = []; // 💡 선택지 고정용 배열
+let qChoices = []; 
 const BLUR=[40,25,12,0]; const SCL=[.8,.9,1.0,1.1];
 
 function getPraiseByStreak(s) {
@@ -498,7 +497,6 @@ function startQuiz(){
   const hR = qCur.hR || 0;
   sil.style.setProperty('--hr', `hue-rotate(${hR}deg)`);
 
-  // 💡 문제 시작 시 선택지 4개를 미리 만들어서 고정
   const others=DB.filter(a=>a.n!==qCur.n).sort(()=>Math.random()-.5).slice(0,3);
   qChoices=[...others,qCur].sort(()=>Math.random()-.5);
 
@@ -522,7 +520,6 @@ function renderQuizBtns(){
   const act=document.getElementById('act');
   const hasM=qHi<qCur.h.length;
   
-  // 💡 보기 상시 노출 ("맞춰볼래요!" 버튼 제거)
   act.innerHTML=`
     ${hasM?`<button class="abtn pri" onclick="qNextHint()" style="margin-bottom:6px;">🔊 ${qHi===0?'힌트 듣기':'다음 힌트 듣기'}</button>`:''}
     <div style="font-size:15px; font-weight:800; color:var(--sky); text-align:center; margin-bottom:8px;">어떤 동물일까요? 골라봐요! 👇</div>
@@ -552,7 +549,6 @@ function qCheck(ans, btn){
     streak++;
     btn.classList.add('ok'); 
     
-    // 💡 새로운 짜잔 화음 재생
     playTada(); 
     
     document.getElementById('q-streak').textContent = `🔥 ${streak}연속 정답!`;
@@ -563,17 +559,15 @@ function qCheck(ans, btn){
     
     const praise = getPraiseByStreak(streak);
     
-    // 💡 1차 음성: 명확하게 정답을 얘기해줌
-    speak(`딩동댕! 정답은, ${qCur.n}예요!`);
+    // 💡 1차+2차 음성 통합 (중간 끊김 해결)
+    speak(`딩동댕! 정답은, ${qCur.n}예요! ${qCur.f} ${praise}`, 1.1, 0.85, () => {
+       const nbtn = document.getElementById('md-btn1');
+       if(nbtn) nbtn.classList.add('blink-btn');
+    });
     
     setTimeout(()=>{
       openModal(qCur.e, praise, qCur.f, '다음 문제', startQuiz, '그만하기', goHub, qCur.hR||0);
-      
-      // 💡 2차 음성: 모달이 뜨면 동물 설명을 읽어주고, 완료 시 버튼 깜빡임
-      speak(`${qCur.f} ${praise}`, 1.1, 0.85, () => {
-         document.getElementById('md-btn1').classList.add('blink-btn');
-      });
-    }, 1800);
+    }, 1500);
 
   } else {
     streak = 0; document.getElementById('q-streak').textContent = `🔥 0연속 정답!`;
@@ -687,7 +681,7 @@ function checkJigsaw(isInit=false) {
   
   if(correctCount === pieces.length && !isInit) {
     clearInterval(pzTimerInterval);
-    playTada(); // 💡 퍼즐 완성 시 짜잔 화음!
+    playTada();
     
     let nextSize = curPzSize < 8 ? curPzSize + 1 : 8; 
     
@@ -695,7 +689,8 @@ function checkJigsaw(isInit=false) {
       openModal('🏆', '퍼즐 완성!', `${pzTime}초 만에 멋지게 완성했어요!`, '더 어려운 퍼즐!', ()=>startPiecePuzzle(nextSize), '홈으로', goHub);
       
       speak(`우와! ${pzTime}초 만에 완성했어요! 정말 대단해요!`, 1.1, 0.85, () => {
-         document.getElementById('md-btn1').classList.add('blink-btn');
+         const nbtn = document.getElementById('md-btn1');
+         if(nbtn) nbtn.classList.add('blink-btn');
       });
     }, 800);
   }
