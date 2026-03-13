@@ -124,23 +124,35 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,0.25);
 }
 .pz-piece.sel{ outline:3px solid var(--coral); transform:scale(0.9); z-index:10; }
-.pz-piece.ok{ box-shadow:none; pointer-events:none; } /* 심리스(Seamless) 효과 */
+.pz-piece.ok{ box-shadow:none; pointer-events:none; }
 .pz-inner{
   position:absolute; width:320px; height:320px; display:flex; align-items:center; 
   justify-content:center; font-size:240px; line-height:1; pointer-events:none;
   background: radial-gradient(circle at 0% 0%, #FFD43B 0%, transparent 60%), radial-gradient(circle at 100% 100%, #3de888 0%, transparent 60%), radial-gradient(circle at 100% 0%, #ff6454 0%, transparent 60%), radial-gradient(circle at 0% 100%, #7dd3fc 0%, transparent 60%), #b584fa;
 }
 
-/* 공통 모달 */
+/* ═══════════════════════
+   공통 모달 & 깜빡이는 버튼 애니메이션
+═══════════════════════ */
 .overlay{position:fixed;inset:0;z-index:20;background:rgba(4,9,22,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;backdrop-filter:blur(6px);}
 .overlay.hidden{display:none!important}
 .mbox{background:linear-gradient(155deg,#0c1d36,#0b1c32);border:1.5px solid var(--bdr);border-radius:28px;padding:28px 22px;max-width:320px;width:100%;text-align:center;}
 .micon{font-size:64px;margin-bottom:10px;}
 .mtitle{font-size:26px;color:var(--gold);margin-bottom:6px;}
 .msub{font-family:'Nanum Gothic',sans-serif;font-weight:800;font-size:15px;color:var(--muted);margin-bottom:20px;line-height:1.5;word-break:keep-all;}
-.mbtn{width:100%;padding:16px;border-radius:20px;border:none;font-family:'Gugi',sans-serif;font-size:18px;cursor:pointer;margin-bottom:8px;background:linear-gradient(135deg,var(--gold),#ff9a2c);color:#1a0800;}
+.mbtn{width:100%;padding:16px;border-radius:20px;border:none;font-family:'Gugi',sans-serif;font-size:18px;cursor:pointer;margin-bottom:8px;background:linear-gradient(135deg,var(--gold),#ff9a2c);color:#1a0800;transition:all 0.2s;}
 .mbtn:active{transform:scale(.92)}
 .mbtn.sec{background:var(--card);border:1px solid var(--bdr);color:var(--text);}
+
+/* 💡 추가된 다음 문제 깜빡임(Pulse) 애니메이션 */
+.blink-btn {
+  animation: pulseBtn 1s infinite alternate !important;
+}
+@keyframes pulseBtn {
+  0% { transform: scale(1); box-shadow: 0 0 0 rgba(255,212,59,0); filter: brightness(1); }
+  100% { transform: scale(1.04); box-shadow: 0 0 20px rgba(255,212,59,0.8); filter: brightness(1.15); }
+}
+
 .dance {animation: happyDance 1.2s ease-in-out infinite;}
 @keyframes happyDance {0%, 100% { transform: translateY(0) scale(1) rotate(0deg); } 25% { transform: translateY(-15px) scale(1.1) rotate(-8deg); } 75% { transform: translateY(-15px) scale(1.1) rotate(8deg); }}
 </style>
@@ -222,8 +234,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </div>
 
 <script>
+// 110종 순도 100% 무결성 동물 DB
 const DB=[
-  /* ── 포유류 (반려동물 & 농장) ── */
   {n:'강아지',e:'🐕',f:'코는 사람보다 10000배나 냄새를 잘 맡아요!', h:['네 발로 걸어다녀요.','복슬복슬한 털이 있어요.','멍멍 하고 짖어요.']},
   {n:'푸들',e:'🐩',f:'털이 잘 빠지지 않고 머리가 아주 똑똑한 강아지예요!', h:['털이 뽀글뽀글하게 곱슬거려요.','프랑스에서 온 영리한 강아지예요.','강아지 중에서 아주 똑똑해요.']},
   {n:'고양이',e:'🐈',f:'하루에 16시간씩 자기도 해요!', h:['살금살금 조용히 걸어요.','수염이 있고 귀가 뾰족해요.','야옹 하고 소리를 내요.']},
@@ -241,7 +253,6 @@ const DB=[
   {n:'낙타',e:'🐪',f:'등의 혹에는 물이 아니라 지방이 들어있어요!', h:['뜨거운 사막에서 살아요.','등에 볼록한 혹이 하나 있어요.','속눈썹이 아주 길어요.']},
   {n:'쌍봉낙타',e:'🐫',f:'등에 커다란 혹이 두 개나 있어서 더 오래 안 먹고도 버텨요!', h:['사막에서 무거운 짐을 날라줘요.','등에 볼록한 혹이 두 개 있어요.','낙타의 친구예요.']},
   
-  /* ── 야생 동물 & 맹수 ── */
   {n:'사자',e:'🦁',hR:0, f:'동물의 왕! 무리 지어 살며 팀워크로 사냥해요.', h:['수컷은 얼굴 주변에 멋진 갈기가 있어요.','동물의 왕이라고 불려요.','으르렁 소리가 엄청 커요.']},
   {n:'호랑이',e:'🐅',hR:0, f:'줄무늬는 사람의 지문처럼 세상에 하나뿐이에요!', h:['주황색 털에 검은 줄무늬가 뚜렷해요.','아시아 밀림에 사는 용맹한 동물이에요.','어흥! 하고 아주 크게 울어요.']},
   {n:'표범',e:'🐆',hR:0, f:'자기 몸무게보다 무거운 먹이를 나무 위로 끌고 올라가요!', h:['나무 위에 올라가는 걸 좋아해요.','몸에 검은 꽃 모양 점무늬가 있어요.','달리기도 아주 빨라요.']},
@@ -255,7 +266,6 @@ const DB=[
   {n:'사슴',e:'🦌',f:'뿔은 1년에 한 번씩 빠지고 새로 자라요!', h:['수컷에게 나뭇가지 같은 뿔이 있어요.','눈이 크고 예뻐요.','깡충깡충 뛰는 날쌘 동물이에요.']},
   {n:'멧돼지',e:'🐗',f:'강한 코로 땅을 팍팍 파서 숨은 먹이를 찾아요!', h:['돼지를 닮은 야생 동물이에요.','털이 거칠고 뻣뻣해요.','어금니가 뾰족하게 튀어나와 있어요.']},
   
-  /* ── 숲속 동물 & 소형 포유류 ── */
   {n:'곰',e:'🐻',f:'겨울잠을 자는 동안 아무것도 먹지 않아도 살 수 있어요!', h:['덩치 큰 동물이에요.','꿀과 연어를 좋아해요.','두 발로 일어서기도 해요.']},
   {n:'북극곰',e:'🐻‍❄️',f:'북극의 사냥꾼! 털은 투명하고, 피부는 까만색이에요!', h:['하얀 털을 가졌어요.','눈과 얼음 위에서 살아요.','수영을 아주 잘해요.']},
   {n:'대왕판다',e:'🐼',f:'하루의 절반을 대나무 먹는 데 사용해요!', h:['흰색과 검은색 털이 반반 섞여 있어요.','눈 주위가 까매서 안경을 쓴 것 같아요.','대나무를 아주 좋아해요.']},
@@ -268,14 +278,12 @@ const DB=[
   {n:'비버',e:'🦫',hR:0, f:'튼튼한 앞니로 나무를 쓰러뜨려 물 위에 댐을 만들어요!', h:['꼬리가 넓적한 노처럼 생겼어요.','수영을 아주 잘하는 건축가예요.','나뭇가지로 강에 집을 지어요.']},
   {n:'해달',e:'🦦',f:'배 위에 돌을 올려놓고 조개껍데기를 쾅쾅 깨서 먹어요!',h:['물 위에 누워서 둥둥 떠요.','털이 아주 빽빽해서 젖지 않아요.','잘 때 물에 떠내려가지 않게 친구와 손을 잡고 자요.']},
   
-  /* ── 영장류 & 호주 동물 ── */
   {n:'원숭이',e:'🐒',f:'친구들끼리 서로 털을 골라주며 친하게 지내요!', h:['나무 위를 아주 잘 타요.','바나나를 좋아해요.','장난치는 걸 좋아해요.']},
   {n:'고릴라',e:'🦍',f:'화가 나거나 힘자랑을 할 때 주먹으로 가슴을 쾅쾅 두드려요!',h:['영장류 중에 덩치가 제일 커요.','팔이 아주 길고 튼튼해요.','가족을 지키는 멋진 아빠예요.']},
   {n:'오랑우탄',e:'🦧',f:'숲에서 나뭇가지와 잎으로 비를 피하는 우산을 만들어요!',h:['주황빛 갈색 털이 있어요.','팔이 엄청 길어요.','나무 위에서 생활해요.']},
   {n:'캥거루',e:'🦘',f:'아기는 태어날 때 젤리빈만큼 작아서 주머니에서 커요!', h:['뒷다리가 아주 강해서 높이 뛰어요.','배에 새끼를 넣는 주머니가 있어요.','호주에 살아요.']},
   {n:'코알라',e:'🐨',f:'하루에 22시간이나 잠을 자는 세상에서 최고 잠꾸러기예요!', h:['나무 위에서 떨어지지 않고 자요.','귀가 복슬복슬하고 둥글어요.','유칼립투스 잎만 먹어요.']},
 
-  /* ── 조류 (새) ── */
   {n:'참새',e:'🐦',f:'도시에서도 아주 잘 사는 새예요!',h:['크기가 아주 작아요.','짹짹 하고 귀여운 소리를 내요.','쌀이나 씨앗을 좋아해요.']},
   {n:'닭',e:'🐔',f:'매일 아침 꼬끼오 하고 울어요!', h:['날개가 있지만 잘 날지 못해요.','머리에 빨간 볏이 있어요.','우리에게 맛있는 달걀을 줘요.']},
   {n:'병아리',e:'🐤',f:'알을 깨고 나온 지 얼마 안 된 아기 새예요!', h:['삐약삐약 하고 울어요.','노랗고 보송보송한 털이 있어요.','커서 닭이 되어요.']},
@@ -291,14 +299,12 @@ const DB=[
   {n:'타조',e:'🦤',f:'사실 이 이모지는 타조가 아니라 옛날에 살던 도도새예요!', h:['날개가 아주 작아서 날지 못해요.','옛날 옛적 섬에 살았던 전설의 새예요.','타조처럼 다리가 통통해요.']},
   {n:'펭귄',e:'🐧',f:'시속 25킬로미터로 수영할 수 있어요!', h:['새이지만 날지 못해요.','배는 하얗고 등은 검어요.','뒤뚱뒤뚱 귀엽게 걸어다녀요.']},
 
-  /* ── 파충류 & 양서류 ── */
   {n:'개구리',e:'🐸',f:'혀를 번개처럼 내밀어 벌레를 잡아요!',h:['깡충깡충 점프해요.','연못 근처에 살아요.','개굴개굴 울어요.']},
   {n:'악어',e:'🐊',f:'턱 힘이 아주 강해서 한 번 물면 절대 놓지 않아요!',h:['큰 입과 날카로운 이빨이 있어요.','물속과 땅을 모두 다녀요.','강가에 사는 무서운 사냥꾼이에요.']},
   {n:'거북이',e:'🐢',f:'어떤 거북이는 100년 넘게 살기도 해요!',h:['단단한 등껍질이 있어요.','아주 천천히 걸어요.','위험하면 몸을 껍질 안에 숨겨요.']},
   {n:'도마뱀',e:'🦎',f:'꼬리가 잘려도 다시 자라는 신기한 능력이 있어요!',h:['몸이 길쭉해요.','네 발로 빠르게 달려요.','돌 위에서 햇볕을 쬐어요.']},
   {n:'뱀',e:'🐍',f:'눈을 깜빡이지 않고 항상 뜨고 있어요!',h:['다리가 없어요.','몸을 구불구불 움직여요.','혀를 날름거리며 냄새를 맡아요.']},
 
-  /* ── 해양 동물 (바다) ── */
   {n:'고래',e:'🐋',f:'노래를 부를 수 있어요! 수백 킬로미터까지 들려요.', h:['바다에서 사는 아주 큰 동물이에요.','머리 위 구멍으로 물을 뿜어요.','지구에서 가장 큰 동물이에요.']},
   {n:'범고래',e:'🐳',hR:0, f:'바다 생태계에서 가장 강하고 똑똑한 사냥꾼이에요!', h:['바다 위로 물을 뿜어내요.','아주 똑똑해서 작전을 짜서 사냥해요.','이빨이 있는 무서운 고래예요.']},
   {n:'돌고래',e:'🐬',f:'각자 자기만의 이름(휘파람 소리)을 가지고 대화해요!', h:['바다에 사는 아주 똑똑한 친구예요.','초음파를 쏴서 물속을 탐색해요.','물 위로 점프하며 노는 걸 좋아해요.']},
@@ -314,7 +320,6 @@ const DB=[
   {n:'새우',e:'🦐',f:'긴 수염을 가지고 있고 몸을 둥글게 말아서 톡톡 튀어 올라요!', h:['바닷속에서 헤엄치는 작은 갑각류예요.','익히면 빨갛게 변해요.','수염이 아주 길어요.']},
   {n:'해파리',e:'🪼',f:'뇌도, 뼈도, 심장도 없이 물에 떠다니는 젤리 같은 생물이에요!', h:['몸이 투명한 우산처럼 생겼어요.','물 흐름을 타고 둥둥 떠다녀요.','촉수에 닿으면 따끔하고 독이 있어요.']},
 
-  /* ── 곤충 & 벌레 ── */
   {n:'나비',e:'🦋',f:'애벌레 ➔ 번데기 ➔ 나비로 마법처럼 변신해요!', h:['곤충이에요.','화려하고 예쁜 날개를 가졌어요.','꽃에 앉아 긴 입으로 꿀을 마셔요.']},
   {n:'애벌레',e:'🐛',f:'나비나 나방이 되기 전, 나뭇잎을 아주 많이 먹으며 자라는 아기예요!', h:['나뭇잎을 아삭아삭 갉아 먹어요.','꼬물꼬물 기어 다녀요.','커서 날개가 생겨요.']},
   {n:'꿀벌',e:'🐝',f:'8자 춤을 춰서 친구들에게 꿀이 있는 방향을 알려줘요!', h:['노란색과 검은색 줄무늬가 있어요.','꽃에서 꿀을 모아요.','여왕벌과 수만 마리가 벌집에 살아요.']},
@@ -325,12 +330,13 @@ const DB=[
   {n:'전갈',e:'🦂',f:'꼬리 끝에 무서운 독침이 있어서 적을 찌를 수 있어요!', h:['집게발이 두 개 있어요.','꼬리가 위로 둥글게 말려 있어요.','뜨거운 사막에 주로 살아요.']},
   {n:'지렁이',e:'🪱',f:'땅을 파먹고 응가를 하면서 흙을 비옥하고 좋게 만들어줘요!', h:['다리나 눈이 없고 길쭉해요.','몸을 구불구불 움직여요.','땅속에서 조용히 살아요.']},
 
-  /* ── 💡 공룡 (Dinos - 이모지 2종을 Hue Rotate로 20종 변환) ── */
+  /* ── 공룡 (Dinos - Hue Rotate로 컬러만 변환) ── */
   {n:'티라노사우루스',e:'🦖',hR:0, f:'공룡 시대 최고의 포식자! 이빨이 바나나만큼 컸어요!', h:['가장 크고 무서운 육식 공룡이에요.','앞발은 아주 짧고 작아요.','티렉스라는 별명이 있어요.']},
   {n:'트리케라톱스',e:'🦕',hR:120, f:'머리의 큰 뼈 방패와 세 개의 뿔로 티라노사우루스에 맞서 싸웠어요!', h:['얼굴에 뿔이 세 개 달려 있어요.','머리 뒤에 커다란 프릴(방패)이 있어요.','네 발로 걷는 아주 강한 초식 공룡이에요.']},
   {n:'브라키오사우루스',e:'🦕',hR:60, f:'목을 길게 빼면 아파트 4층 높이의 나뭇잎도 먹을 수 있었어요!', h:['공룡 중에서 키가 아주 커요.','목이 기린처럼 엄청나게 길어요.','앞다리가 뒷다리보다 길어요.']},
   {n:'스테고사우루스',e:'🦕',hR:200, f:'등에 있는 판으로 체온을 조절하고, 뇌 크기는 호두알만 했어요!', h:['등에 뾰족한 삼각형 판이 줄줄이 솟아 있어요.','꼬리 끝에 네 개의 무서운 가시가 있어요.','초식 공룡이지만 방어를 잘했어요.']},
   {n:'안킬로사우루스',e:'🦕',hR:45, f:'꼬리에 달린 무거운 뼈 몽둥이 한 방이면 티라노의 다리뼈도 부러졌어요!', h:['온몸이 단단한 갑옷과 가시로 덮여 있어요.','꼬리 끝에 동그란 뼈 몽둥이가 있어요.','걸어 다니는 탱크라고 불려요.']},
+  {n:'프테라노돈',e:'🦅',hR:0, f:'이빨이 없는 부리를 가졌고, 바다 위를 날며 물고기를 낚아챘어요!', h:['공룡 시대 하늘을 날던 익룡이에요.','머리 뒤로 길쭉한 볏이 솟아 있어요.','날개를 펴면 아주 거대해요.']},
   {n:'벨로키랍토르',e:'🦖',hR:280, f:'영화와 달리 실제로는 칠면조 크기였고 온몸이 깃털로 덮여 있었어요!', h:['아주 날쌔고 영리한 사냥꾼이에요.','뒷발에 낫처럼 구부러진 큰 발톱이 있어요.','무리 지어 작전을 짜서 사냥했어요.']},
   {n:'스피노사우루스',e:'🦖',hR:150, f:'물속을 헤엄치며 커다란 물고기를 잡아먹은 유일한 수륙양용 공룡이에요!', h:['등에 커다란 부채(돛) 모양의 뼈가 솟아 있어요.','티라노사우루스보다 덩치가 더 컸어요.','악어처럼 긴 주둥이를 가졌어요.']},
   {n:'파라사우롤로푸스',e:'🦕',hR:300, f:'머리 뒤로 길게 뻗은 볏을 피리처럼 불어서 친구들과 대화했어요!', h:['머리 뒤로 둥글고 긴 관 모양의 볏이 있어요.','그 볏으로 뿌우웅~ 하고 큰 소리를 냈어요.','오리 부리처럼 생긴 입을 가진 초식 공룡이에요.']},
@@ -355,17 +361,44 @@ function playDing(){ if(!ax)return; const o=ax.createOscillator(),g=ax.createGai
 function playFanfare(){ if(!ax)return; [[523,.15],[659,.15],[783,.15],[1046,.4]].forEach(([f,d],i)=>{ const t=ax.currentTime+i*.15; const o=ax.createOscillator(),g=ax.createGain(); o.connect(g);g.connect(ax.destination); o.type='triangle';o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.2,t+.05); g.gain.linearRampToValueAtTime(0,t+d); o.start(t);o.stop(t+d+.1); }); }
 function playPop(){ if(!ax)return; const o=ax.createOscillator(),g=ax.createGain(); o.connect(g);g.connect(ax.destination); o.type='sine';o.frequency.setValueAtTime(400,ax.currentTime); o.frequency.exponentialRampToValueAtTime(800,ax.currentTime+.1); g.gain.setValueAtTime(.2,ax.currentTime); g.gain.exponentialRampToValueAtTime(0.01,ax.currentTime+.1); o.start();o.stop(ax.currentTime+.1); }
 
-/* ── TTS ── */
+/* ═══════════════════════════════════════
+   TTS (모바일 브라우저 호환성 & 안드로이드 버그 패치)
+═══════════════════════════════════════ */
 let vko=null;
-function loadV(){ const ko=(window.speechSynthesis?.getVoices()||[]).filter(v=>v.lang.startsWith('ko')); vko=ko.find(v=>v.name.includes('Google')||v.name.includes('SunHi')||/(여성|female|woman|girl|혜|수|지|은|미)/i.test(v.name))||ko[0]||null; }
+let ttsUnlocked = false; 
+
+function loadV(){ 
+  const ko=(window.speechSynthesis?.getVoices()||[]).filter(v=>v.lang.startsWith('ko')); 
+  vko=ko.find(v=>v.name.includes('Google')||v.name.includes('SunHi')||/(여성|female|woman|girl|혜|수|지|은|미)/i.test(v.name))||ko[0]||null; 
+}
 loadV(); if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged=loadV;
-function speak(t, pitch=1.1, rate=0.85){
-  if(!window.speechSynthesis)return; window.speechSynthesis.cancel();
-  let adjustedText = t.replace(/나는 /g, '나는, ').replace(/있어요/g, '있어요.').replace(/거예요/g, '거예요.');
-  const u=new SpeechSynthesisUtterance(adjustedText); 
-  u.lang='ko-KR'; u.rate=rate; u.pitch=pitch; 
-  if(vko) u.voice=vko;
+
+// 💡 모바일 브라우저 터치 시 TTS 잠금 강제 해제 (무음 재생)
+function unlockTTS() {
+  if(ttsUnlocked || !window.speechSynthesis) return;
+  const u = new SpeechSynthesisUtterance('');
+  u.volume = 0; 
   window.speechSynthesis.speak(u);
+  ttsUnlocked = true;
+}
+document.body.addEventListener('touchstart', unlockTTS, {once:true});
+document.body.addEventListener('click', unlockTTS, {once:true});
+
+// 💡 TTS 콜백 기능 추가 (읽기 완료 후 버튼 깜빡임 구현을 위함)
+function speak(t, pitch=1.1, rate=0.85, onEndCallback=null){
+  if(!window.speechSynthesis) {
+    if(onEndCallback) onEndCallback();
+    return; 
+  }
+  window.speechSynthesis.cancel();
+  setTimeout(() => {
+    let adjustedText = t.replace(/나는 /g, '나는, ').replace(/있어요/g, '있어요.').replace(/거예요/g, '거예요.');
+    const u=new SpeechSynthesisUtterance(adjustedText); 
+    u.lang='ko-KR'; u.rate=rate; u.pitch=pitch; 
+    if(vko) u.voice=vko;
+    if(onEndCallback) u.onend = onEndCallback;
+    window.speechSynthesis.speak(u);
+  }, 50); 
 }
 
 /* ── 네비게이션 ── */
@@ -382,7 +415,12 @@ function openModal(icon, title, sub, btn1Txt, btn1Cb, btn2Txt=null, btn2Cb=null,
   micon.style.filter = `hue-rotate(${hR}deg)`; 
   document.getElementById('md-title').textContent=title;
   document.getElementById('md-sub').textContent=sub;
-  const b1=document.getElementById('md-btn1'); b1.textContent=btn1Txt; b1.onclick=()=>{closeModal(); if(btn1Cb)btn1Cb();};
+  
+  const b1=document.getElementById('md-btn1'); 
+  b1.classList.remove('blink-btn'); // 💡 모달 열 때 깜빡임 초기화
+  b1.textContent=btn1Txt; 
+  b1.onclick=()=>{closeModal(); if(btn1Cb)btn1Cb();};
+  
   const b2=document.getElementById('md-btn2'); 
   if(btn2Txt){ b2.style.display=''; b2.textContent=btn2Txt; b2.onclick=()=>{closeModal(); if(btn2Cb)btn2Cb();}; } else { b2.style.display='none'; }
   document.getElementById('modal').classList.remove('hidden');
@@ -456,6 +494,7 @@ function qNextHint(){
   speak(t); renderQuizBtns();
 }
 function qShowChoices(){ qPhase='choices'; renderQuizBtns(); speak('누구일까요?'); }
+
 function qCheck(ans, btn){
   if(ans===qCur.n){
     streak++;
@@ -465,9 +504,21 @@ function qCheck(ans, btn){
     sil.style.filter = `hue-rotate(${qCur.hR||0}deg)`;
     sil.classList.add('show');
     if(!unlocked.includes(qCur.n)){ unlocked.push(qCur.n); localStorage.setItem('animal_dic',JSON.stringify(unlocked)); }
+    
     const praise = getPraiseByStreak(streak);
-    speak(`딩동댕! ${qCur.n}예요! ${praise}`);
-    setTimeout(()=>openModal(qCur.e, praise, qCur.f, '다음 문제', startQuiz, '그만하기', goHub, qCur.hR||0), 1500);
+    
+    // 💡 1차 음성: 딩동댕! 코끼리예요!
+    speak(`딩동댕! ${qCur.n}예요!`);
+    
+    setTimeout(()=>{
+      openModal(qCur.e, praise, qCur.f, '다음 문제', startQuiz, '그만하기', goHub, qCur.hR||0);
+      
+      // 💡 2차 음성: 모달이 뜨면 동물 설명을 읽어주고, 완료 시 버튼 깜빡임(Pulse) 실행
+      speak(`${qCur.f} ${praise}`, 1.1, 0.85, () => {
+         document.getElementById('md-btn1').classList.add('blink-btn');
+      });
+    }, 1500);
+
   } else {
     streak = 0; document.getElementById('q-streak').textContent = `🔥 0연속 정답!`;
     btn.classList.add('ng'); playDing(); qLives--; renderHearts();
@@ -477,6 +528,7 @@ function qCheck(ans, btn){
     } else { speak('아니에요. 다시 골라봐요.'); }
   }
 }
+
 function pokeSilhouette(){
   if(qPhase==='done') return;
   playPop();
@@ -486,9 +538,9 @@ function pokeSilhouette(){
 }
 
 /* ═══════════════════════
-   2. 조각 맞추기 퍼즐 (최대 64피스 지원 & 썸네일 제공)
+   2. 조각 맞추기 퍼즐
 ═══════════════════════ */
-let pzTime=0, pzTimerInterval=null, curPzSize=3; // 9조각으로 시작
+let pzTime=0, pzTimerInterval=null, curPzSize=3; 
 let pzSelectedPiece=null;
 
 function startPiecePuzzle(size = curPzSize){
@@ -498,7 +550,6 @@ function startPiecePuzzle(size = curPzSize){
 
   let c = DB[~~(Math.random()*DB.length)];
   
-  // 💡 우측 상단 썸네일 및 무지개 배경 업데이트
   let thumb = document.getElementById('pz-thumb');
   thumb.textContent = c.e;
   thumb.style.filter = `hue-rotate(${c.hR||0}deg)`;
@@ -520,7 +571,6 @@ function startPiecePuzzle(size = curPzSize){
     el.className = 'pz-piece';
     el.dataset.idx = val;
     
-    // 💡 마스킹 기법 (고난이도 빈 배경을 해결하기 위해 화려한 무지개 그라데이션 적용)
     let inner = document.createElement('div');
     inner.className = 'pz-inner';
     inner.style.left = `-${correctX * pieceSize}px`;
@@ -583,14 +633,21 @@ function checkJigsaw(isInit=false) {
   if(correctCount === pieces.length && !isInit) {
     clearInterval(pzTimerInterval);
     playFanfare();
-    // 💡 자동 난이도 상승 (최대 8x8, 64조각)
     let nextSize = curPzSize < 8 ? curPzSize + 1 : 8; 
-    setTimeout(()=>openModal('🏆', '퍼즐 완성!', `${pzTime}초 만에 멋지게 완성했어요!`, '더 어려운 퍼즐!', ()=>startPiecePuzzle(nextSize), '홈으로', goHub), 800);
+    
+    setTimeout(()=>{
+      openModal('🏆', '퍼즐 완성!', `${pzTime}초 만에 멋지게 완성했어요!`, '더 어려운 퍼즐!', ()=>startPiecePuzzle(nextSize), '홈으로', goHub);
+      
+      // 💡 퍼즐 완성 후 TTS 읽고 버튼 깜빡임
+      speak(`우와! ${pzTime}초 만에 완성했어요! 정말 대단해요!`, 1.1, 0.85, () => {
+         document.getElementById('md-btn1').classList.add('blink-btn');
+      });
+    }, 800);
   }
 }
 
 /* ═══════════════════════
-   3. 도감 로직 (5칸 배열 적용)
+   3. 도감 로직 
 ═══════════════════════ */
 function showCollection(){
   const grid=document.getElementById('dic-grid'); grid.innerHTML='';
