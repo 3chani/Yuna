@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no,viewport-fit=cover">
+<title>동물 놀이동산 🎪</title>
+<link href="https://fonts.googleapis.com/css2?family=Gugi&family=Nanum+Gothic:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#07111f; --card:#0c1d34; --bdr:#193050;
+  --gold:#FFD43B; --teal:#2dd4c8; --coral:#ff6454;
+  --purple:#b584fa; --green:#3de888; --sky:#7dd3fc;
+  --text:#eef6ff; --muted:#486585; --r:18px;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Gugi',sans-serif;user-select:none;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 90% 55% at 50% -5%,rgba(45,212,200,.09),transparent),
+             radial-gradient(ellipse 60% 50% at 90% 110%,rgba(181,132,250,.08),transparent)}
+
+/* ── UI 공통 ── */
+.screen{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;
+        transition:opacity .25s,transform .25s;padding-top:var(--sat);padding-bottom:var(--sab);overflow-y:auto;}
+.screen.hidden{opacity:0;pointer-events:none;transform:scale(.94)}
+.top-bar{width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px 16px;flex-shrink:0;}
+.back-btn{background:var(--card);border:1px solid var(--bdr);border-radius:12px;padding:8px 14px;color:var(--muted);font-family:'Gugi',sans-serif;font-size:16px;cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.2);}
+.back-btn:active{transform:scale(0.92);}
+.title-text{font-size:22px;color:var(--gold);}
+
+/* ═══════════════════════
+   HUB
+═══════════════════════ */
+#hub{justify-content:center;padding:20px;gap:20px;}
+.hub-title{font-size:42px;color:var(--gold);text-shadow:0 0 20px rgba(255,212,59,.4);text-align:center;margin-bottom:10px;}
+.hub-grid{display:grid;grid-template-columns:1fr;gap:16px;width:100%;max-width:340px;}
+.hub-btn{background:var(--card);border:2px solid var(--bdr);border-radius:24px;padding:24px 20px;
+         display:flex;align-items:center;gap:16px;cursor:pointer;transition:transform .15s;box-shadow:0 8px 20px rgba(0,0,0,.3);}
+.hub-btn:active{transform:scale(0.92);}
+.hub-btn.quiz{border-color:var(--teal);background:linear-gradient(135deg,#0c1d34,rgba(45,212,200,.1));}
+.hub-btn.puzzle{border-color:var(--purple);background:linear-gradient(135deg,#0c1d34,rgba(181,132,250,.1));}
+.hub-btn.dic{border-color:var(--gold);background:linear-gradient(135deg,#0c1d34,rgba(255,212,59,.1));}
+.hub-icon{font-size:48px;}
+.hub-info{display:flex;flex-direction:column;align-items:flex-start;}
+.hub-name{font-size:24px;color:var(--text);margin-bottom:4px;}
+.hub-desc{font-size:14px;color:var(--muted);font-family:'Nanum Gothic',sans-serif;font-weight:700;}
+.fs-btn{margin-top:20px;background:none;border:1px solid var(--muted);color:var(--muted);padding:8px 16px;border-radius:12px;font-family:'Gugi';cursor:pointer;}
+
+/* ═══════════════════════
+   도감 (COLLECTION) - 5열
+═══════════════════════ */
+#collection{justify-content:flex-start;}
+.dic-stats{font-size:18px;color:var(--teal);margin-bottom:16px;}
+.dic-grid{
+  display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; 
+  width:100%; max-width:600px; padding:0 16px 40px;
+}
+.dic-item{
+  background:var(--card); border:1px solid var(--bdr); border-radius:12px; 
+  padding:8px 2px; display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+.dic-item.locked .dic-e{filter:brightness(0) opacity(0.2) !important;}
+.dic-item.locked .dic-n{color:var(--muted);}
+.dic-e{font-size:32px; transition:transform .2s;}
+.dic-n{font-size:11px; color:var(--text); text-align:center; word-break:keep-all; line-height:1.2;}
+.dic-item.unlocked:active .dic-e{transform:scale(1.2);}
+.reset-btn{background:rgba(255,100,84,.1);border:1px solid var(--coral);color:var(--coral);padding:10px 20px;border-radius:16px;font-family:'Gugi';margin-bottom:30px;cursor:pointer;}
+
+/* ═══════════════════════
+   스무고개
+═══════════════════════ */
+#quiz{justify-content:flex-start;padding-bottom:16px;}
+.lives-wrap{display:flex;align-items:center;gap:3px}
+.heart{font-size:20px;transition:transform .2s;display:inline-block}
+.heart.lost{filter:grayscale(1);opacity:.3}
+.heart.pop{animation:heart-pop .4s ease}
+@keyframes heart-pop{0%{transform:scale(1)}30%{transform:scale(1.5)}60%{transform:scale(.8)}100%{transform:scale(1)}}
+.sil-wrap{flex:1 1 0;min-height:0;width:100%;display:flex;align-items:center;justify-content:center;position:relative;margin:10px 0;}
+.sil{font-size:clamp(88px,35vmin,160px);line-height:1;display:inline-block;transition:filter 1.2s ease,transform 1.2s ease;cursor:pointer;}
+.sil:active{transform:scale(0.9) !important;} 
+.sil.show{filter:var(--hr)!important;transform:scale(1.18)!important;animation:bigpop .65s cubic-bezier(.2,1.6,.35,1)}
+@keyframes bigpop{0%{transform:scale(.6) rotate(-10deg)}55%{transform:scale(1.3) rotate(5deg)}78%{transform:scale(1.14) rotate(-2deg)}100%{transform:scale(1.18)}}
+.hint-box{flex:0 0 auto;width:calc(100% - 32px);background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);position:relative;padding:16px 22px;min-height:70px;display:flex;align-items:center;justify-content:center;text-align:center;margin-bottom:12px;}
+.hl-tag{position:absolute;top:-13px;left:18px;background:var(--gold);color:#1a0800;font-size:12px;font-weight:800;padding:3px 14px;border-radius:20px;font-family:'Nanum Gothic',sans-serif}
+.ht{font-family:'Nanum Gothic',sans-serif;font-size:17px;line-height:1.5;color:var(--text);font-weight:800;word-break:keep-all}
+.act{flex:0 0 auto;width:calc(100% - 32px);display:flex;flex-direction:column;gap:8px}
+.abtn{width:100%;padding:15px;border-radius:var(--r);border:none;font-family:'Gugi',sans-serif;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:transform .12s}
+.abtn:active{transform:scale(.92)}
+.abtn.pri{background:linear-gradient(135deg,var(--gold),#ffb01e);color:#1a0800;}
+.abtn.sec{background:var(--card);border:1px solid var(--bdr);color:var(--text);font-size:15px;padding:12px}
+.abtn.gue{background:rgba(181,132,250,.16);border:1.5px solid var(--purple);color:var(--purple);font-size:16px;padding:13px}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.cbtn{background:var(--card);border:2px solid var(--bdr);border-radius:var(--r);padding:10px 6px;cursor:pointer;font-family:'Gugi',sans-serif;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.cbtn:active{transform:scale(.88)}
+.ce{font-size:36px;}.cn{font-size:13px;color:var(--text);text-align:center;}
+.cbtn.ok{border-color:var(--green)!important;background:rgba(61,232,136,.18)!important;}
+.cbtn.ng{background:rgba(255,100,84,.25);border-color:var(--coral);opacity:0.4;pointer-events:none;}
+
+/* ═══════════════════════
+   조각 퍼즐 (JIGSAW)
+═══════════════════════ */
+#puzzle{justify-content:flex-start;}
+.pz-diff-btns{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:16px;max-width:320px;}
+.diff-btn{background:var(--card);border:1px solid var(--muted);color:var(--muted);padding:8px 12px;border-radius:12px;font-family:'Gugi';cursor:pointer;font-size:14px;}
+.diff-btn.active{background:rgba(255,212,59,.15);border-color:var(--gold);color:var(--gold);}
+
+.pz-top-area { display:flex; justify-content:space-between; align-items:flex-end; width:100%; max-width:320px; margin-bottom:16px; }
+.pz-time { font-size:22px; color:var(--sky); margin-bottom:4px;}
+.pz-thumb-wrap { width:60px; height:60px; background:var(--card); border:2px solid var(--bdr); border-radius:12px; padding:2px; box-shadow:0 4px 10px rgba(0,0,0,0.3); }
+.pz-thumb-inner { width:100%; height:100%; display:flex; align-items:center; justify-content:center; font-size:38px; line-height:1; border-radius:8px;
+  background: radial-gradient(circle at 0% 0%, #FFD43B 0%, transparent 60%), radial-gradient(circle at 100% 100%, #3de888 0%, transparent 60%), radial-gradient(circle at 100% 0%, #ff6454 0%, transparent 60%), radial-gradient(circle at 0% 100%, #7dd3fc 0%, transparent 60%), #b584fa;
+}
+
+.pz-grid-wrap{
+  width:320px; height:320px; background:var(--bdr); border:4px solid var(--card); 
+  border-radius:16px; position:relative; box-shadow:0 8px 24px rgba(0,0,0,0.3);
+}
+.pz-grid{
+  display:grid; width:100%; height:100%; gap:0; box-sizing:border-box; background:var(--bg);
+}
+.pz-piece{
+  position:relative; overflow:hidden; cursor:pointer;
+  transition:transform 0.15s, box-shadow 0.3s; box-sizing:border-box;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,0.25);
+}
+.pz-piece.sel{ outline:3px solid var(--coral); transform:scale(0.9); z-index:10; }
+.pz-piece.ok{ box-shadow:none; pointer-events:none; } /* 심리스(Seamless) 효과 */
+.pz-inner{
+  position:absolute; width:320px; height:320px; display:flex; align-items:center; 
+  justify-content:center; font-size:240px; line-height:1; pointer-events:none;
+  background: radial-gradient(circle at 0% 0%, #FFD43B 0%, transparent 60%), radial-gradient(circle at 100% 100%, #3de888 0%, transparent 60%), radial-gradient(circle at 100% 0%, #ff6454 0%, transparent 60%), radial-gradient(circle at 0% 100%, #7dd3fc 0%, transparent 60%), #b584fa;
+}
+
+/* 공통 모달 */
+.overlay{position:fixed;inset:0;z-index:20;background:rgba(4,9,22,.85);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:22px;backdrop-filter:blur(6px);}
+.overlay.hidden{display:none!important}
+.mbox{background:linear-gradient(155deg,#0c1d36,#0b1c32);border:1.5px solid var(--bdr);border-radius:28px;padding:28px 22px;max-width:320px;width:100%;text-align:center;}
+.micon{font-size:64px;margin-bottom:10px;}
+.mtitle{font-size:26px;color:var(--gold);margin-bottom:6px;}
+.msub{font-family:'Nanum Gothic',sans-serif;font-weight:800;font-size:15px;color:var(--muted);margin-bottom:20px;line-height:1.5;word-break:keep-all;}
+.mbtn{width:100%;padding:16px;border-radius:20px;border:none;font-family:'Gugi',sans-serif;font-size:18px;cursor:pointer;margin-bottom:8px;background:linear-gradient(135deg,var(--gold),#ff9a2c);color:#1a0800;}
+.mbtn:active{transform:scale(.92)}
+.mbtn.sec{background:var(--card);border:1px solid var(--bdr);color:var(--text);}
+.dance {animation: happyDance 1.2s ease-in-out infinite;}
+@keyframes happyDance {0%, 100% { transform: translateY(0) scale(1) rotate(0deg); } 25% { transform: translateY(-15px) scale(1.1) rotate(-8deg); } 75% { transform: translateY(-15px) scale(1.1) rotate(8deg); }}
+</style>
+</head>
+<body>
+
+<div class="screen" id="hub">
+  <div class="hub-title">동물 놀이동산</div>
+  <div class="hub-grid">
+    <div class="hub-btn quiz" onclick="startQuiz()">
+      <div class="hub-icon">🕵️</div>
+      <div class="hub-info"><div class="hub-name">스무고개</div><div class="hub-desc">누구일까? 맞춰봐요!</div></div>
+    </div>
+    <div class="hub-btn puzzle" onclick="startPiecePuzzle()">
+      <div class="hub-icon">🧩</div>
+      <div class="hub-info"><div class="hub-name">그림 조각 맞추기</div><div class="hub-desc">퍼즐을 완성해봐요!</div></div>
+    </div>
+    <div class="hub-btn dic" onclick="showCollection()">
+      <div class="hub-icon">📖</div>
+      <div class="hub-info"><div class="hub-name">동물 도감</div><div class="hub-desc">내가 모은 친구들!</div></div>
+    </div>
+  </div>
+  <button class="fs-btn" onclick="toggleFullScreen()">📱 꽉 찬 화면으로 하기</button>
+</div>
+
+<div class="screen hidden" id="quiz">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goHub()">← 뒤로</button>
+    <div class="title-text" id="q-streak" style="font-size:16px;">🔥 0연속 정답!</div>
+    <div class="lives-wrap" id="lives-wrap"></div>
+  </div>
+  <div class="sil-wrap" onclick="pokeSilhouette()"><span class="sil" id="sil">❓</span></div>
+  <div class="hint-box"><div class="hl-tag">힌트</div><div class="ht empty" id="ht">버튼을 눌러봐요! 🔊</div></div>
+  <div class="act" id="act"></div>
+</div>
+
+<div class="screen hidden" id="puzzle">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goHub()">← 포기</button>
+    <div class="title-text">그림 조각 맞추기</div>
+  </div>
+  <div class="pz-diff-btns">
+    <button class="diff-btn" id="db3" onclick="startPiecePuzzle(3)">9조각</button>
+    <button class="diff-btn" id="db4" onclick="startPiecePuzzle(4)">16조각</button>
+    <button class="diff-btn" id="db5" onclick="startPiecePuzzle(5)">25조각</button>
+    <button class="diff-btn" id="db6" onclick="startPiecePuzzle(6)">36조각</button>
+    <button class="diff-btn" id="db7" onclick="startPiecePuzzle(7)">49조각</button>
+    <button class="diff-btn" id="db8" onclick="startPiecePuzzle(8)">64조각</button>
+  </div>
+  <div class="pz-top-area">
+    <div class="pz-time">⏱️ <span id="pz-timer">00:00</span></div>
+    <div class="pz-thumb-wrap">
+      <div class="pz-thumb-inner" id="pz-thumb">❓</div>
+    </div>
+  </div>
+  <div class="pz-grid-wrap">
+    <div class="pz-grid" id="pz-grid"></div>
+  </div>
+</div>
+
+<div class="screen hidden" id="collection">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goHub()">← 뒤로</button>
+    <div class="title-text">나의 동물 도감</div>
+  </div>
+  <div class="dic-stats">모은 친구들: <span id="dic-count">0</span> / <span id="dic-total">0</span></div>
+  <div class="dic-grid" id="dic-grid"></div>
+  <button class="reset-btn" onclick="resetCollection()">🗑️ 도감 처음부터 다시하기</button>
+</div>
+
+<div class="overlay hidden" id="modal">
+  <div class="mbox">
+    <div class="micon" id="md-icon">🎉</div>
+    <div class="mtitle" id="md-title">성공!</div>
+    <div class="msub" id="md-sub">잘했어요!</div>
+    <button class="mbtn" id="md-btn1" onclick="goHub()">확인</button>
+    <button class="mbtn sec" id="md-btn2" style="display:none;" onclick="">취소</button>
+  </div>
+</div>
+
+<script>
+const DB=[
+  /* ── 포유류 (반려동물 & 농장) ── */
+  {n:'강아지',e:'🐕',f:'코는 사람보다 10000배나 냄새를 잘 맡아요!', h:['네 발로 걸어다녀요.','복슬복슬한 털이 있어요.','멍멍 하고 짖어요.']},
+  {n:'푸들',e:'🐩',f:'털이 잘 빠지지 않고 머리가 아주 똑똑한 강아지예요!', h:['털이 뽀글뽀글하게 곱슬거려요.','프랑스에서 온 영리한 강아지예요.','강아지 중에서 아주 똑똑해요.']},
+  {n:'고양이',e:'🐈',f:'하루에 16시간씩 자기도 해요!', h:['살금살금 조용히 걸어요.','수염이 있고 귀가 뾰족해요.','야옹 하고 소리를 내요.']},
+  {n:'검은고양이',e:'🐈‍⬛',f:'어둠 속에서도 빛을 모아 앞을 아주 잘 볼 수 있어요!', h:['온몸이 새까만 털로 덮여 있어요.','할로윈이나 마녀와 잘 어울려요.','밤에 눈만 반짝여요.']},
+  {n:'토끼',e:'🐰',f:'귀가 360도 돌아가서 소리를 잘 들어요!', h:['깡충깡충 뛰어요.','귀가 길쭉하게 쫑긋 서 있어요.','당근을 먹어요.']},
+  {n:'생쥐',e:'🐁',f:'아주 작은 구멍도 몸을 쏙 줄여서 통과할 수 있어요!', h:['몸집이 아주 작아요.','꼬리가 길고 털이 없어요.','찍찍 소리를 내요.']},
+  {n:'소',e:'🐄',f:'색맹이어서 빨간색을 볼 수 없어요!', h:['네 발을 가진 큰 동물이에요.','풀밭에서 풀을 뜯어 먹어요.','음메 하고 울어요.']},
+  {n:'물소',e:'🐃',f:'물속에 들어가는 것을 아주 좋아해서 물소라고 불려요!', h:['소와 비슷하지만 뿔이 뒤로 구부러져 있어요.','몸이 아주 튼튼하고 까만색이에요.','더우면 진흙 목욕을 해요.']},
+  {n:'돼지',e:'🐖',f:'사실은 화장실과 잠자리를 구분하는 깨끗한 동물이에요!', h:['분홍빛 피부를 가졌어요.','코가 납작하고 동그래요.','꿀꿀 하고 소리를 내요.']},
+  {n:'말',e:'🐎',f:'눈을 감지 않고 서서도 잠을 자요!', h:['다리가 네 개인 큰 동물이에요.','달리기를 아주 잘해요.','히힝 하고 소리를 내요.']},
+  {n:'양',e:'🐑',f:'눈을 움직이지 않고 360도 주변을 볼 수 있어요!', h:['온몸이 하얀 보들보들한 털로 덮였어요.','메에 하고 소리를 내요.','풀밭에서 풀을 먹어요.']},
+  {n:'숫양',e:'🐏',f:'머리에 아주 크고 단단한 뿔이 돌돌 말려 있어요!', h:['양의 친구인데 멋진 뿔이 있어요.','뿔로 들이받기를 잘해요.','높은 산 위에서 살기도 해요.']},
+  {n:'염소',e:'🐐',f:'눈동자가 직사각형이어서 세상을 넓게 봐요!', h:['네 발을 가진 동물이에요.','턱에 수염이 있어요.','산비탈도 잘 올라다녀요.']},
+  {n:'알파카',e:'🦙',f:'화가 나면 고약한 냄새가 나는 침을 뱉어요!', h:['몸이 복슬복슬한 털로 덮여 있어요.','목이 길고 얼굴이 귀여워요.','낙타와 친척이에요.']},
+  {n:'낙타',e:'🐪',f:'등의 혹에는 물이 아니라 지방이 들어있어요!', h:['뜨거운 사막에서 살아요.','등에 볼록한 혹이 하나 있어요.','속눈썹이 아주 길어요.']},
+  {n:'쌍봉낙타',e:'🐫',f:'등에 커다란 혹이 두 개나 있어서 더 오래 안 먹고도 버텨요!', h:['사막에서 무거운 짐을 날라줘요.','등에 볼록한 혹이 두 개 있어요.','낙타의 친구예요.']},
+  
+  /* ── 야생 동물 & 맹수 ── */
+  {n:'사자',e:'🦁',hR:0, f:'동물의 왕! 무리 지어 살며 팀워크로 사냥해요.', h:['수컷은 얼굴 주변에 멋진 갈기가 있어요.','동물의 왕이라고 불려요.','으르렁 소리가 엄청 커요.']},
+  {n:'호랑이',e:'🐅',hR:0, f:'줄무늬는 사람의 지문처럼 세상에 하나뿐이에요!', h:['주황색 털에 검은 줄무늬가 뚜렷해요.','아시아 밀림에 사는 용맹한 동물이에요.','어흥! 하고 아주 크게 울어요.']},
+  {n:'표범',e:'🐆',hR:0, f:'자기 몸무게보다 무거운 먹이를 나무 위로 끌고 올라가요!', h:['나무 위에 올라가는 걸 좋아해요.','몸에 검은 꽃 모양 점무늬가 있어요.','달리기도 아주 빨라요.']},
+  {n:'늑대',e:'🐺',hR:0, f:'개들의 조상이며, 가족을 끔찍이 아끼는 의리파 동물이에요!', h:['강아지보다 크고 야생에서 살아요.','밤이 되면 달을 보며 아우우~ 울어요.','가족과 무리 지어 다녀요.']},
+  {n:'여우',e:'🦊',f:'귀가 커서 땅속에 있는 쥐 소리도 들을 수 있어요!', h:['주황빛 붉은 털을 가졌어요.','영리하기로 유명해요.','날쌔게 뛰어다녀요.']},
+  {n:'코끼리',e:'🐘',f:'코는 무거운 통나무도 번쩍 들 수 있을 만큼 힘이 세요!', h:['육지에서 가장 몸집이 큰 동물이에요.','코가 길어서 손처럼 써요.','귀가 부채처럼 아주 커요.']},
+  {n:'코뿔소',e:'🦏',f:'코 위에 아주 단단한 뿔이 있어요!', h:['몸이 아주 두꺼워요.','코에 큰 뿔이 있어요.','아프리카 초원에서 풀을 먹어요.']},
+  {n:'하마',e:'🦛',f:'겉보기와 달리 달리기와 수영을 아주 빨리 할 수 있어요!', h:['몸이 아주 크고 통통해요.','강이나 호수에 살아요.','입이 엄청 크게 벌어져요.']},
+  {n:'기린',e:'🦒',f:'목이 너무 길어서 심장에서 머리까지 피를 보내기 힘들어요!',h:['목이 아주 길어요.','몸에 갈색 무늬가 있어요.','높은 나뭇잎을 먹어요.']},
+  {n:'얼룩말',e:'🦓',f:'얼룩무늬는 파리를 쫓는 데 도움을 줘요!',h:['몸에 검은 줄무늬가 있어요.','말처럼 생겼어요.','초원을 무리 지어 달려요.']},
+  {n:'사슴',e:'🦌',f:'뿔은 1년에 한 번씩 빠지고 새로 자라요!', h:['수컷에게 나뭇가지 같은 뿔이 있어요.','눈이 크고 예뻐요.','깡충깡충 뛰는 날쌘 동물이에요.']},
+  {n:'멧돼지',e:'🐗',f:'강한 코로 땅을 팍팍 파서 숨은 먹이를 찾아요!', h:['돼지를 닮은 야생 동물이에요.','털이 거칠고 뻣뻣해요.','어금니가 뾰족하게 튀어나와 있어요.']},
+  
+  /* ── 숲속 동물 & 소형 포유류 ── */
+  {n:'곰',e:'🐻',f:'겨울잠을 자는 동안 아무것도 먹지 않아도 살 수 있어요!', h:['덩치 큰 동물이에요.','꿀과 연어를 좋아해요.','두 발로 일어서기도 해요.']},
+  {n:'북극곰',e:'🐻‍❄️',f:'북극의 사냥꾼! 털은 투명하고, 피부는 까만색이에요!', h:['하얀 털을 가졌어요.','눈과 얼음 위에서 살아요.','수영을 아주 잘해요.']},
+  {n:'대왕판다',e:'🐼',f:'하루의 절반을 대나무 먹는 데 사용해요!', h:['흰색과 검은색 털이 반반 섞여 있어요.','눈 주위가 까매서 안경을 쓴 것 같아요.','대나무를 아주 좋아해요.']},
+  {n:'다람쥐',e:'🐿️',f:'겨울을 위해 도토리를 땅에 숨겨요!',h:['꼬리가 빗자루처럼 풍성해요.','나무를 아주 잘 타요.','도토리를 두 손으로 잡고 먹어요.']},
+  {n:'오소리',e:'🦡',f:'땅속에 여러 방이 있는 커다란 굴 집을 만들어요!',h:['몸이 통통해요.','얼굴에 검은색과 흰색 줄무늬가 있어요.','땅을 아주 잘 파요.']},
+  {n:'고슴도치',e:'🦔',f:'위험하면 몸을 동그랗게 밤송이처럼 말아요!',h:['등에 뾰족한 가시가 가득해요.','작고 귀여워요.','위험하면 공처럼 굴러요.']},
+  {n:'스컹크',e:'🦨',f:'무서운 적이 오면 꽁무니에서 지독한 방귀 가스를 뿜어요!', h:['검은 털에 하얀색 줄무늬가 있어요.','위험해지면 냄새 폭탄을 쏴요.','꼬리가 북슬북슬해요.']},
+  {n:'박쥐',e:'🦇',f:'눈이 안 보이지만 소리(초음파)로 장애물을 피해요!', h:['밤에만 활동해요.','동굴에서 거꾸로 매달려 자요.','날개가 있는 유일한 포유류예요.']},
+  {n:'나무늘보',e:'🦥',f:'너무 느려서 털에 초록색 이끼가 자라기도 해요!', h:['세상에서 가장 느린 동물이에요.','나무에 거꾸로 매달려 살아요.','발톱이 갈고리처럼 아주 길어요.']},
+  {n:'비버',e:'🦫',hR:0, f:'튼튼한 앞니로 나무를 쓰러뜨려 물 위에 댐을 만들어요!', h:['꼬리가 넓적한 노처럼 생겼어요.','수영을 아주 잘하는 건축가예요.','나뭇가지로 강에 집을 지어요.']},
+  {n:'해달',e:'🦦',f:'배 위에 돌을 올려놓고 조개껍데기를 쾅쾅 깨서 먹어요!',h:['물 위에 누워서 둥둥 떠요.','털이 아주 빽빽해서 젖지 않아요.','잘 때 물에 떠내려가지 않게 친구와 손을 잡고 자요.']},
+  
+  /* ── 영장류 & 호주 동물 ── */
+  {n:'원숭이',e:'🐒',f:'친구들끼리 서로 털을 골라주며 친하게 지내요!', h:['나무 위를 아주 잘 타요.','바나나를 좋아해요.','장난치는 걸 좋아해요.']},
+  {n:'고릴라',e:'🦍',f:'화가 나거나 힘자랑을 할 때 주먹으로 가슴을 쾅쾅 두드려요!',h:['영장류 중에 덩치가 제일 커요.','팔이 아주 길고 튼튼해요.','가족을 지키는 멋진 아빠예요.']},
+  {n:'오랑우탄',e:'🦧',f:'숲에서 나뭇가지와 잎으로 비를 피하는 우산을 만들어요!',h:['주황빛 갈색 털이 있어요.','팔이 엄청 길어요.','나무 위에서 생활해요.']},
+  {n:'캥거루',e:'🦘',f:'아기는 태어날 때 젤리빈만큼 작아서 주머니에서 커요!', h:['뒷다리가 아주 강해서 높이 뛰어요.','배에 새끼를 넣는 주머니가 있어요.','호주에 살아요.']},
+  {n:'코알라',e:'🐨',f:'하루에 22시간이나 잠을 자는 세상에서 최고 잠꾸러기예요!', h:['나무 위에서 떨어지지 않고 자요.','귀가 복슬복슬하고 둥글어요.','유칼립투스 잎만 먹어요.']},
+
+  /* ── 조류 (새) ── */
+  {n:'참새',e:'🐦',f:'도시에서도 아주 잘 사는 새예요!',h:['크기가 아주 작아요.','짹짹 하고 귀여운 소리를 내요.','쌀이나 씨앗을 좋아해요.']},
+  {n:'닭',e:'🐔',f:'매일 아침 꼬끼오 하고 울어요!', h:['날개가 있지만 잘 날지 못해요.','머리에 빨간 볏이 있어요.','우리에게 맛있는 달걀을 줘요.']},
+  {n:'병아리',e:'🐤',f:'알을 깨고 나온 지 얼마 안 된 아기 새예요!', h:['삐약삐약 하고 울어요.','노랗고 보송보송한 털이 있어요.','커서 닭이 되어요.']},
+  {n:'비둘기',e:'🕊️',f:'길을 아주 잘 찾아서 옛날에는 편지를 배달하는 우체부였어요!', h:['공원이나 길에서 많이 볼 수 있어요.','구구구 하고 소리를 내요.','평화를 상징하는 새예요.']},
+  {n:'까마귀',e:'🐦‍⬛',f:'호두를 까먹기 위해 자동차가 지나가길 기다릴 정도로 똑똑해요!',h:['온몸이 새까만 색이에요.','까악까악 하고 울어요.','새 중에서 머리가 제일 좋아요.']},
+  {n:'독수리',e:'🦅',f:'3킬로미터 높이 하늘에서도 땅에 있는 토끼를 볼 수 있어요!', h:['날개를 가진 하늘의 왕이에요.','부리와 발톱이 무척 날카로워요.','시력이 엄청나게 좋아요.']},
+  {n:'부엉이',e:'🦉',f:'목을 등 뒤까지 270도나 휙 돌릴 수 있어요!', h:['주로 밤에 활동하는 새예요.','눈이 아주 크고 동그래요.','부엉부엉 소리를 내요.']},
+  {n:'백조',e:'🦢',f:'태어날 때는 잿빛이지만 크면서 눈처럼 하얗게 변해요!', h:['목이 숫자 S 모양으로 길어요.','물 위를 우아하게 헤엄쳐요.','아름다운 순백의 깃털을 가졌어요.']},
+  {n:'오리',e:'🦆',f:'깃털은 물에 전혀 젖지 않아요!', h:['물 위에 떠서 헤엄쳐요.','부리가 넓고 납작해요.','꽥꽥 소리를 내요.']},
+  {n:'플라밍고',e:'🦩',f:'물속의 새우를 많이 먹어서 몸 색깔이 예쁜 분홍색이 됐어요!', h:['다리와 목이 아주 길어요.','한 발로 서서 자는 걸 좋아해요.','몸이 화려한 분홍색이에요.']},
+  {n:'공작',e:'🦚',f:'꼬리를 부채처럼 펼치면 180개가 넘는 눈 모양 무늬가 빛나요!', h:['몸이 파란빛과 초록빛으로 반짝여요.','화려한 꼬리 깃털을 쫙 펼쳐요.','가장 아름다운 새 중 하나예요.']},
+  {n:'앵무새',e:'🦜',f:'사람의 말을 듣고 똑같이 따라 할 수 있는 능력이 있어요!', h:['깃털이 빨강, 노랑, 초록색으로 화려해요.','사람 말을 흉내 내요.','구부러진 부리로 씨앗을 까먹어요.']},
+  {n:'타조',e:'🦤',f:'사실 이 이모지는 타조가 아니라 옛날에 살던 도도새예요!', h:['날개가 아주 작아서 날지 못해요.','옛날 옛적 섬에 살았던 전설의 새예요.','타조처럼 다리가 통통해요.']},
+  {n:'펭귄',e:'🐧',f:'시속 25킬로미터로 수영할 수 있어요!', h:['새이지만 날지 못해요.','배는 하얗고 등은 검어요.','뒤뚱뒤뚱 귀엽게 걸어다녀요.']},
+
+  /* ── 파충류 & 양서류 ── */
+  {n:'개구리',e:'🐸',f:'혀를 번개처럼 내밀어 벌레를 잡아요!',h:['깡충깡충 점프해요.','연못 근처에 살아요.','개굴개굴 울어요.']},
+  {n:'악어',e:'🐊',f:'턱 힘이 아주 강해서 한 번 물면 절대 놓지 않아요!',h:['큰 입과 날카로운 이빨이 있어요.','물속과 땅을 모두 다녀요.','강가에 사는 무서운 사냥꾼이에요.']},
+  {n:'거북이',e:'🐢',f:'어떤 거북이는 100년 넘게 살기도 해요!',h:['단단한 등껍질이 있어요.','아주 천천히 걸어요.','위험하면 몸을 껍질 안에 숨겨요.']},
+  {n:'도마뱀',e:'🦎',f:'꼬리가 잘려도 다시 자라는 신기한 능력이 있어요!',h:['몸이 길쭉해요.','네 발로 빠르게 달려요.','돌 위에서 햇볕을 쬐어요.']},
+  {n:'뱀',e:'🐍',f:'눈을 깜빡이지 않고 항상 뜨고 있어요!',h:['다리가 없어요.','몸을 구불구불 움직여요.','혀를 날름거리며 냄새를 맡아요.']},
+
+  /* ── 해양 동물 (바다) ── */
+  {n:'고래',e:'🐋',f:'노래를 부를 수 있어요! 수백 킬로미터까지 들려요.', h:['바다에서 사는 아주 큰 동물이에요.','머리 위 구멍으로 물을 뿜어요.','지구에서 가장 큰 동물이에요.']},
+  {n:'범고래',e:'🐳',hR:0, f:'바다 생태계에서 가장 강하고 똑똑한 사냥꾼이에요!', h:['바다 위로 물을 뿜어내요.','아주 똑똑해서 작전을 짜서 사냥해요.','이빨이 있는 무서운 고래예요.']},
+  {n:'돌고래',e:'🐬',f:'각자 자기만의 이름(휘파람 소리)을 가지고 대화해요!', h:['바다에 사는 아주 똑똑한 친구예요.','초음파를 쏴서 물속을 탐색해요.','물 위로 점프하며 노는 걸 좋아해요.']},
+  {n:'바다표범',e:'🦭',f:'얼음 위에서 쉬고 바다에서 물고기를 잡아요!',h:['몸이 둥글둥글하고 귀여워요.','수영을 아주 잘해요.','지느러미 같은 발이 있어요.']},
+  {n:'물고기',e:'🐟',f:'물속에서 아가미로 숨을 쉬며 살아요!', h:['지느러미를 흔들며 헤엄쳐요.','온몸이 비늘로 덮여 있어요.','강이나 바다에 살아요.']},
+  {n:'열대어',e:'🐠',f:'따뜻한 바다 산호초 사이에서 사는 화려한 물고기예요!', h:['노랗고 파란 아주 화려한 색깔이에요.','니모를 찾아서에 나오는 물고기예요.','바다의 요정처럼 예뻐요.']},
+  {n:'복어',e:'🐡',f:'적이 나타나면 물을 잔뜩 마셔서 풍선처럼 몸을 부풀려요!', h:['동글동글하고 귀엽게 생겼어요.','놀라면 공처럼 부풀어 올라요.','몸속에 아주 무서운 독이 있어요.']},
+  {n:'상어',e:'🦈',f:'이빨이 부러져도 평생 새로운 이빨이 계속 자라나요!',h:['등에 세모난 지느러미가 있어요.','바다의 무서운 사냥꾼이에요.','이빨이 아주 날카로워요.']},
+  {n:'문어',e:'🐙',f:'다리마다 뇌가 조금씩 있어서 다리가 스스로 생각할 수 있어요!', h:['다리가 8개 달려있어요.','위험하면 새까만 먹물을 뿜어요.','주변 돌멩이와 똑같은 색으로 변신해요.']},
+  {n:'오징어',e:'🦑',f:'물총처럼 물을 뿜어내며 제트기처럼 엄청 빠르게 헤엄쳐요!', h:['다리가 10개 달려있어요.','머리가 세모 모양이에요.','문어처럼 먹물을 쏠 수 있어요.']},
+  {n:'게',e:'🦀',f:'관절이 옆으로 꺾여 있어서 신기하게도 옆으로만 걸어 다녀요!', h:['단단한 등껍질을 입고 있어요.','커다란 집게발을 두 개 번쩍 들어요.','바다나 갯벌에서 살아요.']},
+  {n:'바닷가재',e:'🦞',f:'아주 단단하고 커다란 집게발로 사냥을 해요!', h:['빨갛고 단단한 껍질이 있어요.','위험하면 꼬리를 이용해 뒤로 엄청 빨리 헤엄쳐요.','랍스터라고 불려요.']},
+  {n:'새우',e:'🦐',f:'긴 수염을 가지고 있고 몸을 둥글게 말아서 톡톡 튀어 올라요!', h:['바닷속에서 헤엄치는 작은 갑각류예요.','익히면 빨갛게 변해요.','수염이 아주 길어요.']},
+  {n:'해파리',e:'🪼',f:'뇌도, 뼈도, 심장도 없이 물에 떠다니는 젤리 같은 생물이에요!', h:['몸이 투명한 우산처럼 생겼어요.','물 흐름을 타고 둥둥 떠다녀요.','촉수에 닿으면 따끔하고 독이 있어요.']},
+
+  /* ── 곤충 & 벌레 ── */
+  {n:'나비',e:'🦋',f:'애벌레 ➔ 번데기 ➔ 나비로 마법처럼 변신해요!', h:['곤충이에요.','화려하고 예쁜 날개를 가졌어요.','꽃에 앉아 긴 입으로 꿀을 마셔요.']},
+  {n:'애벌레',e:'🐛',f:'나비나 나방이 되기 전, 나뭇잎을 아주 많이 먹으며 자라는 아기예요!', h:['나뭇잎을 아삭아삭 갉아 먹어요.','꼬물꼬물 기어 다녀요.','커서 날개가 생겨요.']},
+  {n:'꿀벌',e:'🐝',f:'8자 춤을 춰서 친구들에게 꿀이 있는 방향을 알려줘요!', h:['노란색과 검은색 줄무늬가 있어요.','꽃에서 꿀을 모아요.','여왕벌과 수만 마리가 벌집에 살아요.']},
+  {n:'무당벌레',e:'🐞',f:'식물을 아프게 하는 진딧물을 하루에 100마리나 잡아먹어요!', h:['빨간색 등딱지에 검은색 점이 있어요.','반구처럼 동글동글하게 생겼어요.','날개를 펴고 귀엽게 날아다녀요.']},
+  {n:'개미',e:'🐜',f:'자기보다 50배나 무거운 나뭇잎도 번쩍 들 수 있는 장사예요!', h:['아주 작은 곤충이에요.','땅속에 복잡한 방과 길을 만들어요.','여왕을 모시고 아주 많이 모여 살아요.']},
+  {n:'딱정벌레',e:'🪲',f:'단단한 등껍질을 가진 곤충들을 모두 모아서 부르는 이름이에요!', h:['단단한 갑옷을 입고 있어요.','풍뎅이나 사슴벌레도 다 이 친구들이에요.','멋진 뿔이나 턱이 있기도 해요.']},
+  {n:'거미',e:'🕷️',f:'꽁무니에서 실을 뽑아 튼튼한 거미줄 집을 지어요!', h:['다리가 8개 달려있어요.','곤충이 아니라 거미류예요.','거미줄에 걸린 벌레를 잡아먹어요.']},
+  {n:'전갈',e:'🦂',f:'꼬리 끝에 무서운 독침이 있어서 적을 찌를 수 있어요!', h:['집게발이 두 개 있어요.','꼬리가 위로 둥글게 말려 있어요.','뜨거운 사막에 주로 살아요.']},
+  {n:'지렁이',e:'🪱',f:'땅을 파먹고 응가를 하면서 흙을 비옥하고 좋게 만들어줘요!', h:['다리나 눈이 없고 길쭉해요.','몸을 구불구불 움직여요.','땅속에서 조용히 살아요.']},
+
+  /* ── 💡 공룡 (Dinos - 이모지 2종을 Hue Rotate로 20종 변환) ── */
+  {n:'티라노사우루스',e:'🦖',hR:0, f:'공룡 시대 최고의 포식자! 이빨이 바나나만큼 컸어요!', h:['가장 크고 무서운 육식 공룡이에요.','앞발은 아주 짧고 작아요.','티렉스라는 별명이 있어요.']},
+  {n:'트리케라톱스',e:'🦕',hR:120, f:'머리의 큰 뼈 방패와 세 개의 뿔로 티라노사우루스에 맞서 싸웠어요!', h:['얼굴에 뿔이 세 개 달려 있어요.','머리 뒤에 커다란 프릴(방패)이 있어요.','네 발로 걷는 아주 강한 초식 공룡이에요.']},
+  {n:'브라키오사우루스',e:'🦕',hR:60, f:'목을 길게 빼면 아파트 4층 높이의 나뭇잎도 먹을 수 있었어요!', h:['공룡 중에서 키가 아주 커요.','목이 기린처럼 엄청나게 길어요.','앞다리가 뒷다리보다 길어요.']},
+  {n:'스테고사우루스',e:'🦕',hR:200, f:'등에 있는 판으로 체온을 조절하고, 뇌 크기는 호두알만 했어요!', h:['등에 뾰족한 삼각형 판이 줄줄이 솟아 있어요.','꼬리 끝에 네 개의 무서운 가시가 있어요.','초식 공룡이지만 방어를 잘했어요.']},
+  {n:'안킬로사우루스',e:'🦕',hR:45, f:'꼬리에 달린 무거운 뼈 몽둥이 한 방이면 티라노의 다리뼈도 부러졌어요!', h:['온몸이 단단한 갑옷과 가시로 덮여 있어요.','꼬리 끝에 동그란 뼈 몽둥이가 있어요.','걸어 다니는 탱크라고 불려요.']},
+  {n:'벨로키랍토르',e:'🦖',hR:280, f:'영화와 달리 실제로는 칠면조 크기였고 온몸이 깃털로 덮여 있었어요!', h:['아주 날쌔고 영리한 사냥꾼이에요.','뒷발에 낫처럼 구부러진 큰 발톱이 있어요.','무리 지어 작전을 짜서 사냥했어요.']},
+  {n:'스피노사우루스',e:'🦖',hR:150, f:'물속을 헤엄치며 커다란 물고기를 잡아먹은 유일한 수륙양용 공룡이에요!', h:['등에 커다란 부채(돛) 모양의 뼈가 솟아 있어요.','티라노사우루스보다 덩치가 더 컸어요.','악어처럼 긴 주둥이를 가졌어요.']},
+  {n:'파라사우롤로푸스',e:'🦕',hR:300, f:'머리 뒤로 길게 뻗은 볏을 피리처럼 불어서 친구들과 대화했어요!', h:['머리 뒤로 둥글고 긴 관 모양의 볏이 있어요.','그 볏으로 뿌우웅~ 하고 큰 소리를 냈어요.','오리 부리처럼 생긴 입을 가진 초식 공룡이에요.']},
+  {n:'알로사우루스',e:'🦖',hR:90, f:'쥐라기 시대를 지배했던 가장 사나운 육식 공룡이에요!', h:['눈 위에 작은 뿔이 살짝 튀어나와 있어요.','티라노사우루스보다 앞발이 길고 발톱이 세 개예요.','아주 무서운 턱을 가졌어요.']},
+  {n:'갈리미무스',e:'🦕',hR:180, f:'시속 70킬로미터로 달릴 수 있어서 적이 나타나면 쏜살같이 도망쳤어요!', h:['타조처럼 생겨서 달리기가 엄청 빨라요.','부리처럼 생긴 입에 이빨이 없어요.','공룡 시대의 달리기 챔피언이에요.']},
+  {n:'디플로도쿠스',e:'🦕',hR:250, f:'긴 꼬리를 채찍처럼 휘두르면 엄청난 폭음이 나서 적을 쫓아냈어요!', h:['목도 길고 꼬리도 엄청나게 긴 초식 공룡이에요.','몸의 길이가 버스 두 대를 합친 것보다 길어요.','초식 공룡 무리 중에 몸이 가장 얇고 길어요.']},
+  {n:'카르노타우루스',e:'🦖',hR:320, f:'소의 뿔을 뜻하는 이름처럼 눈 위에 황소 같은 뿔이 있었어요!', h:['머리에 황소처럼 뿔이 두 개 달린 육식 공룡이에요.','앞발이 티라노사우루스보다도 더 짧아요.','달리기가 아주 빠른 편이에요.']},
+  {n:'파키케팔로사우루스',e:'🦕',hR:15, f:'머리뼈 두께가 무려 25cm! 단단한 머리로 박치기를 하며 힘자랑을 했어요!', h:['머리 꼭대기가 헬멧을 쓴 것처럼 볼록하고 두꺼워요.','박치기 대장 공룡이에요.','두 발로 걷는 초식 공룡이에요.']},
+  {n:'테리지노사우루스',e:'🦖',hR:220, f:'앞발톱이 무려 1미터! 육식 공룡처럼 보이지만 나뭇잎을 긁어먹은 초식 공룡이에요.', h:['가위손처럼 엄청나게 긴 앞발톱 3개가 있어요.','덩치는 아주 크고 배가 볼록 나와 있어요.','무서운 발톱으로 나뭇가지를 끌어당겨 먹었어요.']},
+  {n:'아르젠티노사우루스',e:'🦕',hR:110, f:'지구에 살았던 육상 동물 중 가장 크고 무거웠던 전설의 거인이에요!', h:['아르헨티나에서 화석이 발견된 초대형 공룡이에요.','코끼리 15마리를 합친 것보다 무거워요.','목을 길게 빼서 높은 나무의 잎을 먹었어요.']},
+  {n:'이구아노돈',e:'🦕',hR:135, f:'엄지손가락이 날카로운 뿔(가시)로 되어 있어서 무기로 사용했어요!', h:['이빨 모양이 이구아나와 아주 비슷해요.','엄지손가락에 뾰족한 뼈 가시가 있어요.','두 발이나 네 발로 모두 걸을 수 있었어요.']},
+  {n:'마이아사우라',e:'🦕',hR:310, f:'좋은 엄마 도마뱀이라는 뜻! 공룡 중 최초로 새끼를 정성껏 돌본 증거가 발견됐어요.', h:['알을 낳고 둥지를 예쁘게 꾸몄어요.','새끼가 클 때까지 먹이를 물어다 먹였어요.','아주 다정하고 따뜻한 엄마 공룡이에요.']}
+];
+
+/* ── 전역 상태 & 오디오 ── */
+let unlocked = JSON.parse(localStorage.getItem('animal_dic')||'[]');
+let ax=null;
+let streak=0;
+
+function initA(){ try{if(!ax) ax=new(window.AudioContext||window.webkitAudioContext)();}catch(e){} }
+function playDing(){ if(!ax)return; const o=ax.createOscillator(),g=ax.createGain(); o.connect(g);g.connect(ax.destination); o.type='sine';o.frequency.setValueAtTime(800,ax.currentTime); g.gain.setValueAtTime(0,ax.currentTime); g.gain.linearRampToValueAtTime(.2,ax.currentTime+.05); g.gain.linearRampToValueAtTime(0,ax.currentTime+.3); o.start();o.stop(ax.currentTime+.3); }
+function playFanfare(){ if(!ax)return; [[523,.15],[659,.15],[783,.15],[1046,.4]].forEach(([f,d],i)=>{ const t=ax.currentTime+i*.15; const o=ax.createOscillator(),g=ax.createGain(); o.connect(g);g.connect(ax.destination); o.type='triangle';o.frequency.value=f; g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.2,t+.05); g.gain.linearRampToValueAtTime(0,t+d); o.start(t);o.stop(t+d+.1); }); }
+function playPop(){ if(!ax)return; const o=ax.createOscillator(),g=ax.createGain(); o.connect(g);g.connect(ax.destination); o.type='sine';o.frequency.setValueAtTime(400,ax.currentTime); o.frequency.exponentialRampToValueAtTime(800,ax.currentTime+.1); g.gain.setValueAtTime(.2,ax.currentTime); g.gain.exponentialRampToValueAtTime(0.01,ax.currentTime+.1); o.start();o.stop(ax.currentTime+.1); }
+
+/* ── TTS ── */
+let vko=null;
+function loadV(){ const ko=(window.speechSynthesis?.getVoices()||[]).filter(v=>v.lang.startsWith('ko')); vko=ko.find(v=>v.name.includes('Google')||v.name.includes('SunHi')||/(여성|female|woman|girl|혜|수|지|은|미)/i.test(v.name))||ko[0]||null; }
+loadV(); if(window.speechSynthesis) window.speechSynthesis.onvoiceschanged=loadV;
+function speak(t, pitch=1.1, rate=0.85){
+  if(!window.speechSynthesis)return; window.speechSynthesis.cancel();
+  let adjustedText = t.replace(/나는 /g, '나는, ').replace(/있어요/g, '있어요.').replace(/거예요/g, '거예요.');
+  const u=new SpeechSynthesisUtterance(adjustedText); 
+  u.lang='ko-KR'; u.rate=rate; u.pitch=pitch; 
+  if(vko) u.voice=vko;
+  window.speechSynthesis.speak(u);
+}
+
+/* ── 네비게이션 ── */
+function show(id){ document.querySelectorAll('.screen').forEach(s=>s.classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); initA(); }
+function goHub(){ show('hub'); clearInterval(pzTimerInterval); }
+function toggleFullScreen() {
+  if (!document.fullscreenElement) { document.documentElement.requestFullscreen().catch(err=>{}); } 
+  else { if (document.exitFullscreen) { document.exitFullscreen(); } }
+}
+
+function openModal(icon, title, sub, btn1Txt, btn1Cb, btn2Txt=null, btn2Cb=null, hR=0){
+  const micon = document.getElementById('md-icon');
+  micon.textContent=icon;
+  micon.style.filter = `hue-rotate(${hR}deg)`; 
+  document.getElementById('md-title').textContent=title;
+  document.getElementById('md-sub').textContent=sub;
+  const b1=document.getElementById('md-btn1'); b1.textContent=btn1Txt; b1.onclick=()=>{closeModal(); if(btn1Cb)btn1Cb();};
+  const b2=document.getElementById('md-btn2'); 
+  if(btn2Txt){ b2.style.display=''; b2.textContent=btn2Txt; b2.onclick=()=>{closeModal(); if(btn2Cb)btn2Cb();}; } else { b2.style.display='none'; }
+  document.getElementById('modal').classList.remove('hidden');
+}
+function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
+
+/* ═══════════════════════
+   1. 스무고개 로직
+═══════════════════════ */
+let qLives=7, qCur=null, qHi=0, qPhase='hint';
+const BLUR=[40,25,12,0]; const SCL=[.8,.9,1.0,1.1];
+
+function getPraiseByStreak(s) {
+  if (s < 3) return "정답이에요!";
+  if (s < 5) return "우와! 대단해요!";
+  if (s < 10) return "멋진 동물 탐험대!";
+  if (s < 15) return "똑똑한 꼬마 학자님!";
+  return "전설의 동물 박사 등장!";
+}
+
+function startQuiz(){
+  qLives=7; renderHearts();
+  const sil=document.getElementById('sil');
+  sil.style.transition = 'none'; 
+  sil.className = 'sil'; 
+  sil.textContent = '❓';
+  sil.style.setProperty('--hr', `hue-rotate(0deg)`);
+  sil.style.filter = `brightness(0) blur(${BLUR[0]}px)`; 
+  sil.style.transform = `scale(${SCL[0]})`;
+  
+  let idx=~~(Math.random()*DB.length); qCur=DB[idx]; qHi=0; qPhase='hint';
+  const hR = qCur.hR || 0;
+  sil.style.setProperty('--hr', `hue-rotate(${hR}deg)`);
+
+  document.getElementById('ht').textContent='버튼을 눌러 힌트를 들어봐요! 🔊';
+  renderQuizBtns(); 
+  show('quiz'); 
+
+  requestAnimationFrame(() => requestAnimationFrame(() => {
+    sil.textContent = qCur.e;
+    sil.style.transition = 'filter 1.2s ease, transform 1.2s ease';
+  }));
+  speak('무슨 동물일까요?');
+}
+
+function renderHearts(){
+  const w=document.getElementById('lives-wrap'); w.innerHTML='';
+  for(let i=0;i<7;i++){ const s=document.createElement('span'); s.className=i<qLives?'heart':'heart lost'; s.textContent=i<qLives?'❤️':'🖤'; w.appendChild(s); }
+}
+function renderQuizBtns(){
+  const act=document.getElementById('act');
+  if(qPhase==='hint'){
+    const canG=qHi>=1; const hasM=qHi<qCur.h.length;
+    act.innerHTML=`
+      ${hasM?`<button class="abtn pri" onclick="qNextHint()">🔊 ${qHi===0?'힌트 듣기':'다음 힌트'}</button>`:''}
+      ${canG?`<button class="abtn gue" onclick="qShowChoices()">🤔 맞춰볼래요!</button>`:''}
+    `;
+  } else if(qPhase==='choices'){
+    const others=DB.filter(a=>a.n!==qCur.n).sort(()=>Math.random()-.5).slice(0,3);
+    const ch=[...others,qCur].sort(()=>Math.random()-.5);
+    act.innerHTML=`<div class="cgrid">${ch.map(c=>`<button class="cbtn" onclick="qCheck('${c.n}',this)"><span class="ce" style="filter:hue-rotate(${c.hR||0}deg)">${c.e}</span><span class="cn">${c.n}</span></button>`).join('')}</div>`;
+  }
+}
+function qNextHint(){
+  if(qHi>=qCur.h.length)return;
+  const t=qCur.h[qHi]; document.getElementById('ht').textContent=t;
+  qHi++; const step=Math.min(qHi,BLUR.length-1);
+  const sil=document.getElementById('sil'); 
+  sil.style.filter=`brightness(0) blur(${BLUR[step]}px) hue-rotate(${qCur.hR||0}deg)`; 
+  sil.style.transform=`scale(${SCL[step]})`;
+  speak(t); renderQuizBtns();
+}
+function qShowChoices(){ qPhase='choices'; renderQuizBtns(); speak('누구일까요?'); }
+function qCheck(ans, btn){
+  if(ans===qCur.n){
+    streak++;
+    btn.classList.add('ok'); playFanfare();
+    document.getElementById('q-streak').textContent = `🔥 ${streak}연속 정답!`;
+    const sil = document.getElementById('sil');
+    sil.style.filter = `hue-rotate(${qCur.hR||0}deg)`;
+    sil.classList.add('show');
+    if(!unlocked.includes(qCur.n)){ unlocked.push(qCur.n); localStorage.setItem('animal_dic',JSON.stringify(unlocked)); }
+    const praise = getPraiseByStreak(streak);
+    speak(`딩동댕! ${qCur.n}예요! ${praise}`);
+    setTimeout(()=>openModal(qCur.e, praise, qCur.f, '다음 문제', startQuiz, '그만하기', goHub, qCur.hR||0), 1500);
+  } else {
+    streak = 0; document.getElementById('q-streak').textContent = `🔥 0연속 정답!`;
+    btn.classList.add('ng'); playDing(); qLives--; renderHearts();
+    if(qLives<=0){
+      speak('동물 친구들이 낮잠 자러 갔어요.');
+      setTimeout(()=>openModal('😴', '낮잠 시간', '다음에 다시 놀아요!', '확인', goHub), 1000);
+    } else { speak('아니에요. 다시 골라봐요.'); }
+  }
+}
+function pokeSilhouette(){
+  if(qPhase==='done') return;
+  playPop();
+  const sil=document.getElementById('sil');
+  sil.style.transform = `scale(${SCL[Math.min(qHi,BLUR.length-1)] - 0.1}) rotate(${Math.random()*20-10}deg)`;
+  setTimeout(()=> sil.style.transform = `scale(${SCL[Math.min(qHi,BLUR.length-1)]}) rotate(0deg)`, 150);
+}
+
+/* ═══════════════════════
+   2. 조각 맞추기 퍼즐 (최대 64피스 지원 & 썸네일 제공)
+═══════════════════════ */
+let pzTime=0, pzTimerInterval=null, curPzSize=3; // 9조각으로 시작
+let pzSelectedPiece=null;
+
+function startPiecePuzzle(size = curPzSize){
+  curPzSize = size;
+  document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById(`db${size}`).classList.add('active');
+
+  let c = DB[~~(Math.random()*DB.length)];
+  
+  // 💡 우측 상단 썸네일 및 무지개 배경 업데이트
+  let thumb = document.getElementById('pz-thumb');
+  thumb.textContent = c.e;
+  thumb.style.filter = `hue-rotate(${c.hR||0}deg)`;
+
+  let grid = document.getElementById('pz-grid');
+  grid.innerHTML = '';
+  grid.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+  grid.style.gridTemplateRows = `repeat(${size}, 1fr)`;
+  
+  let pieceSize = 320 / size; 
+  let arr = [];
+  for(let i=0; i<size*size; i++) arr.push(i);
+  arr.sort(()=>Math.random()-.5);
+  
+  arr.forEach(val => {
+    let correctX = val % size;
+    let correctY = Math.floor(val / size);
+    let el = document.createElement('div');
+    el.className = 'pz-piece';
+    el.dataset.idx = val;
+    
+    // 💡 마스킹 기법 (고난이도 빈 배경을 해결하기 위해 화려한 무지개 그라데이션 적용)
+    let inner = document.createElement('div');
+    inner.className = 'pz-inner';
+    inner.style.left = `-${correctX * pieceSize}px`;
+    inner.style.top = `-${correctY * pieceSize}px`;
+    inner.style.filter = `hue-rotate(${c.hR||0}deg)`;
+    inner.textContent = c.e;
+    
+    el.appendChild(inner);
+    el.onclick = () => tapJigsawPiece(el);
+    grid.appendChild(el);
+  });
+  
+  pzSelectedPiece = null; pzTime = 0;
+  clearInterval(pzTimerInterval);
+  document.getElementById('pz-timer').textContent='00:00';
+  
+  pzTimerInterval = setInterval(()=>{
+    pzTime++;
+    let m = String(Math.floor(pzTime/60)).padStart(2,'0'); 
+    let s = String(pzTime%60).padStart(2,'0');
+    document.getElementById('pz-timer').textContent=`${m}:${s}`;
+  },1000);
+  
+  show('puzzle');
+  speak('조각을 눌러서 원본 그림과 똑같이 맞춰봐요!');
+  checkJigsaw(true);
+}
+
+function tapJigsawPiece(el) {
+  if(el.classList.contains('ok')) return;
+  playPop();
+  if(!pzSelectedPiece) {
+    pzSelectedPiece = el; el.classList.add('sel');
+  } else {
+    if(pzSelectedPiece !== el) {
+      let tIdx = pzSelectedPiece.dataset.idx;
+      let tHtml = pzSelectedPiece.innerHTML;
+      pzSelectedPiece.dataset.idx = el.dataset.idx;
+      pzSelectedPiece.innerHTML = el.innerHTML;
+      el.dataset.idx = tIdx; el.innerHTML = tHtml;
+      pzSelectedPiece.classList.remove('sel');
+      pzSelectedPiece = null;
+      checkJigsaw();
+    } else {
+      pzSelectedPiece.classList.remove('sel'); pzSelectedPiece = null;
+    }
+  }
+}
+
+function checkJigsaw(isInit=false) {
+  let pieces = document.querySelectorAll('.pz-piece');
+  let correctCount = 0;
+  pieces.forEach((p, i) => {
+    if(parseInt(p.dataset.idx) === i) {
+      if(!p.classList.contains('ok')) { p.classList.add('ok'); if(!isInit) playDing(); }
+      correctCount++;
+    } else { p.classList.remove('ok'); }
+  });
+  
+  if(correctCount === pieces.length && !isInit) {
+    clearInterval(pzTimerInterval);
+    playFanfare();
+    // 💡 자동 난이도 상승 (최대 8x8, 64조각)
+    let nextSize = curPzSize < 8 ? curPzSize + 1 : 8; 
+    setTimeout(()=>openModal('🏆', '퍼즐 완성!', `${pzTime}초 만에 멋지게 완성했어요!`, '더 어려운 퍼즐!', ()=>startPiecePuzzle(nextSize), '홈으로', goHub), 800);
+  }
+}
+
+/* ═══════════════════════
+   3. 도감 로직 (5칸 배열 적용)
+═══════════════════════ */
+function showCollection(){
+  const grid=document.getElementById('dic-grid'); grid.innerHTML='';
+  document.getElementById('dic-total').textContent=DB.length;
+  document.getElementById('dic-count').textContent=unlocked.length;
+  
+  const sortedDB = [...DB].sort((a,b)=>a.n.localeCompare(b.n));
+  sortedDB.forEach(c=>{
+    const has = unlocked.includes(c.n);
+    const el=document.createElement('div'); el.className=`dic-item ${has?'unlocked':'locked'}`;
+    el.innerHTML=`<div class="dic-e" style="filter:hue-rotate(${has?(c.hR||0):0}deg)">${c.e}</div><div class="dic-n">${has?c.n:'???'}</div>`;
+    if(has) el.onclick=()=>{ playPop(); speak(`${c.n}! ${c.f}`); el.querySelector('.dic-e').classList.add('dance'); setTimeout(()=>el.querySelector('.dic-e').classList.remove('dance'), 1200); };
+    grid.appendChild(el);
+  });
+  show('collection');
+}
+
+function resetCollection(){
+  openModal('🗑️', '도감 초기화', '모은 동물을 다 지우고 새로 시작할까요?', '네, 지울래요', ()=>{
+    unlocked=[]; localStorage.setItem('animal_dic','[]'); showCollection();
+  }, '아니요', ()=>{});
+}
+
+</script>
+</body>
+</html>
