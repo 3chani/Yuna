@@ -210,6 +210,23 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 #listen{justify-content:flex-start;background:linear-gradient(160deg,#f0f9ff,#fdf4ff);}
 #lst-speaker{transition:transform .1s;}
 #lst-speaker:active{transform:scale(.85)!important;}
+
+/* ── 동물 찾기 개선 ── */
+.hidden-scene{flex:1;width:95%;max-width:680px;
+  background:linear-gradient(135deg,#e0f2fe 0%,#fce7f3 50%,#dcfce7 100%);
+  border:4px solid #bae6fd;border-radius:28px;position:relative;overflow:hidden;
+  margin-bottom:8px;box-shadow:0 8px 24px rgba(56,189,248,.2);min-height:260px;}
+.hidden-target-bar{width:95%;max-width:580px;background:#fff;border:3px solid var(--green);
+  border-radius:22px;padding:10px 18px;display:flex;align-items:center;gap:10px;
+  box-shadow:0 6px 18px rgba(74,222,128,.2);margin:8px auto;}
+.hidden-animal.found-flash{animation:found-flash .5s ease!important;pointer-events:none;}
+@keyframes found-flash{0%,100%{transform:scale(1) rotate(var(--rot,0deg))}40%{transform:scale(1.8) rotate(var(--rot,0deg))}}
+.hidden-animal.wrong-shake{animation:wrong-shake .35s ease!important;}
+@keyframes wrong-shake{0%,100%{transform:rotate(var(--rot,0deg))}25%{transform:rotate(calc(var(--rot,0deg) - 22deg))}75%{transform:rotate(calc(var(--rot,0deg) + 22deg))}}
+
+/* ── 짝맞추기 레벨 헤더 ── */
+.mem-header{padding:6px 16px;width:100%;max-width:580px;display:flex;
+  justify-content:space-between;align-items:center;gap:8px;}
 </style>
 </head>
 <body>
@@ -344,9 +361,9 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 
 <!-- MEMORY -->
 <div class="screen hidden" id="memory">
-  <div class="top-bar"><button class="back-btn" onclick="goHub()">← 뒤로</button><div class="top-title">짝맞추기 ✨</div></div>
-  <div class="mem-header"><div class="mem-score">✅ <span id="mem-pairs">0</span>/6쌍</div><div class="mem-time">⏱️ <span id="mem-timer">0</span>초</div></div>
-  <div class="mem-grid" id="mem-grid"></div>
+  <div class="top-bar"><button class="back-btn" onclick="goHub()">← 뒤로</button><div class="top-title" id="mem-level-title">짝맞추기 ✨ LV.1</div></div>
+  <div class="mem-header"><div class="mem-score" id="mem-score">⭐ 0점</div><div style="font-size:17px;font-weight:900;color:var(--green)">✅ <span id="mem-pairs">0/3</span></div><div class="mem-time">⏱️ <span id="mem-timer">0</span>초</div></div>
+  <div class="mem-grid" id="mem-grid" style="max-width:580px;"></div>
 </div>
 
 <!-- 다른 거 찾기 (Odd One Out) -->
@@ -668,8 +685,8 @@ function speakSeq(parts,gap=700,onEnd=null){
     if(i>=ps.length){_speaking=false;if(onEnd)onEnd();return;}
     const u=new SpeechSynthesisUtterance(ps[i++]);
     u.lang='ko-KR';
-    u.pitch=1.18;    // 너무 높지 않게 – 자연스러운 여성 음성
-    u.rate=0.85;     // 천천히 또렷하게
+    u.pitch=1.35;  // 밝고 따뜻한 선생님 톤 (Gemini 스타일)
+    u.rate=0.92;   // 자연스러운 속도
     u.volume=1;
     if(vko)u.voice=vko;
     u.onend=()=>{if(i<ps.length)setTimeout(next,gap);else{_speaking=false;if(onEnd)onEnd();}};
@@ -689,7 +706,7 @@ function goHub(){
   stopSpeak();
   show('hub');
   clearInterval(catchInterval);clearInterval(memTimerInt);clearInterval(pzInterval);
-  clearTimeout(blAnimTimer);blAnimTimer=null;
+  clearTimeout(blAnimTimer);blAnimTimer=null;clearTimeout(memHintTimer||0);
   stopBLAnimation();
   _oddLock=false;_lstLock=false;
 }
@@ -746,7 +763,7 @@ function qCheck(ans,btn){
     if(!unlocked.includes(qCur.n)){unlocked.push(qCur.n);localStorage.setItem('yuna_dic',JSON.stringify(unlocked));}
     qStreak++;document.getElementById('q-streak').textContent=`🔥 ${qStreak}연속!`;
     playDDDang();throwConfetti();
-    speakSeq([qCur.n+'!','맞아요!',qCur.f],800);
+    speakSeq(['딩동댕!','정답은 '+qCur.n+'. 영어로는 '+qCur.en+'!',qCur.f],850);
     setTimeout(()=>{
       document.getElementById('ao-animal').textContent=qCur.e;
       document.getElementById('ao-ko').textContent=qCur.n;
@@ -941,7 +958,7 @@ function nextWriteWord(){
   else{document.getElementById('wr-target').textContent=wrCur.en;document.getElementById('wr-sub').textContent=wrCur.ko+' · 눌러서 듣기';document.getElementById('wr-bg-text').textContent=wrCur.en;document.getElementById('wr-bg-text').style.fontSize=wrCur.en.length>4?'min(18vw,72px)':'min(28vw,112px)';}
   clearCanvasWrite(true);playWriteWord();
 }
-function playWriteWord(){playPop();speak(wrLang==='ko'?`${wrCur.ko}! 영어로는 ${wrCur.en}! 예쁘게 따라 써볼까요?`:`${wrCur.en}! 한국말로는 ${wrCur.ko}! 예쁘게 따라 써볼까요?`);}
+function playWriteWord(){playPop();if(wrLang==='ko')speakSeq([wrCur.ko,'영어로는',wrCur.en,'예쁘게 써볼까요?'],750);else speakSeq([wrCur.en,'한국말로는',wrCur.ko,'예쁘게 써볼까요?'],750);}
 function wrStart(e){e.preventDefault();wrIsDrawing=true;initA();const r=wrCanvas.getBoundingClientRect();const sx=wrCanvas.width/r.width,sy=wrCanvas.height/r.height;const cx=e.touches?e.touches[0].clientX:e.clientX,cy=e.touches?e.touches[0].clientY:e.clientY;wrCtx.beginPath();wrCtx.moveTo((cx-r.left)*sx,(cy-r.top)*sy);}
 function wrMove(e){if(!wrIsDrawing)return;e.preventDefault();const r=wrCanvas.getBoundingClientRect();const sx=wrCanvas.width/r.width,sy=wrCanvas.height/r.height;const cx=e.touches?e.touches[0].clientX:e.clientX,cy=e.touches?e.touches[0].clientY:e.clientY;wrCtx.lineWidth=11;wrCtx.lineCap='round';wrCtx.lineJoin='round';wrCtx.strokeStyle=wrLang==='ko'?'#2dd4c8':'#c084fc';wrCtx.lineTo((cx-r.left)*sx,(cy-r.top)*sy);wrCtx.stroke();wrCtx.beginPath();wrCtx.moveTo((cx-r.left)*sx,(cy-r.top)*sy);}
 function wrStop(e){if(e)e.preventDefault();wrIsDrawing=false;wrCtx.beginPath();}
@@ -990,81 +1007,171 @@ function startHiddenGame(lv=1){
   document.getElementById('hid-level').textContent=hidLevel;
   show('hidden');newHiddenRound();
 }
+
 function newHiddenRound(){
+  /* 레벨별 파라미터 */
+  const targetCount=hidLevel<=2?3:hidLevel<=4?4:hidLevel<=6?3:2;
+  const totalAnimals=Math.min(10+hidLevel*4,40);
+  const minSize=hidLevel>=5?22:30;
+  const maxSize=hidLevel>=5?44:58;
+
   hidTarget=DB[~~(Math.random()*DB.length)];
   document.getElementById('hid-target-e').textContent=hidTarget.e;
-  document.getElementById('hid-target-l').textContent=hidTarget.n+'를 찾아봐요!';
-  const scene=document.getElementById('hid-scene');scene.innerHTML='';
-  const total=8+hidLevel*3; /* 레벨이 오를수록 많아짐 */
-  const targetCount=hidLevel<=2?2:1; /* 초반엔 2개, 후반엔 1개 */
+  document.getElementById('hid-target-l').textContent=hidTarget.n+' 찾기!';
   hidRemain=targetCount;
   document.getElementById('hid-remain').textContent=hidRemain;
-  
-  /* 동물 배치 */
-  const usedPos=[];
+
+  const scene=document.getElementById('hid-scene');scene.innerHTML='';
+
+  /* ── 배경 이모지 추가 (풀, 나무 등) ── */
+  const bgEmoji=['🌿','🍀','🌱','🌸','🍃','🌾','🌲','🌼','⭐','🌟'];
+  for(let i=0;i<6;i++){
+    const bg=document.createElement('div');
+    bg.style.cssText=`position:absolute;font-size:${16+Math.random()*14}px;left:${Math.random()*94}%;top:${Math.random()*94}%;opacity:.4;pointer-events:none;z-index:0;`;
+    bg.textContent=bgEmoji[~~(Math.random()*bgEmoji.length)];
+    scene.appendChild(bg);
+  }
+
+  /* ── 동물 배치 ── */
   const allAnimals=[];
-  /* 정답 동물 */
   for(let i=0;i<targetCount;i++)allAnimals.push({data:hidTarget,isTarget:true});
-  /* 방해 동물 */
-  const decoys=DB.filter(a=>a.n!==hidTarget.n).sort(()=>Math.random()-.5).slice(0,total-targetCount);
+  const decoys=DB.filter(a=>a.n!==hidTarget.n).sort(()=>Math.random()-.5).slice(0,totalAnimals-targetCount);
   decoys.forEach(d=>allAnimals.push({data:d,isTarget:false}));
   allAnimals.sort(()=>Math.random()-.5);
 
+  const usedPos=[];
   allAnimals.forEach(({data,isTarget})=>{
     const el=document.createElement('div');el.className='hidden-animal';
     el.textContent=data.e;
-    const sz=38+Math.random()*32; /* 크기 다양하게 */
-    const rot=(Math.random()-.5)*40;
+    const sz=minSize+Math.random()*(maxSize-minSize);
+    const rot=(Math.random()-.5)*50;
     el.style.setProperty('--rot',rot+'deg');
-    /* 겹치지 않는 위치 찾기 */
     let x,y,tries=0;
-    do{x=5+Math.random()*82;y=5+Math.random()*82;tries++;}while(tries<20&&usedPos.some(p=>Math.abs(p.x-x)<12&&Math.abs(p.y-y)<12));
+    do{x=3+Math.random()*88;y=3+Math.random()*88;tries++;}
+    while(tries<30&&usedPos.some(p=>Math.abs(p.x-x)<9&&Math.abs(p.y-y)<9));
     usedPos.push({x,y});
-    el.style.cssText+=`left:${x}%;top:${y}%;font-size:${sz}px;transform:rotate(${rot}deg);z-index:${~~(Math.random()*8)};`;
-    if(isTarget){el.addEventListener('click',()=>hidFoundTarget(el));el.addEventListener('touchend',e=>{e.preventDefault();hidFoundTarget(el);},{passive:false});}
-    else{el.addEventListener('click',()=>hidWrong(el));el.addEventListener('touchend',e=>{e.preventDefault();hidWrong(el);},{passive:false});}
+    el.style.cssText+=`left:${x}%;top:${y}%;font-size:${sz}px;transform:rotate(${rot}deg);z-index:${1+~~(Math.random()*6)};`;
+    if(isTarget){
+      el.addEventListener('click',()=>hidFoundTarget(el));
+      el.addEventListener('touchend',e=>{e.preventDefault();hidFoundTarget(el);},{passive:false});
+    }else{
+      el.addEventListener('click',()=>hidWrong(el));
+      el.addEventListener('touchend',e=>{e.preventDefault();hidWrong(el);},{passive:false});
+    }
     scene.appendChild(el);
   });
-  speak(`${hidTarget.n}를 찾아봐요!`);
+
+  speakSeq([hidTarget.n,'어디 있을까요?'],700);
 }
+
 function hidFoundTarget(el){
   if(el.dataset.found==='1')return;el.dataset.found='1';
   el.classList.add('found-flash');playDDDang();
   hidScore+=10*hidLevel;hidRemain--;
   document.getElementById('hid-score').textContent=hidScore;
   document.getElementById('hid-remain').textContent=hidRemain;
-  setTimeout(()=>el.remove(),400);
+
+  /* 찾은 동물 크게 반짝 후 제거 */
+  el.style.transition='transform .3s,opacity .3s';
+  el.style.transform='scale(2) rotate(0deg)';
+  el.style.zIndex=50;
+  setTimeout(()=>{el.style.opacity='0';setTimeout(()=>el.remove(),300);},350);
+
   if(hidRemain<=0){
     throwConfetti();
     setTimeout(()=>{
-      speakSeq(['찾았어요!',hidTarget.n,'잘했어요!'],600,()=>{document.getElementById('md-btn1').classList.add('blink-btn');});
-      openModal('🎉','찾았어요!',`${hidTarget.n}${hidScore}점!`,hidLevel<8?'다음 단계':'처음부터',()=>startHiddenGame(hidLevel<8?hidLevel+1:1));
+      speakSeq(['다 찾았어요!',hidTarget.n,'정말 잘했어요!'],650,()=>{document.getElementById('md-btn1').classList.add('blink-btn');});
+      openModal('🎉','다 찾았어요!',`${hidTarget.n} ${hidScore}점!`,hidLevel<10?'다음 단계':'처음부터',()=>startHiddenGame(hidLevel<10?hidLevel+1:1));
     },500);
+  }else{
+    speak(hidTarget.n+'!');
   }
 }
 function hidWrong(el){
   el.classList.remove('wrong-shake');void el.offsetWidth;el.classList.add('wrong-shake');
-  playDdaeng();setTimeout(()=>el.classList.remove('wrong-shake'),400);
+  playDdaeng();
+  setTimeout(()=>el.classList.remove('wrong-shake'),400);
 }
 
 /* ══════════════════════════
-   6. 짝맞추기 (layout fix)
+   6. 짝맞추기 — 레벨 시스템 + 힌트
+   레벨1: 3쌍(6장), 레벨2: 4쌍(8장)
+   레벨3: 6쌍(12장), 레벨4: 8쌍(16장)
 ══════════════════════════ */
-let memCards=[],memFlipped=[],memMatched=0,memLock=false,memTimerInt=null,memSeconds=0;
-function startMemoryGame(){
-  show('memory');memMatched=0;memFlipped=[];memLock=false;memSeconds=0;
-  document.getElementById('mem-pairs').textContent='0';document.getElementById('mem-timer').textContent='0';
-  clearInterval(memTimerInt);memTimerInt=setInterval(()=>{memSeconds++;document.getElementById('mem-timer').textContent=memSeconds;},1000);
+let memCards=[],memFlipped=[],memMatched=0,memLock=false;
+let memTimerInt=null,memSeconds=0,memLevel=1;
+let memHintTimer=null,memHintShown=false;
+
+/* 레벨별 쌍 수 */
+function memPairCount(lv){return lv===1?3:lv===2?4:lv===3?6:8;}
+/* 레벨별 힌트 발동 시간(초) */
+function memHintTime(lv){return lv===1?25:lv===2?35:lv===3?50:70;}
+
+function startMemoryGame(lv){
+  memLevel=lv||1;
+  clearInterval(memTimerInt);clearTimeout(memHintTimer);
+  memMatched=0;memFlipped=[];memLock=false;memSeconds=0;memHintShown=false;
+  document.getElementById('mem-pairs').textContent='0/'+memPairCount(memLevel);
+  document.getElementById('mem-timer').textContent='0';
+  document.getElementById('mem-score').textContent='⭐'+((memLevel-1)*50||0)+'점';
+  show('memory');
+
+  /* 그리드 열 수 조정 */
+  const pairs=memPairCount(memLevel);
+  const cols=pairs<=4?4:4;
   const grid=document.getElementById('mem-grid');grid.innerHTML='';
-  const picked=[...DB].sort(()=>Math.random()-.5).slice(0,6);
+  grid.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+
+  const picked=[...DB].sort(()=>Math.random()-.5).slice(0,pairs);
   memCards=[...picked,...picked].sort(()=>Math.random()-.5);
   memCards.forEach((c,i)=>{
     const el=document.createElement('div');el.className='mem-card';el.dataset.idx=i;
     el.innerHTML=`<div class="mem-inner"><div class="mem-back"></div><div class="mem-front">${c.e}</div></div>`;
     el.addEventListener('click',()=>flipCard(el,c));grid.appendChild(el);
   });
-  speak('똑같은 동물 친구를 찾아봐요!');
+
+  memTimerInt=setInterval(()=>{
+    memSeconds++;
+    document.getElementById('mem-timer').textContent=memSeconds;
+  },1000);
+
+  /* 힌트 타이머 */
+  memHintTimer=setTimeout(()=>showMemHint(),memHintTime(memLevel)*1000);
+
+  const lvEl=document.getElementById('mem-level-title');if(lvEl)lvEl.textContent='짝맞추기 LV.'+memLevel;
+  speakSeq(['레벨 '+memLevel+'!','똑같은 동물 친구를 찾아봐요!'],750);
 }
+
+function showMemHint(){
+  if(memHintShown||memMatched>=memCards.length)return;
+  memHintShown=true;
+  /* 아직 맞추지 못한 카드 중 한 쌍 잠깐 보여주기 */
+  const unmatched=memCards.map((c,i)=>{
+    const el=document.querySelector(`.mem-card[data-idx="${i}"]`);
+    return el&&!el.classList.contains('matched')?{el,c,i}:null;
+  }).filter(Boolean);
+  if(unmatched.length<2)return;
+
+  /* 같은 이름 쌍 찾기 */
+  let pairA=null,pairB=null;
+  for(let i=0;i<unmatched.length&&!pairB;i++){
+    for(let j=i+1;j<unmatched.length&&!pairB;j++){
+      if(unmatched[i].c.n===unmatched[j].c.n){pairA=unmatched[i];pairB=unmatched[j];}
+    }
+  }
+  if(!pairA||!pairB)return;
+
+  speak('힌트 드릴게요!');
+  /* 잠깐 뒤집어 보여주기 */
+  pairA.el.classList.add('flipped');pairB.el.classList.add('flipped');
+  setTimeout(()=>{
+    if(!pairA.el.classList.contains('matched'))pairA.el.classList.remove('flipped');
+    if(!pairB.el.classList.contains('matched'))pairB.el.classList.remove('flipped');
+    memHintTimer=setTimeout(()=>showMemHint(),memHintTime(memLevel)*1000);
+    memHintShown=false;
+  },1500);
+}
+
 function flipCard(el,c){
   if(memLock||el.classList.contains('flipped')||el.classList.contains('matched'))return;
   playPop();el.classList.add('flipped');memFlipped.push({el,c});
@@ -1072,12 +1179,35 @@ function flipCard(el,c){
     memLock=true;
     if(memFlipped[0].c.n===memFlipped[1].c.n){
       setTimeout(()=>{
-        playDDDang();memFlipped[0].el.classList.add('matched');memFlipped[1].el.classList.add('matched');
-        memMatched+=2;document.getElementById('mem-pairs').textContent=memMatched/2;
+        playDDDang();
+        memFlipped[0].el.classList.add('matched');memFlipped[1].el.classList.add('matched');
+        memMatched+=2;
+        const pairsDone=memMatched/2;
+        const totalPairs=memPairCount(memLevel);
+        document.getElementById('mem-pairs').textContent=pairsDone+'/'+totalPairs;
         speak(c.n);memFlipped=[];memLock=false;
-        if(memMatched===memCards.length){clearInterval(memTimerInt);throwConfetti();setTimeout(()=>{speakSeq(['우와! 다 찾았어요!',memSeconds+'초에 완성했어요!','정말 똑똑해요!'],650,()=>{document.getElementById('md-btn1').classList.add('blink-btn');});openModal('🏆','다 찾았어요!',`${memSeconds}초 완성! 최고예요!`,'다시 하기',startMemoryGame);},800);}
+        if(memMatched===memCards.length){
+          clearInterval(memTimerInt);clearTimeout(memHintTimer);throwConfetti();
+          const score=Math.max(0,memLevel*100-memSeconds*2);
+          setTimeout(()=>{
+            speakSeq(['다 찾았어요!',memSeconds+'초!','잘했어요!'],650,()=>{
+              document.getElementById('md-btn1').classList.add('blink-btn');
+            });
+            const nextLv=memLevel<4?memLevel+1:1;
+            openModal('🏆','다 찾았어요!',memSeconds+'초 완성! '+score+'점!',
+              memLevel<4?'레벨 '+nextLv+' 도전!':'처음부터',
+              ()=>startMemoryGame(nextLv));
+          },800);
+        }
       },400);
-    }else{setTimeout(()=>{playDdaeng();memFlipped[0].el.classList.remove('flipped');memFlipped[1].el.classList.remove('flipped');memFlipped=[];memLock=false;},1000);}
+    }else{
+      setTimeout(()=>{
+        playDdaeng();
+        memFlipped[0].el.classList.remove('flipped');
+        memFlipped[1].el.classList.remove('flipped');
+        memFlipped=[];memLock=false;
+      },1000);
+    }
   }
 }
 
