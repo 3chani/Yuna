@@ -328,7 +328,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
         <div class="gm" onclick="startBasicLetters('ko')">🇰🇷<span>ㄱㄴㄷ 쓰기</span></div>
         <div class="gm" onclick="startBasicLetters('en')">🇺🇸<span>ABC 쓰기</span></div>
         <div class="gm" onclick="startWriteMode()">🖍️<span>단어 따라쓰기</span></div>
-        <div class="gm" onclick="startShadowGame()">🌑<span>그림자 맞추기</span></div>
+        <div class="gm" onclick="startAnimalSort()">🗂️<span>동물 분류</span></div>
       </div>
     </div>
 
@@ -353,6 +353,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
         <div class="gm" onclick="startMemoryGame()">✨<span>짝맞추기</span></div>
         <div class="gm" onclick="startSeasonGame()">🍂<span>계절 놀이</span></div>
         <div class="gm" onclick="startWeatherGame()">🌤️<span>날씨 맞추기</span></div>
+        <div class="gm" onclick="startWhatsMissing()">🔎<span>뭐가 없어졌지?</span></div>
         <div class="gm" onclick="startJigsawPuzzle()">🧩<span>퍼즐</span></div>
       </div>
     </div>
@@ -362,8 +363,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
       <div class="subj-hd"><span class="subj-icon">🎨</span><div><div class="subj-name">예술 놀이</div><div class="subj-desc">색깔 · 리듬 · 그림</div></div></div>
       <div class="subj-games">
         <div class="gm" onclick="startColorGame()">🎨<span>색깔 찾기</span></div>
-        <div class="gm" onclick="startRhythmGame()">🥁<span>리듬 따라치기</span></div>
-        <div class="gm" onclick="startColoringGame()">🖌️<span>색칠 놀이</span></div>
+        <div class="gm" onclick="startStorySeq()">📖<span>이야기 순서</span></div>
+        <div class="gm" onclick="startMemSeq()">🧠<span>기억력 순서</span></div>
       </div>
     </div>
 
@@ -573,15 +574,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 
 <!-- ══ 리듬 따라치기 ══ -->
-<div class="screen hidden" id="rhythmgame">
-  <div class="top-bar"><button class="back-btn" onclick="goHub()">← 뒤로</button><div class="top-title">리듬 따라치기 🥁</div><div id="rhy-level" style="font-size:15px;font-weight:900;color:var(--purple)">레벨 1</div></div>
-  <div style="display:flex;flex-direction:column;align-items:center;flex:1 1 0;min-height:0;gap:10px;padding:10px 16px;width:100%;">
-    <div id="rhy-q" style="font-size:clamp(18px,5vw,24px);font-weight:900;color:var(--text);text-align:center;"></div>
-    <div id="rhy-display" style="display:flex;gap:10px;align-items:center;justify-content:center;min-height:60px;"></div>
-    <div id="rhy-drum" style="font-size:clamp(90px,28vmin,150px);cursor:pointer;filter:drop-shadow(0 10px 20px rgba(0,0,0,.15));transition:transform .08s;" onclick="drumTap()">🥁</div>
-  </div>
-  <div id="rhy-status" style="font-size:clamp(16px,4.5vw,20px);font-weight:900;color:var(--muted);text-align:center;padding:0 16px 16px;"></div>
-</div>
+
 
 <!-- ══ 신체 부위 ══ -->
 <div class="screen hidden" id="bodygame">
@@ -631,12 +624,57 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 </div>
 
 <!-- ══ 색칠 놀이 ══ -->
-<div class="screen hidden" id="coloring">
-  <div class="top-bar"><button class="back-btn" onclick="goHub()">← 뒤로</button><div class="top-title">색칠 놀이 🖌️</div><button style="background:var(--coral);color:#fff;border:none;border-radius:12px;padding:7px 14px;font-weight:900;font-size:14px;cursor:pointer;" onclick="clearColoring()">🗑️ 지우기</button></div>
-  <div style="display:flex;flex-direction:column;align-items:center;flex:1 1 0;min-height:0;gap:8px;padding:8px 16px;width:100%;">
-    <div id="col-palette" style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;"></div>
-    <canvas id="col-canvas" style="border-radius:20px;border:4px solid var(--bdr);box-shadow:0 8px 24px rgba(0,0,0,.1);touch-action:none;cursor:crosshair;max-width:100%;max-height:calc(100vh - 220px);"></canvas>
+
+
+
+<!-- ══ 이야기 순서 맞추기 (Story Sequence) ══ -->
+<div class="screen hidden" id="storyseq">
+  <div class="top-bar"><button class="back-btn" onclick="goHub()">← 뒤로</button><div class="top-title">이야기 순서 📖</div><div id="ss-streak" style="font-size:16px;font-weight:900;color:var(--gold)">🔥 0연속!</div></div>
+  <div style="display:flex;flex-direction:column;align-items:center;flex:1 1 0;min-height:0;gap:8px;padding:10px 16px;width:100%;">
+    <div id="ss-q" style="font-size:clamp(18px,5vw,24px);font-weight:900;color:var(--text);text-align:center;line-height:1.4;"></div>
+    <!-- 순서 힌트 -->
+    <div id="ss-hint" style="display:flex;gap:10px;align-items:center;justify-content:center;background:#fff;border:3px solid var(--sky);border-radius:20px;padding:10px 20px;box-shadow:0 6px 18px rgba(56,189,248,.15);font-size:clamp(32px,9vw,48px);"></div>
+    <div style="font-size:13px;color:var(--muted);font-weight:700;">아래에서 순서대로 골라봐요!</div>
+    <!-- 선택 영역 -->
+    <div id="ss-choices" style="display:flex;gap:12px;justify-content:center;align-items:center;flex-wrap:wrap;width:100%;max-width:500px;flex:1;"></div>
+    <!-- 내가 고른 순서 -->
+    <div style="display:flex;align-items:center;gap:8px;background:rgba(74,222,128,.08);border:3px solid var(--green);border-radius:20px;padding:8px 20px;min-height:60px;width:100%;max-width:500px;flex-shrink:0;justify-content:center;">
+      <div id="ss-answer" style="display:flex;gap:10px;align-items:center;font-size:clamp(30px,9vw,46px);"></div>
+    </div>
   </div>
+</div>
+
+<!-- ══ 기억력 순서 (Memory Sequence) ══ -->
+<div class="screen hidden" id="memseq">
+  <div class="top-bar"><button class="back-btn" onclick="goHub()">← 뒤로</button><div class="top-title">기억력 순서 🧠</div><div id="msq-level" style="font-size:15px;font-weight:900;color:var(--purple)">레벨 1</div></div>
+  <div style="display:flex;flex-direction:column;align-items:center;flex:1 1 0;min-height:0;gap:10px;padding:10px 16px;width:100%;">
+    <div id="msq-q" style="font-size:clamp(18px,5vw,24px);font-weight:900;color:var(--text);text-align:center;"></div>
+    <div id="msq-display" style="display:flex;gap:12px;justify-content:center;align-items:center;min-height:clamp(80px,22vmin,120px);font-size:clamp(54px,16vmin,80px);background:#fff;border-radius:20px;border:3px solid var(--bdr);padding:12px 24px;box-shadow:0 6px 18px rgba(0,0,0,.08);width:100%;max-width:500px;flex-wrap:wrap;"></div>
+    <div id="msq-tap-hint" style="font-size:13px;color:var(--muted);font-weight:700;"></div>
+    <div id="msq-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:100%;max-width:480px;flex:1;align-content:center;"></div>
+    <div id="msq-progress" style="display:flex;gap:6px;flex-shrink:0;padding-bottom:4px;"></div>
+  </div>
+</div>
+
+<!-- ══ 동물 분류 (Animal Sort) ══ -->
+<div class="screen hidden" id="animalsort">
+  <div class="top-bar"><button class="back-btn" onclick="goHub()">← 뒤로</button><div class="top-title">동물 분류 🗂️</div><div id="as-score" style="font-size:16px;font-weight:900;color:var(--gold)">⭐ 0점</div></div>
+  <div style="display:flex;flex-direction:column;align-items:center;flex:1 1 0;min-height:0;gap:8px;padding:8px 16px;width:100%;">
+    <div id="as-q" style="font-size:clamp(18px,5vw,23px);font-weight:900;color:var(--text);text-align:center;"></div>
+    <div id="as-animal" style="font-size:clamp(80px,26vmin,150px);cursor:pointer;animation:si-idle 2.4s ease-in-out infinite;filter:drop-shadow(0 10px 18px rgba(0,0,0,.14));" onclick="replayAS()"></div>
+    <div style="font-size:13px;color:var(--muted);font-weight:700;">어디에 사는 동물일까요?</div>
+  </div>
+  <div id="as-bins" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:95%;max-width:520px;padding:0 0 14px;flex-shrink:0;"></div>
+</div>
+
+<!-- ══ 뭐가 없어졌지? (What's Missing) ══ -->
+<div class="screen hidden" id="whats-missing">
+  <div class="top-bar"><button class="back-btn" onclick="goHub()">← 뒤로</button><div class="top-title">뭐가 없어졌지? 🔎</div><div id="wm-streak" style="font-size:16px;font-weight:900;color:var(--gold)">🔥 0연속!</div></div>
+  <div style="display:flex;flex-direction:column;align-items:center;flex:1 1 0;min-height:0;gap:8px;padding:10px 16px;width:100%;">
+    <div id="wm-q" style="font-size:clamp(18px,5vw,24px);font-weight:900;color:var(--text);text-align:center;line-height:1.4;"></div>
+    <div id="wm-scene" style="display:grid;gap:10px;justify-content:center;align-items:center;flex:1;width:100%;max-width:500px;"></div>
+  </div>
+  <div id="wm-choices" style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;width:95%;max-width:500px;padding:0 0 14px;flex-shrink:0;"></div>
 </div>
 
 <!-- COLLECTION -->
@@ -1091,8 +1129,8 @@ function renderBL(){
   const strokes=(blLang==='ko'?KO_STROKES:EN_STROKES)[item.char]||[];
   document.getElementById('bl-prog2').textContent='획 1/'+strokes.length;
   setTimeout(()=>startBLAnimation(item.char,strokes),400);
-  if(blLang==='ko')speakSeq([item.char+', '+item.name,item.ex+' 할 때 '+item.char],900);
-  else speakSeq([item.char+'. '+item.name+'.',item.ex+'!'],900);
+  if(blLang==='ko')speakSeq([item.name, item.ex+' 할 때 '+item.char+' 이에요!'],900);
+  else speakSeq([item.name+'.', item.ex+'!'],900);
 }
 
 function stopBLAnimation(){
@@ -1735,779 +1773,316 @@ function checkColor(ok,btn,name){
 }
 
 /* ══════════════════════════
-   11. 그림자 맞추기 (Shadow Match)
-   – 검은 실루엣 → 4개 이모지 중 맞는 것 탭
-   – 청각 필요 없음, 순수 시각 게임
-══════════════════════════ */
-let shdCur=null,shdStreak=0,_shdUsed=[],_shdLock=false;
-function startShadowGame(){
-  shdStreak=0;_shdUsed=[];_shdLock=false;
-  document.getElementById('shd-streak').textContent='🔥 0연속!';
-  show('shadowgame');
-  setTimeout(()=>speakSeq(['그림자를 보고','어떤 동물인지 찾아봐요!'],700,()=>setTimeout(newShadowRound,400)),300);
-}
-function newShadowRound(){
-  _shdLock=false;
-  const pool=DB.filter(d=>!_shdUsed.includes(d.n));
-  shdCur=(pool.length>0?pool:DB)[~~(Math.random()*(pool.length||DB.length))];
-  _shdUsed=_shdUsed.length>20?[shdCur.n]:[..._shdUsed,shdCur.n];
-  const sEl=document.getElementById('shd-shadow');
-  sEl.textContent=shdCur.e;
-  sEl.style.filter='brightness(0)';
-  document.getElementById('shd-q').textContent='이 그림자는 누구일까요?';
-  const wrongs=DB.filter(d=>d.n!==shdCur.n&&d.e!==shdCur.e).sort(()=>Math.random()-.5).slice(0,3);
-  const choices=[...wrongs,shdCur].sort(()=>Math.random()-.5);
-  const ch=document.getElementById('shd-choices');ch.innerHTML='';
-  choices.forEach(a=>{
-    const btn=document.createElement('button');
-    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 6px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.08);transition:transform .12s;gap:4px;aspect-ratio:1/1;';
-    btn.innerHTML='<span style="font-size:clamp(48px,14vw,66px);">'+a.e+'</span><span style="font-size:clamp(11px,3vw,14px);font-weight:900;color:var(--text);">'+a.n+'</span>';
-    btn.addEventListener('click',()=>checkShadow(a.n===shdCur.n,btn));
-    ch.appendChild(btn);
-  });
-}
-function checkShadow(ok,btn){
-  if(_shdLock)return;
-  if(ok){
-    _shdLock=true;
-    btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';
-    btn.style.transform='scale(1.15)';
-    /* 그림자 컬러 공개 */
-    const sEl=document.getElementById('shd-shadow');
-    sEl.style.transition='filter .8s ease';sEl.style.filter='none';
-    sEl.animate([{transform:'scale(.7) rotate(-10deg)'},{transform:'scale(1.2) rotate(5deg)'},{transform:'scale(1)'}],{duration:700,easing:'cubic-bezier(.2,1.6,.35,1)'});
-    playDDDang();throwConfetti();shdStreak++;
-    document.getElementById('shd-streak').textContent='🔥 '+shdStreak+'연속!';
-    speakSeq([shdCur.n,'맞아요!','잘했어요!'],500,()=>setTimeout(newShadowRound,600));
-  }else{
-    btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';
-    btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:300});
-    playDdaeng();shdStreak=0;document.getElementById('shd-streak').textContent='🔥 0연속!';
-    speak('아니에요! 다시 찾아봐요!');
-    setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);
-  }
-}
-
-/* ══════════════════════════
-   12. 첫소리 찾기 (First Sound Matching)
-   핵심 음운인식 게임:
-   제시된 자음으로 시작하는 단어 이모지 찾기
-   ex) ㄱ → 강아지🐕 고양이🐱 고래🐋 를 고름
-   Stage 1 핵심 게임 — 글자와 소리를 연결
-══════════════════════════ */
-const FS_DATA=[
-  {char:'ㄱ',name:'기역',items:[
-    {n:'강아지',e:'🐕'},{n:'고양이',e:'🐱'},{n:'고래',e:'🐋'},{n:'거북이',e:'🐢'},
-    {n:'고릴라',e:'🦍'},{n:'곰',e:'🐻'},{n:'기린',e:'🦒'},{n:'꿀벌',e:'🐝'}]},
-  {char:'ㄴ',name:'니은',items:[
-    {n:'나비',e:'🦋'},{n:'낙타',e:'🐪'},{n:'늑대',e:'🐺'}]},
-  {char:'ㄷ',name:'디귿',items:[
-    {n:'돼지',e:'🐷'},{n:'도마뱀',e:'🦎'},{n:'돌고래',e:'🐬'},{n:'두루미',e:'🦢'}]},
-  {char:'ㄹ',name:'리을',items:[
-    {n:'라이온',e:'🦁'},{n:'로버트',e:'🤖'}]},
-  {char:'ㅁ',name:'미음',items:[
-    {n:'말',e:'🐎'},{n:'문어',e:'🐙'},{n:'미어캣',e:'🦡'}]},
-  {char:'ㅂ',name:'비읍',items:[
-    {n:'박쥐',e:'🦇'},{n:'백조',e:'🦢'}]},
-  {char:'ㅅ',name:'시옷',items:[
-    {n:'사자',e:'🦁'},{n:'상어',e:'🦈'},{n:'수달',e:'🦦'},{n:'소',e:'🐄'},
-    {n:'사슴',e:'🦌'},{n:'산양',e:'🐐'}]},
-  {char:'ㅇ',name:'이응',items:[
-    {n:'오리',e:'🦆'},{n:'오리너구리',e:'🦫'},{n:'악어',e:'🐊'}]},
-  {char:'ㅈ',name:'지읒',items:[
-    {n:'지렁이',e:'🪱'}]},
-  {char:'ㅊ',name:'치읓',items:[
-    {n:'치타',e:'🐆'},{n:'청개구리',e:'🐸'}]},
-  {char:'ㅋ',name:'키읔',items:[
-    {n:'카멜레온',e:'🦎'},{n:'캥거루',e:'🦘'},{n:'코끼리',e:'🐘'},
-    {n:'코알라',e:'🐨'},{n:'코뿔소',e:'🦏'}]},
-  {char:'ㅌ',name:'티읕',items:[
-    {n:'타조',e:'🦤'},{n:'토끼',e:'🐰'}]},
-  {char:'ㅍ',name:'피읖',items:[
-    {n:'판다',e:'🐼'},{n:'펭귄',e:'🐧'},{n:'표범',e:'🐆'},
-    {n:'플라밍고',e:'🦩'}]},
-  {char:'ㅎ',name:'히읗',items:[
-    {n:'하마',e:'🦛'},{n:'하이에나',e:'🐕'},{n:'홍학',e:'🦩'},
-    {n:'호랑이',e:'🐯'}]},
-];
-/* 영어 첫소리 */
-const FS_EN=[
-  {char:'A',name:'에이',items:[{n:'Ant',e:'🐜'},{n:'Alligator',e:'🐊'}]},
-  {char:'B',name:'비',items:[{n:'Bear',e:'🐻'},{n:'Bee',e:'🐝'},{n:'Butterfly',e:'🦋'},{n:'Bird',e:'🐦'}]},
-  {char:'C',name:'씨',items:[{n:'Cat',e:'🐱'},{n:'Cow',e:'🐄'},{n:'Crab',e:'🦀'}]},
-  {char:'D',name:'디',items:[{n:'Dog',e:'🐕'},{n:'Duck',e:'🦆'},{n:'Deer',e:'🦌'},{n:'Dolphin',e:'🐬'}]},
-  {char:'E',name:'이',items:[{n:'Elephant',e:'🐘'},{n:'Eagle',e:'🦅'}]},
-  {char:'F',name:'에프',items:[{n:'Fox',e:'🦊'},{n:'Frog',e:'🐸'},{n:'Fish',e:'🐟'}]},
-  {char:'G',name:'쥐',items:[{n:'Gorilla',e:'🦍'},{n:'Giraffe',e:'🦒'},{n:'Goat',e:'🐐'}]},
-  {char:'H',name:'에이치',items:[{n:'Horse',e:'🐎'},{n:'Hippo',e:'🦛'},{n:'Hen',e:'🐔'}]},
-  {char:'L',name:'엘',items:[{n:'Lion',e:'🦁'},{n:'Lizard',e:'🦎'},{n:'Lamb',e:'🐑'}]},
-  {char:'M',name:'엠',items:[{n:'Monkey',e:'🐒'},{n:'Mouse',e:'🐭'}]},
-  {char:'O',name:'오',items:[{n:'Owl',e:'🦉'},{n:'Otter',e:'🦦'},{n:'Octopus',e:'🐙'}]},
-  {char:'P',name:'피',items:[{n:'Pig',e:'🐷'},{n:'Panda',e:'🐼'},{n:'Penguin',e:'🐧'}]},
-  {char:'R',name:'알',items:[{n:'Rabbit',e:'🐰'},{n:'Rhino',e:'🦏'}]},
-  {char:'S',name:'에스',items:[{n:'Snake',e:'🐍'},{n:'Sheep',e:'🐑'},{n:'Swan',e:'🦢'},{n:'Shark',e:'🦈'}]},
-  {char:'T',name:'티',items:[{n:'Tiger',e:'🐯'},{n:'Turtle',e:'🐢'}]},
-  {char:'W',name:'더블유',items:[{n:'Wolf',e:'🐺'},{n:'Whale',e:'🐋'}]},
-  {char:'Z',name:'지',items:[{n:'Zebra',e:'🦓'}]},
-];
-
-let fsLang='ko',fsCur=null,fsCurItems=[],fsCorrects=[],fsStreak=0,fsLevel=1,_fsLock=false;
-
-function startFirstSoundGame(lang='ko'){
-  fsLang=lang;fsStreak=0;fsLevel=1;fsCorrects=[];_fsLock=false;
-  document.getElementById('fs-streak').textContent='🔥 0연속!';
-  show('firstsound');
-  setTimeout(()=>{
-    speakSeq([lang==='ko'?'어떤 글자로 시작하는 동물을 찾아봐요!':'What starts with this letter?'],700,()=>setTimeout(newFSRound,400));
-  },300);
-}
-
-function newFSRound(){
-  _fsLock=false;
-  const db=fsLang==='ko'?FS_DATA:FS_EN;
-  /* 3개 이상 아이템 있는 글자만 사용 (초반), 레벨 오르면 2개도 허용 */
-  const pool=db.filter(d=>d.items.length>=(fsLevel<=2?3:2));
-  fsCur=pool[~~(Math.random()*pool.length)];
-  fsCurItems=fsCur.items;
-
-  document.getElementById('fs-letter').textContent=fsCur.char;
-  document.getElementById('fs-letter-name').textContent=fsCur.name;
-  document.getElementById('fs-hint').textContent=fsLang==='ko'?fsCur.char+'으로 시작하는 것은?':'Starts with '+fsCur.char+'!';
-
-  /* 정답 수: 레벨1=1개 찾기, 레벨2=2개, 레벨3+=3개 */
-  const correctCount=Math.min(fsLevel,3,fsCurItems.length);
-  fsCorrects=[...fsCurItems].sort(()=>Math.random()-.5).slice(0,correctCount);
-
-  /* 오답 pool */
-  const wrongPool=db.filter(d=>d.char!==fsCur.char).flatMap(d=>d.items)
-                    .sort(()=>Math.random()-.5);
-  const numChoices=correctCount<=1?4:correctCount<=2?6:8;
-  const numWrong=numChoices-correctCount;
-  const wrongs=wrongPool.slice(0,numWrong);
-  const choices=[...fsCorrects.map(c=>({...c,isCorrect:true})),
-                 ...wrongs.map(c=>({...c,isCorrect:false}))]
-                .sort(()=>Math.random()-.5);
-
-  const cols=numChoices<=4?4:numChoices<=6?3:4;
-  document.getElementById('fs-q').textContent=
-    fsLang==='ko'
-      ? '"'+fsCur.char+'" 으로 시작하는 동물을 찾아봐요! ('+correctCount+'개)'
-      : '"'+fsCur.char+'" 으로 시작하는 것을 찾아봐요! ('+correctCount+'개)';
-
-  const ch=document.getElementById('fs-choices');ch.innerHTML='';
-  ch.style.gridTemplateColumns='repeat('+cols+',1fr)';
-  choices.forEach(item=>{
-    const btn=document.createElement('button');
-    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.07);transition:transform .12s;gap:3px;aspect-ratio:1/1;';
-    btn.innerHTML='<span style="font-size:clamp(34px,10vw,50px)">'+item.e+'</span><span style="font-size:clamp(10px,2.8vw,13px);font-weight:900;color:var(--text);text-align:center;line-height:1.2;">'+item.n+'</span>';
-    btn.dataset.correct=item.isCorrect?'1':'0';
-    btn.dataset.picked='0';
-    btn.addEventListener('click',()=>checkFS(btn,item));
-    ch.appendChild(btn);
-  });
-
-  /* 글자 이름 읽어주기 */
-  speakSeq([fsCur.name, fsLang==='ko'?fsCur.char+'으로 시작하는 것을 찾아봐요!':'Find the one that starts with '+fsCur.name+'!'],700);
-}
-
-let fsPicked=0;
-function checkFS(btn,item){
-  if(_fsLock||btn.dataset.picked==='1')return;
-  btn.dataset.picked='1';
-
-  if(item.isCorrect){
-    btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.18)';
-    btn.style.transform='scale(1.15)';
-    playDDDang();
-    fsPicked++;
-    speak(item.n);
-    if(fsPicked>=fsCorrects.length){
-      /* 다 찾음 */
-      _fsLock=true;fsPicked=0;fsStreak++;fsLevel=Math.min(Math.ceil(fsStreak/2)+1,5);
-      document.getElementById('fs-streak').textContent='🔥 '+fsStreak+'연속!';
-      throwConfetti();
-      speakSeq(['모두 찾았어요!','잘했어요!'],600,()=>setTimeout(newFSRound,500));
-    }
-  }else{
-    btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';
-    btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});
-    playDdaeng();
-    setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';btn.dataset.picked='0';},600);
-    speak('아니에요!');
-  }
-}
-
-
-/* ══════════════════════════
-   GLOBAL STAR COUNTER
-══════════════════════════ */
-let totalStars = parseInt(localStorage.getItem('yuna_stars')||'0');
-function addStars(n){
-  totalStars+=n;localStorage.setItem('yuna_stars',totalStars);
-  const el=document.getElementById('plat-stars');if(el)el.textContent='⭐ '+totalStars;
-  const db=document.getElementById('dic-badge');if(db)db.textContent=unlocked.length;
-}
-function updateHubStats(){
-  const el=document.getElementById('plat-stars');if(el)el.textContent='⭐ '+totalStars;
-  const db=document.getElementById('dic-badge');if(db)db.textContent=unlocked.length;
-}
-/* hub filter */
-function hubFilter(subj){
-  document.querySelectorAll('.plat-badge').forEach(b=>b.classList.remove('active'));
-  document.querySelectorAll('.subj-card').forEach(c=>{
-    c.style.display=(subj==='all'||c.dataset.subj===subj)?'':'none';
-  });
-  if(subj==='all')document.querySelectorAll('.subj-card').forEach(c=>c.style.display='');
-}
-/* override show() to update hub stats on return */
-const _origShow=show;
-function showHub(){_origShow('hub');updateHubStats();}
-/* patch goHub */
-
-/* ══════════════════════════
-   DATA: 감정
-══════════════════════════ */
-const EMOTION_DATA=[
-  {name:'기뻐요',e:'😊',desc:'기쁠 때'},
-  {name:'슬퍼요',e:'😢',desc:'슬플 때'},
-  {name:'화났어요',e:'😠',desc:'화날 때'},
-  {name:'무서워요',e:'😱',desc:'무서울 때'},
-  {name:'놀랐어요',e:'😲',desc:'놀랐을 때'},
-  {name:'졸려요',e:'😴',desc:'졸릴 때'},
-  {name:'배고파요',e:'😋',desc:'배고플 때'},
-  {name:'아파요',e:'🤒',desc:'아플 때'},
-];
-const BODY_DATA=[
-  {name:'머리',e:'🗣️',en:'head'},{name:'눈',e:'👀',en:'eyes'},{name:'코',e:'👃',en:'nose'},
-  {name:'입',e:'👄',en:'mouth'},{name:'귀',e:'👂',en:'ear'},{name:'손',e:'✋',en:'hand'},
-  {name:'발',e:'🦶',en:'foot'},{name:'배',e:'🫃',en:'tummy'},{name:'무릎',e:'🦵',en:'knee'},
-];
-const SEASON_DATA={
-  '봄🌸':{e:'🌸',items:['🌷','🌼','🦋','🐝','🌱','🌦️','🐛'],
-    desc:'꽃이 피고 나비가 날아요'},
-  '여름☀️':{e:'☀️',items:['🌊','🏖️','🍉','🌻','🦗','⛱️','🍦'],
-    desc:'햇살이 뜨겁고 수영해요'},
-  '가을🍂':{e:'🍂',items:['🍁','🌾','🍎','🎃','🦔','🌰','🍇'],
-    desc:'나뭇잎이 단풍으로 물들어요'},
-  '겨울❄️':{e:'❄️',items:['⛄','🎿','☃️','🧤','🧣','🌨️','🦌'],
-    desc:'눈이 내리고 춥고 따뜻한 옷을 입어요'},
-};
-const WEATHER_DATA=[
-  {name:'맑아요',e:'☀️',desc:'해가 쨍쨍!'},
-  {name:'흐려요',e:'☁️',desc:'구름이 많아요'},
-  {name:'비가 와요',e:'🌧️',desc:'우산을 써요'},
-  {name:'눈이 와요',e:'🌨️',desc:'눈사람 만들어요'},
-  {name:'바람이 불어요',e:'💨',desc:'바람이 쌩쌩!'},
-  {name:'천둥번개',e:'⛈️',desc:'번쩍번쩍!'},
-];
-const OPPOSITE_DATA=[
-  {w:'크다',e:'🐘',opp:'작다',oe:'🐭'},
-  {w:'길다',e:'🦒',opp:'짧다',oe:'🐹'},
-  {w:'빠르다',e:'🐆',opp:'느리다',oe:'🐢'},
-  {w:'뜨겁다',e:'🔥',opp:'차갑다',oe:'🧊'},
-  {w:'무겁다',e:'⚖️',opp:'가볍다',oe:'🪶'},
-  {w:'위',e:'⬆️',opp:'아래',oe:'⬇️'},
-  {w:'낮',e:'☀️',opp:'밤',oe:'🌙'},
-  {w:'열다',e:'🔓',opp:'닫다',oe:'🔒'},
-  {w:'많다',e:'🍇',opp:'적다',oe:'🍒'},
-  {w:'깨끗하다',e:'🛁',opp:'더럽다',oe:'🦠'},
-];
-const FOOD_CATEGORIES={
-  '과일🍎':{e:'🍎',items:['🍎','🍌','🍊','🍓','🍇','🍉','🍑','🍒','🫐','🥝']},
-  '채소🥦':{e:'🥦',items:['🥦','🥕','🌽','🍆','🫑','🥬','🧅','🧄','🥔','🍅']},
-  '간식🍰':{e:'🍰',items:['🍰','🍦','🍪','🍫','🍬','🧁','🍩','🍭','🎂','🍡']},
-};
-const SHAPE_DATA=[
-  {name:'원',svg:'<circle cx="50" cy="50" r="42" fill="',desc:'동그라미'},
-  {name:'삼각형',svg:'<polygon points="50,8 92,92 8,92" fill="',desc:'세모'},
-  {name:'사각형',svg:'<rect x="8" y="8" width="84" height="84" fill="',desc:'네모'},
-  {name:'별',svg:'<polygon points="50,5 61,35 95,35 68,57 79,91 50,70 21,91 32,57 5,35 39,35" fill="',desc:'별'},
-  {name:'하트',svg:'<path d="M50,80 C50,80 15,55 15,35 C15,20 25,10 50,35 C75,10 85,20 85,35 C85,55 50,80 50,80Z" fill="',desc:'하트'},
-  {name:'다이아몬드',svg:'<polygon points="50,5 95,50 50,95 5,50" fill="',desc:'다이아몬드'},
-];
-const SHAPE_COLORS=['#f472b6','#38bdf8','#4ade80','#fbbf24','#fb923c','#a855f7','#f87171','#2dd4c8'];
-
-/* ══════════════════════════
-   감정 맞추기
-══════════════════════════ */
-let emoCur=null,emoStreak=0;
-function startEmotionGame(){
-  emoStreak=0;document.getElementById('emo-streak').textContent='🔥 0연속!';
-  show('emotiongame');setTimeout(()=>{speakSeq(['감정 게임!','어떤 기분일까요?'],700,()=>setTimeout(newEmoRound,400));},300);
-}
-function newEmoRound(){
-  emoCur=EMOTION_DATA[~~(Math.random()*EMOTION_DATA.length)];
-  document.getElementById('emo-scene').textContent=emoCur.e;
-  document.getElementById('emo-q').textContent='"'+emoCur.name+'" 얼굴을 찾아봐요!';
-  const wrong=EMOTION_DATA.filter(e=>e.name!==emoCur.name).sort(()=>Math.random()-.5).slice(0,3);
-  const ch=[...wrong,emoCur].sort(()=>Math.random()-.5);
-  const c=document.getElementById('emo-choices');c.innerHTML='';
-  ch.forEach(item=>{
-    const btn=document.createElement('button');
-    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:22px;padding:12px 6px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:clamp(40px,12vw,58px);';
-    btn.innerHTML=item.e+'<span style="font-size:clamp(13px,3.5vw,16px);font-weight:900;color:var(--text);">'+item.name+'</span>';
-    btn.onclick=()=>checkEmo(item.name===emoCur.name,btn);
-    c.appendChild(btn);
-  });
-  setTimeout(()=>speakSeq([emoCur.name],0),400);
-}
-function replayEmo(){if(emoCur)speak(emoCur.name);}
-function checkEmo(ok,btn){
-  if(ok){btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';btn.style.transform='scale(1.12)';playDDDang();throwConfetti();emoStreak++;addStars(2);document.getElementById('emo-streak').textContent='🔥 '+emoStreak+'연속!';speakSeq([emoCur.name+'!','맞아요!'],500,()=>setTimeout(newEmoRound,400));}
-  else{btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();emoStreak=0;document.getElementById('emo-streak').textContent='🔥 0연속!';speak('아니에요! 다시 찾아봐요!');setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);}
-}
-
-/* ══════════════════════════
-   도형 찾기
-══════════════════════════ */
-let shpCur=null,shpStreak=0;
-function startShapeGame(){
-  shpStreak=0;document.getElementById('shp-streak').textContent='🔥 0연속!';
-  show('shapegame');setTimeout(()=>{speakSeq(['도형 놀이!','같은 모양을 찾아봐요!'],700,()=>setTimeout(newShpRound,400));},300);
-}
-function mkShapeSVG(s,color){return '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%">'+s+color+'"/></svg>';}
-function newShpRound(){
-  shpCur=SHAPE_DATA[~~(Math.random()*SHAPE_DATA.length)];
-  const targetColor=SHAPE_COLORS[~~(Math.random()*SHAPE_COLORS.length)];
-  const tEl=document.getElementById('shp-target');
-  tEl.innerHTML=mkShapeSVG(shpCur.svg,targetColor);
-  tEl.style.filter='drop-shadow(0 6px 14px rgba(0,0,0,.15))';
-  document.getElementById('shp-q').textContent='"'+shpCur.desc+'" 을 찾아봐요!';
-  const wrong=SHAPE_DATA.filter(s=>s.name!==shpCur.name).sort(()=>Math.random()-.5).slice(0,3);
-  const ch=[...wrong,shpCur].sort(()=>Math.random()-.5);
-  const c=document.getElementById('shp-choices');c.innerHTML='';
-  ch.forEach(item=>{
-    const btn=document.createElement('button');
-    const btnColor=SHAPE_COLORS[~~(Math.random()*SHAPE_COLORS.length)];
-    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:18px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s;padding:10px;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;';
-    btn.innerHTML='<div style="width:clamp(48px,14vw,70px);height:clamp(48px,14vw,70px);">'+mkShapeSVG(item.svg,btnColor)+'</div>';
-    btn.onclick=()=>checkShp(item.name===shpCur.name,btn,item.name);
-    c.appendChild(btn);
-  });
-  speakSeq([shpCur.desc],0);
-}
-function checkShp(ok,btn,name){
-  if(ok){btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';btn.style.transform='scale(1.15)';playDDDang();throwConfetti();shpStreak++;addStars(2);document.getElementById('shp-streak').textContent='🔥 '+shpStreak+'연속!';speakSeq([name,'맞아요!','잘했어요!'],500,()=>setTimeout(newShpRound,400));}
-  else{btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();shpStreak=0;document.getElementById('shp-streak').textContent='🔥 0연속!';speak('다시 찾아봐요!');setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);}
-}
-
-/* ══════════════════════════
-   크기 비교
-══════════════════════════ */
-let szCur=null,szStreak=0;
-const SZ_PROMPTS=[
-  {q:'더 큰 것을 찾아봐요!',isLarger:true},
-  {q:'더 작은 것을 찾아봐요!',isLarger:false},
-];
-function startSizeGame(){
-  szStreak=0;document.getElementById('sz-streak').textContent='🔥 0연속!';
-  show('sizegame');setTimeout(()=>{speakSeq(['크기 게임!'],500,()=>setTimeout(newSzRound,300));},300);
-}
-function newSzRound(){
-  const animals=DB.sort(()=>Math.random()-.5).slice(0,2);
-  const prompt=SZ_PROMPTS[~~(Math.random()*SZ_PROMPTS.length)];
-  const big=animals[0],small=animals[1];
-  const scene=document.getElementById('sz-scene');scene.innerHTML='';
-  /* 다른 크기로 이모지 표시 */
-  [big,small].sort(()=>Math.random()-.5).forEach((a,idx)=>{
-    const sz=a===big?'clamp(80px,24vmin,120px)':'clamp(44px,14vmin,70px)';
-    const div=document.createElement('div');
-    div.style.cssText=`font-size:${sz};filter:drop-shadow(0 6px 12px rgba(0,0,0,.14));cursor:pointer;transition:transform .12s;border:4px solid transparent;border-radius:20px;padding:8px;`;
-    div.textContent=a.e;
-    div.onclick=()=>{
-      const userPickedBig=(a===big);
-      const correct=(prompt.isLarger&&userPickedBig)||(!prompt.isLarger&&!userPickedBig);
-      if(correct){div.style.borderColor='var(--green)';div.style.background='rgba(74,222,128,.15)';div.style.transform='scale(1.15)';playDDDang();throwConfetti();szStreak++;addStars(2);document.getElementById('sz-streak').textContent='🔥 '+szStreak+'연속!';speakSeq(['맞아요!','잘했어요!'],500,()=>setTimeout(newSzRound,400));}
-      else{div.style.borderColor='var(--coral)';div.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();szStreak=0;document.getElementById('sz-streak').textContent='🔥 0연속!';speak('아니에요! 다시 찾아봐요!');}
-    };
-    scene.appendChild(div);
-  });
-  document.getElementById('sz-q').textContent=prompt.q;
-  speak(prompt.q);
-}
-
-/* ══════════════════════════
-   콕콕 세기 (Counting Touch)
-══════════════════════════ */
-let ctAnimal=null,ctTarget=0,ctTapped=0,ctLocked=false,ctLevel=1;
-function startCountTouch(){
-  ctLevel=1;document.getElementById('ct-score').textContent='⭐ 0점';
-  show('counttouch');setTimeout(()=>{speakSeq(['콕콕 세기 놀이!','하나씩 콕콕 눌러봐요!'],700,()=>setTimeout(newCtRound,400));},300);
-}
-function newCtRound(){
-  ctTapped=0;ctLocked=false;
-  ctAnimal=DB[~~(Math.random()*DB.length)];
-  ctTarget=1+~~(Math.random()*Math.min(ctLevel+2,9));
-  const counter=document.getElementById('ct-counter');counter.textContent='0';counter.style.color='var(--purple)';
-  const confirmDiv=document.getElementById('ct-confirm');confirmDiv.style.display='none';
-  const nextBtn=document.getElementById('ct-next-btn');nextBtn.style.display='none';
-  const scene=document.getElementById('ct-scene');scene.innerHTML='';
-  for(let i=0;i<ctTarget;i++){
-    const el=document.createElement('div');
-    el.style.cssText=`font-size:clamp(42px,12vw,60px);cursor:pointer;border-radius:16px;padding:6px;border:4px solid transparent;transition:all .15s;filter:drop-shadow(0 4px 8px rgba(0,0,0,.12));`;
-    el.textContent=ctAnimal.e;el.dataset.tapped='0';
-    el.onclick=()=>ctTapAnimal(el);
-    el.addEventListener('touchend',e=>{e.preventDefault();ctTapAnimal(el);},{passive:false});
-    scene.appendChild(el);
-  }
-  document.getElementById('ct-q').textContent=ctAnimal.n+' 몇 마리예요?';
-  document.getElementById('ct-tap-hint').textContent='하나씩 콕콕 눌러봐요!';
-  speak(ctAnimal.n+'! 하나씩 콕콕 눌러봐요!');
-}
-function ctTapAnimal(el){
-  if(ctLocked||el.dataset.tapped==='1')return;
-  el.dataset.tapped='1';el.style.borderColor='var(--green)';el.style.background='rgba(74,222,128,.2)';el.style.transform='scale(.88)';
-  playPop();ctTapped++;
-  const counter=document.getElementById('ct-counter');
-  const nums=['영','하나','둘','셋','넷','다섯','여섯','일곱','여덟','아홉','열'];
-  counter.textContent=ctTapped;
-  speak(nums[ctTapped]||ctTapped+'');
-  if(ctTapped>=ctTarget){
-    ctLocked=true;counter.style.color='var(--green)';
-    document.getElementById('ct-confirm').style.display='block';
-    document.getElementById('ct-next-btn').style.display='block';
-    playDDDang();
-  }
-}
-function ctConfirm(){
-  throwConfetti();addStars(3);
-  const curScore=parseInt(document.getElementById('ct-score').textContent.replace('⭐ ',''))+ctLevel*5;
-  document.getElementById('ct-score').textContent='⭐ '+curScore;
-  ctLevel=Math.min(ctLevel+1,8);
-  speakSeq([ctTarget+'마리예요!','잘했어요!'],600,()=>setTimeout(newCtRound,400));
-}
-
-/* ══════════════════════════
-   계절 놀이
-══════════════════════════ */
-let seaCur=null,seaStreak=0;
-function startSeasonGame(){
-  seaStreak=0;document.getElementById('sea-streak').textContent='🔥 0연속!';
-  show('seasongame');setTimeout(()=>{speakSeq(['계절 놀이!'],500,()=>setTimeout(newSeaRound,300));},300);
-}
-function newSeaRound(){
-  const keys=Object.keys(SEASON_DATA);
-  const key=keys[~~(Math.random()*keys.length)];
-  seaCur={name:key,...SEASON_DATA[key]};
-  /* 랜덤 아이템 하나 선택해서 "이건 어느 계절?" */
-  const item=seaCur.items[~~(Math.random()*seaCur.items.length)];
-  document.getElementById('sea-target').textContent=item;
-  document.getElementById('sea-q').textContent=item+' 은 어느 계절일까요?';
-  const c=document.getElementById('sea-choices');c.innerHTML='';
-  keys.forEach(k=>{
-    const btn=document.createElement('button');
-    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:18px;padding:10px 4px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:clamp(34px,10vw,48px);';
-    btn.innerHTML=SEASON_DATA[k].e+'<span style="font-size:clamp(11px,3vw,14px);font-weight:900;color:var(--text);">'+k+'</span>';
-    btn.onclick=()=>checkSea(k===key,btn,k);
-    c.appendChild(btn);
-  });
-  speak(item+'은 어느 계절일까요?');
-}
-function checkSea(ok,btn,name){
-  if(ok){btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';btn.style.transform='scale(1.12)';playDDDang();throwConfetti();seaStreak++;addStars(2);document.getElementById('sea-streak').textContent='🔥 '+seaStreak+'연속!';speakSeq([name,'맞아요!'],500,()=>setTimeout(newSeaRound,400));}
-  else{btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();seaStreak=0;document.getElementById('sea-streak').textContent='🔥 0연속!';speak('아니에요! 다시 골라봐요!');setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);}
-}
-
-/* ══════════════════════════
-   날씨 맞추기
-══════════════════════════ */
-let wthrCur=null,wthrStreak=0;
-function startWeatherGame(){
-  wthrStreak=0;document.getElementById('wthr-streak').textContent='🔥 0연속!';
-  show('weathergame');setTimeout(()=>{speakSeq(['날씨 게임!'],500,()=>setTimeout(newWthrRound,300));},300);
-}
-function newWthrRound(){
-  wthrCur=WEATHER_DATA[~~(Math.random()*WEATHER_DATA.length)];
-  document.getElementById('wthr-scene').textContent=wthrCur.e;
-  document.getElementById('wthr-q').textContent='"'+wthrCur.name+'" 날씨를 찾아봐요!';
-  const wrong=WEATHER_DATA.filter(w=>w.name!==wthrCur.name).sort(()=>Math.random()-.5).slice(0,3);
-  const ch=[...wrong,wthrCur].sort(()=>Math.random()-.5);
-  const c=document.getElementById('wthr-choices');c.innerHTML='';
-  ch.forEach(item=>{
-    const btn=document.createElement('button');
-    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:22px;padding:12px 6px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:clamp(38px,11vw,54px);';
-    btn.innerHTML=item.e+'<span style="font-size:clamp(11px,3vw,14px);font-weight:900;color:var(--text);">'+item.name+'</span>';
-    btn.onclick=()=>checkWthr(item.name===wthrCur.name,btn);
-    c.appendChild(btn);
-  });
-  setTimeout(()=>speak(wthrCur.name),400);
-}
-function replayWeather(){if(wthrCur)speak(wthrCur.name);}
-function checkWthr(ok,btn){
-  if(ok){btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';btn.style.transform='scale(1.12)';playDDDang();throwConfetti();wthrStreak++;addStars(2);document.getElementById('wthr-streak').textContent='🔥 '+wthrStreak+'연속!';speakSeq([wthrCur.name,'맞아요!'],500,()=>setTimeout(newWthrRound,400));}
-  else{btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();wthrStreak=0;document.getElementById('wthr-streak').textContent='🔥 0연속!';speak('아니에요!');setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);}
-}
-
-/* ══════════════════════════
-   리듬 따라치기
-══════════════════════════ */
-let rhyPattern=[],rhyTaps=[],rhyPhase='show',rhyLevel=1,rhyTimers=[];
-const RHY_NAMES=['쿵','짝','콩','딱'];
-function startRhythmGame(){
-  rhyLevel=1;document.getElementById('rhy-level').textContent='레벨 1';
-  show('rhythmgame');setTimeout(()=>{speakSeq(['리듬 게임!','선생님 리듬을 잘 듣고 따라 쳐봐요!'],800,()=>setTimeout(newRhyRound,400));},300);
-}
-function newRhyRound(){
-  rhyTaps=[];rhyPhase='show';
-  const len=Math.min(2+rhyLevel,6);
-  rhyPattern=Array.from({length:len},()=>~~(Math.random()*4));
-  document.getElementById('rhy-q').textContent='이 리듬을 따라 쳐봐요!';
-  document.getElementById('rhy-status').textContent='잘 들어봐요! 🎵';
-  document.getElementById('rhy-drum').style.pointerEvents='none';
-  showRhyPattern();
-}
-function showRhyPattern(){
-  const disp=document.getElementById('rhy-display');disp.innerHTML='';
-  rhyPattern.forEach((v,i)=>{
-    const dot=document.createElement('div');
-    dot.style.cssText='width:clamp(28px,8vw,38px);height:clamp(28px,8vw,38px);border-radius:50%;border:4px solid var(--bdr);background:#fff;transition:background .1s,transform .1s;';
-    dot.id='rdot'+i;disp.appendChild(dot);
-  });
-  let t=800;
-  rhyTimers.forEach(clearTimeout);rhyTimers=[];
-  rhyPattern.forEach((v,i)=>{
-    rhyTimers.push(setTimeout(()=>{
-      const dot=document.getElementById('rdot'+i);
-      if(dot){dot.style.background=SHAPE_COLORS[v];dot.style.transform='scale(1.3)';dot.style.borderColor=SHAPE_COLORS[v];}
-      playTick(v);
-      rhyTimers.push(setTimeout(()=>{if(dot){dot.style.background='#fff';dot.style.transform='scale(1)';dot.style.borderColor='var(--bdr)';}},350));
-    },t));
-    t+=600;
-  });
-  rhyTimers.push(setTimeout(()=>{
-    rhyPhase='tap';
-    document.getElementById('rhy-q').textContent='이제 따라 쳐봐요!';
-    document.getElementById('rhy-status').textContent='드럼을 콕콕 눌러요! 🥁';
-    document.getElementById('rhy-drum').style.pointerEvents='auto';
-  },t+200));
-}
-function playTick(v){
-  initA();if(!ax)return;
-  const freqs=[260,330,390,520];
-  const o=ax.createOscillator(),g=ax.createGain();
-  o.connect(g);g.connect(ax.destination);o.type='sine';o.frequency.value=freqs[v||0];
-  const t=ax.currentTime;
-  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.35,t+.02);g.gain.linearRampToValueAtTime(0,t+.25);
-  o.start(t);o.stop(t+.3);
-}
-function drumTap(){
-  if(rhyPhase!=='tap')return;
-  const drum=document.getElementById('rhy-drum');
-  drum.style.transform='scale(.82)';setTimeout(()=>drum.style.transform='scale(1)',120);
-  const v=rhyPattern[rhyTaps.length]||0;
-  playTick(v);rhyTaps.push(v);
-  const disp=document.getElementById('rhy-display');
-  const dot=disp.children[rhyTaps.length-1];
-  if(dot){dot.style.background=SHAPE_COLORS[v];dot.style.borderColor=SHAPE_COLORS[v];dot.style.transform='scale(1.25)';setTimeout(()=>{dot.style.transform='scale(1)';},250);}
-  if(rhyTaps.length>=rhyPattern.length){
-    rhyPhase='done';document.getElementById('rhy-drum').style.pointerEvents='none';
-    const ok=rhyPattern.every((v,i)=>v===rhyTaps[i]);
-    setTimeout(()=>{
-      if(ok){playDDDang();throwConfetti();addStars(3);rhyLevel=Math.min(rhyLevel+1,6);document.getElementById('rhy-level').textContent='레벨 '+rhyLevel;document.getElementById('rhy-status').textContent='🎉 맞아요! 잘했어요!';speakSeq(['맞아요!','잘했어요!'],500,()=>setTimeout(newRhyRound,600));}
-      else{playDdaeng();document.getElementById('rhy-status').textContent='😅 다시 해봐요!';speak('다시 해봐요!');setTimeout(()=>showRhyPattern(),1200);}
-    },300);
-  }
-}
-
-/* ══════════════════════════
-   신체 부위
-══════════════════════════ */
-let bdyCur=null,bdyStreak=0;
-function startBodyGame(){
-  bdyStreak=0;document.getElementById('bdy-streak').textContent='🔥 0연속!';
-  show('bodygame');setTimeout(()=>{speakSeq(['신체 부위 게임!'],500,()=>setTimeout(newBdyRound,300));},300);
-}
-function newBdyRound(){
-  bdyCur=BODY_DATA[~~(Math.random()*BODY_DATA.length)];
-  document.getElementById('bdy-body').textContent=bdyCur.e;
-  document.getElementById('bdy-q').textContent='"'+bdyCur.name+'" 을 찾아봐요!';
-  const wrong=BODY_DATA.filter(b=>b.name!==bdyCur.name).sort(()=>Math.random()-.5).slice(0,3);
-  const ch=[...wrong,bdyCur].sort(()=>Math.random()-.5);
-  const c=document.getElementById('bdy-choices');c.innerHTML='';
-  ch.forEach(item=>{
-    const btn=document.createElement('button');
-    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:22px;padding:12px 6px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:clamp(38px,11vw,52px);';
-    btn.innerHTML=item.e+'<span style="font-size:clamp(12px,3.2vw,16px);font-weight:900;color:var(--text);">'+item.name+'</span>';
-    btn.onclick=()=>checkBdy(item.name===bdyCur.name,btn);
-    c.appendChild(btn);
-  });
-  setTimeout(()=>speakSeq([bdyCur.name],0),400);
-}
-function replayBody(){if(bdyCur)speak(bdyCur.name);}
-function checkBdy(ok,btn){
-  if(ok){btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';btn.style.transform='scale(1.12)';playDDDang();throwConfetti();bdyStreak++;addStars(2);document.getElementById('bdy-streak').textContent='🔥 '+bdyStreak+'연속!';speakSeq([bdyCur.name,'맞아요!'],500,()=>setTimeout(newBdyRound,400));}
-  else{btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();bdyStreak=0;document.getElementById('bdy-streak').textContent='🔥 0연속!';speak('아니에요!');setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);}
-}
-
-/* ══════════════════════════
-   반대말 찾기
-══════════════════════════ */
-let oppCur=null,oppStreak=0,_oppLock=false;
-function startOppositesGame(){
-  oppStreak=0;_oppLock=false;document.getElementById('opp-streak').textContent='🔥 0연속!';
-  show('opposites');setTimeout(()=>{speakSeq(['반대말 게임!'],500,()=>setTimeout(newOppRound,300));},300);
-}
-function newOppRound(){
-  _oppLock=false;
-  oppCur=OPPOSITE_DATA[~~(Math.random()*OPPOSITE_DATA.length)];
-  document.getElementById('opp-word').textContent=oppCur.e;
-  document.getElementById('opp-label').textContent=oppCur.w;
-  document.getElementById('opp-q').textContent='"'+oppCur.w+'" 의 반대말은?';
-  const wrong=OPPOSITE_DATA.filter(o=>o.opp!==oppCur.opp).sort(()=>Math.random()-.5).slice(0,3);
-  const ch=[...wrong,{opp:oppCur.opp,oe:oppCur.oe}].sort(()=>Math.random()-.5);
-  const c=document.getElementById('opp-choices');c.innerHTML='';
-  ch.forEach(item=>{
-    const btn=document.createElement('button');
-    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:22px;padding:12px 6px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:clamp(38px,11vw,52px);';
-    btn.innerHTML=(item.oe||'❓')+'<span style="font-size:clamp(12px,3.2vw,16px);font-weight:900;color:var(--text);">'+(item.opp||'?')+'</span>';
-    btn.onclick=()=>checkOpp(item.opp===oppCur.opp,btn,item.opp||'');
-    c.appendChild(btn);
-  });
-  speakSeq([oppCur.w,'의 반대말은 무엇일까요?'],700);
-}
-function checkOpp(ok,btn,name){
-  if(_oppLock)return;
-  if(ok){_oppLock=true;btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';btn.style.transform='scale(1.12)';playDDDang();throwConfetti();oppStreak++;addStars(2);document.getElementById('opp-streak').textContent='🔥 '+oppStreak+'연속!';speakSeq([oppCur.w,'의 반대말은',oppCur.opp+'!','맞아요!'],650,()=>setTimeout(newOppRound,400));}
-  else{btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();oppStreak=0;document.getElementById('opp-streak').textContent='🔥 0연속!';speak('아니에요! 다시 골라봐요!');setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);}
-}
-
-/* ══════════════════════════
-   음식 분류
-══════════════════════════ */
-let foodCur=null,foodCurCat=null,foodScore=0,_foodLock=false;
-const FOOD_ALL_ITEMS=[].concat(...Object.entries(FOOD_CATEGORIES).map(([cat,d])=>d.items.map(e=>({e,cat}))));
-function startFoodGame(){
-  foodScore=0;_foodLock=false;document.getElementById('food-score').textContent='⭐ 0점';
-  show('foodgame');setTimeout(()=>{speakSeq(['음식 분류 게임!','어느 종류인지 골라봐요!'],700,()=>setTimeout(newFoodRound,400));},300);
-}
-function newFoodRound(){
-  _foodLock=false;
-  const item=FOOD_ALL_ITEMS[~~(Math.random()*FOOD_ALL_ITEMS.length)];
-  foodCur=item;foodCurCat=item.cat;
-  document.getElementById('food-item').textContent=item.e;
-  document.getElementById('food-q').textContent=item.e+' 은 어디에 속할까요?';
-  const c=document.getElementById('food-bins');c.innerHTML='';
-  Object.entries(FOOD_CATEGORIES).forEach(([cat,d])=>{
-    const btn=document.createElement('button');
-    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:22px;padding:10px 6px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:clamp(32px,9vw,44px);';
-    btn.innerHTML=d.e+'<span style="font-size:clamp(11px,3vw,14px);font-weight:900;color:var(--text);">'+cat+'</span>';
-    btn.onclick=()=>checkFood(cat===foodCurCat,btn,cat);
-    c.appendChild(btn);
-  });
-  setTimeout(()=>speak(item.e),400);
-}
-function replayFood(){if(foodCur)speak(foodCur.e);}
-function checkFood(ok,btn,name){
-  if(_foodLock)return;
-  if(ok){_foodLock=true;btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';btn.style.transform='scale(1.12)';playDDDang();throwConfetti();foodScore+=10;addStars(2);document.getElementById('food-score').textContent='⭐ '+foodScore+'점';speakSeq([name,'맞아요!'],500,()=>setTimeout(newFoodRound,400));}
-  else{btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();speak('아니에요! 다시 골라봐요!');setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);}
-}
-
-/* ══════════════════════════
-   규칙 찾기 (Pattern)
-══════════════════════════ */
-let patStreak=0,patCur=null,_patLock=false;
-function startPatternGame(){
-  patStreak=0;_patLock=false;document.getElementById('pat-streak').textContent='🔥 0연속!';
-  show('patterngame');setTimeout(()=>{speakSeq(['규칙 게임!','다음에 올 것을 찾아봐요!'],700,()=>setTimeout(newPatRound,400));},300);
-}
-function newPatRound(){
-  _patLock=false;
-  /* AB, ABC, AAB, ABB 패턴 중 랜덤 */
-  const pool=DB.sort(()=>Math.random()-.5).slice(0,3);
-  const patterns=[
-    ()=>{const a=pool[0],b=pool[1];return{seq:[a,b,a,b,a],ans:b,wrongs:[pool[2],...DB.sort(()=>Math.random()-.5).slice(0,2)].filter(d=>d.n!==b.n).slice(0,3)};},
-    ()=>{const a=pool[0],b=pool[1],c=pool[2];return{seq:[a,b,c,a,b],ans:c,wrongs:[...DB.sort(()=>Math.random()-.5).slice(0,3)].filter(d=>d.n!==c.n).slice(0,3)};},
-    ()=>{const a=pool[0],b=pool[1];return{seq:[a,a,b,a,a],ans:b,wrongs:[pool[2],...DB.sort(()=>Math.random()-.5).slice(0,2)].filter(d=>d.n!==b.n).slice(0,3)};},
-  ];
-  const pat=patterns[~~(Math.random()*patterns.length)]();
-  patCur=pat;
-  const seq=document.getElementById('pat-sequence');seq.innerHTML='';
-  pat.seq.forEach(a=>{
-    const el=document.createElement('span');el.textContent=a.e;el.style.cssText='filter:drop-shadow(0 4px 6px rgba(0,0,0,.12));';seq.appendChild(el);
-  });
-  const qMark=document.createElement('span');qMark.textContent='❓';qMark.style.animation='si-idle 1.5s ease-in-out infinite';seq.appendChild(qMark);
-  const ch=document.getElementById('pat-choices');ch.innerHTML='';
-  const choices=[...pat.wrongs,pat.ans].sort(()=>Math.random()-.5);
-  choices.forEach(a=>{
-    const btn=document.createElement('button');
-    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:18px;padding:10px 4px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:clamp(32px,9vw,46px);aspect-ratio:1/1;';
-    btn.innerHTML=a.e+'<span style="font-size:clamp(10px,2.8vw,13px);font-weight:900;color:var(--text);text-align:center;">'+a.n+'</span>';
-    btn.onclick=()=>checkPat(a.n===pat.ans.n,btn);
-    ch.appendChild(btn);
-  });
-  speak('다음에 올 것은 무엇일까요?');
-}
-function checkPat(ok,btn){
-  if(_patLock)return;
-  if(ok){_patLock=true;btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';btn.style.transform='scale(1.15)';playDDDang();throwConfetti();patStreak++;addStars(2);document.getElementById('pat-streak').textContent='🔥 '+patStreak+'연속!';speakSeq(['맞아요!','잘했어요!'],500,()=>setTimeout(newPatRound,400));}
-  else{btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();patStreak=0;document.getElementById('pat-streak').textContent='🔥 0연속!';speak('다시 찾아봐요!');setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);}
-}
-
-/* ══════════════════════════
-   색칠 놀이
-══════════════════════════ */
-const PAINT_COLORS=['#ef4444','#f97316','#fbbf24','#4ade80','#38bdf8','#a855f7','#f472b6','#1e293b','#fff','#94a3b8'];
-let paintColor='#ef4444',paintCtx=null,paintDrawing=false;
-function startColoringGame(){
-  show('coloring');
-  const pal=document.getElementById('col-palette');pal.innerHTML='';
-  PAINT_COLORS.forEach(c=>{
-    const b=document.createElement('button');
-    b.style.cssText=`width:clamp(34px,10vw,44px);height:clamp(34px,10vw,44px);border-radius:50%;background:${c};border:${c==='#fff'?'3px solid var(--bdr)':'4px solid rgba(255,255,255,.8)'};cursor:pointer;box-shadow:0 4px 10px rgba(0,0,0,.2);transition:transform .12s;`;
-    if(c===paintColor)b.style.transform='scale(1.3)';
-    b.onclick=()=>{paintColor=c;document.querySelectorAll('#col-palette button').forEach(x=>x.style.transform='scale(1)');b.style.transform='scale(1.3)';};
-    pal.appendChild(b);
-  });
-  setTimeout(()=>{
-    const canvas=document.getElementById('col-canvas');
-    const w=Math.min(window.innerWidth-32,520),h=Math.min(window.innerHeight-220,520);
-    canvas.width=w;canvas.height=h;canvas.style.width=w+'px';canvas.style.height=h+'px';
-    paintCtx=canvas.getContext('2d');
-    paintCtx.fillStyle='#fff';paintCtx.fillRect(0,0,w,h);
-    /* 귀여운 동물 아웃라인 그리기 */
-    drawColoringTemplate(paintCtx,w,h);
-    canvas.addEventListener('touchstart',pntStart,{passive:false});
-    canvas.addEventListener('touchmove',pntMove,{passive:false});
-    canvas.addEventListener('touchend',()=>paintDrawing=false);
-    canvas.addEventListener('mousedown',pntStart);
-    canvas.addEventListener('mousemove',pntMove);
-    canvas.addEventListener('mouseup',()=>paintDrawing=false);
-    canvas.addEventListener('mouseleave',()=>paintDrawing=false);
-  },100);
-  speak('예쁘게 색칠해봐요!');
-}
-function drawColoringTemplate(ctx,w,h){
-  const cx=w/2,cy=h/2+30;
-  ctx.save();ctx.strokeStyle='#cbd5e1';ctx.lineWidth=3;ctx.lineCap='round';
-  /* 몸통 */
-  ctx.beginPath();ctx.ellipse(cx,cy,w*.24,h*.26,0,0,Math.PI*2);ctx.stroke();
-  /* 머리 */
-  ctx.beginPath();ctx.arc(cx,cy-h*.28,w*.18,0,Math.PI*2);ctx.stroke();
-  /* 귀 두개 */
-  ctx.beginPath();ctx.ellipse(cx-w*.10,cy-h*.42,w*.06,h*.09,-.4,0,Math.PI*2);ctx.stroke();
-  ctx.beginPath();ctx.ellipse(cx+w*.10,cy-h*.42,w*.06,h*.09,.4,0,Math.PI*2);ctx.stroke();
-  /* 눈 */
-  ctx.beginPath();ctx.arc(cx-w*.06,cy-h*.28,w*.025,0,Math.PI*2);ctx.stroke();
-  ctx.beginPath();ctx.arc(cx+w*.06,cy-h*.28,w*.025,0,Math.PI*2);ctx.stroke();
-  /* 코 */
-  ctx.beginPath();ctx.arc(cx,cy-h*.22,w*.018,0,Math.PI*2);ctx.stroke();
-  /* 다리 4개 */
-  [-.15,-.05,.05,.15].forEach((dx,i)=>{const lx=cx+dx*w*2;ctx.beginPath();ctx.moveTo(lx,cy+h*.22);ctx.lineTo(lx,cy+h*.42);ctx.stroke();});
-  /* 꼬리 */
-  ctx.beginPath();ctx.moveTo(cx+w*.22,cy);ctx.quadraticCurveTo(cx+w*.35,cy-h*.15,cx+w*.28,cy-h*.22);ctx.stroke();
-  ctx.restore();
-  ctx.save();ctx.fillStyle='#e2e8f0';ctx.font=`bold ${Math.floor(h*.06)}px sans-serif`;ctx.textAlign='center';ctx.fillText('🎨 색칠 놀이!',cx,h*.08);ctx.restore();
-}
-function pntStart(e){e.preventDefault();paintDrawing=true;const pt=e.touches?e.touches[0]:e;const r=e.target.getBoundingClientRect();const sx=e.target.width/r.width,sy=e.target.height/r.height;paintCtx.beginPath();paintCtx.moveTo((pt.clientX-r.left)*sx,(pt.clientY-r.top)*sy);}
-function pntMove(e){if(!paintDrawing)return;e.preventDefault();const pt=e.touches?e.touches[0]:e;const r=e.target.getBoundingClientRect();const sx=e.target.width/r.width,sy=e.target.height/r.height;paintCtx.lineWidth=18;paintCtx.lineCap='round';paintCtx.lineJoin='round';paintCtx.strokeStyle=paintColor;paintCtx.lineTo((pt.clientX-r.left)*sx,(pt.clientY-r.top)*sy);paintCtx.stroke();paintCtx.beginPath();paintCtx.moveTo((pt.clientX-r.left)*sx,(pt.clientY-r.top)*sy);}
-function clearColoring(){if(paintCtx){const c=document.getElementById('col-canvas');paintCtx.fillStyle='#fff';paintCtx.fillRect(0,0,c.width,c.height);drawColoringTemplate(paintCtx,c.width,c.height);}playDdaeng();}
-
-/* ══════════════════════════
    alias / wrappers
 ══════════════════════════ */
 function startPuzzle(){startJigsawPuzzle();}
 function updateHubOnLoad(){updateHubStats();}
+
+
+/* ═══════════════════════════════════════════════════
+   동물 분류 데이터
+═══════════════════════════════════════════════════ */
+const ANIMAL_HABITATS={
+  '하늘✈️':{e:'✈️',desc:'하늘을 날아요',
+    animals:[
+      {n:'독수리',e:'🦅'},{n:'부엉이',e:'🦉'},{n:'오리',e:'🦆'},
+      {n:'닭',e:'🐔'},{n:'펭귄',e:'🐧'},{n:'앵무새',e:'🦜'},
+      {n:'백조',e:'🦢'},{n:'플라밍고',e:'🦩'},{n:'타조',e:'🦤'},
+      {n:'나비',e:'🦋'},{n:'꿀벌',e:'🐝'},{n:'큰부리새',e:'🦃'}]},
+  '땅🌿':{e:'🌿',desc:'땅 위에서 살아요',
+    animals:[
+      {n:'강아지',e:'🐕'},{n:'고양이',e:'🐈'},{n:'토끼',e:'🐰'},
+      {n:'사자',e:'🦁'},{n:'호랑이',e:'🐅'},{n:'코끼리',e:'🐘'},
+      {n:'기린',e:'🦒'},{n:'얼룩말',e:'🦓'},{n:'곰',e:'🐻'},
+      {n:'판다',e:'🐼'},{n:'개구리',e:'🐸'},{n:'뱀',e:'🐍'},
+      {n:'거북이',e:'🐢'},{n:'캥거루',e:'🦘'},{n:'원숭이',e:'🐒'},
+      {n:'여우',e:'🦊'},{n:'늑대',e:'🐺'},{n:'하이에나',e:'🐕‍🦺'}]},
+  '바다🌊':{e:'🌊',desc:'물속에서 살아요',
+    animals:[
+      {n:'고래',e:'🐋'},{n:'돌고래',e:'🐬'},{n:'상어',e:'🦈'},
+      {n:'문어',e:'🐙'},{n:'낙지',e:'🦑'},{n:'게',e:'🦀'},
+      {n:'물고기',e:'🐟'},{n:'악어',e:'🐊'},{n:'바다코끼리',e:'🦭'}]},
+};
+
+/* ═══════════════════════════════════════════════════
+   이야기 순서 데이터 (Story Sequences)
+═══════════════════════════════════════════════════ */
+const STORY_SEQS=[
+  {title:'달걀이 닭이 되어요',steps:['🥚','🐣','🐤','🐔'],desc:'알에서 병아리가 나와요'},
+  {title:'씨앗이 나무가 되어요',steps:['🌱','🌿','🌲','🍎'],desc:'씨앗→싹→나무→열매'},
+  {title:'아침이 시작돼요',steps:['🌙','🌅','☀️','🌇'],desc:'밤→새벽→낮→저녁'},
+  {title:'목욕 순서',steps:['🛁','🧼','🚿','🧴'],desc:'욕조→비누→샤워→로션'},
+  {title:'밥 먹는 순서',steps:['🛒','👨‍🍳','🍲','😋'],desc:'장보기→요리→먹기→냠냠'},
+  {title:'꽃이 피어요',steps:['🌧️','🌱','🌸','🍎'],desc:'비→싹→꽃→열매'},
+  {title:'밤이 되어요',steps:['☀️','🌤️','🌆','⭐'],desc:'낮→구름→저녁→밤하늘'},
+  {title:'아기 동물 커요',steps:['🥚','🐣','🐥','🐦'],desc:'알→병아리→새'},
+  {title:'겨울이 와요',steps:['🍃','🍂','❄️','⛄'],desc:'잎→단풍→눈→눈사람'},
+  {title:'무지개가 생겨요',steps:['☁️','🌧️','☀️','🌈'],desc:'구름→비→햇빛→무지개'},
+];
+
+/* ═══════════════════════════════════════════════════
+   이야기 순서 맞추기
+═══════════════════════════════════════════════════ */
+let ssCur=null,ssSelected=[],ssStreak=0,_ssLock=false;
+function startStorySeq(){
+  ssStreak=0;_ssLock=false;ssSelected=[];
+  document.getElementById('ss-streak').textContent='🔥 0연속!';
+  show('storyseq');
+  setTimeout(()=>{speakSeq(['이야기 순서 게임!','순서대로 골라봐요!'],700,()=>setTimeout(newSSRound,400));},300);
+}
+function newSSRound(){
+  _ssLock=false;ssSelected=[];
+  ssCur=STORY_SEQS[~~(Math.random()*STORY_SEQS.length)];
+  document.getElementById('ss-q').textContent=ssCur.title;
+  document.getElementById('ss-answer').innerHTML='';
+  /* 힌트: 첫 번째 단계만 보여주기 (레벨에 따라) */
+  const hintEl=document.getElementById('ss-hint');
+  hintEl.innerHTML='<span style="opacity:.5">1.</span><span>'+ssCur.steps[0]+'</span><span style="opacity:.4;font-size:0.6em">→ ? → ? → ?</span>';
+  /* 보기: 나머지 3개를 섞어서 */
+  const remaining=ssCur.steps.slice(1).sort(()=>Math.random()-.5);
+  const ch=document.getElementById('ss-choices');ch.innerHTML='';
+  remaining.forEach((emoji,i)=>{
+    const btn=document.createElement('button');
+    btn.style.cssText='background:#fff;border:4px solid var(--bdr);border-radius:20px;font-size:clamp(46px,14vw,66px);cursor:pointer;padding:12px;box-shadow:0 4px 12px rgba(0,0,0,.09);transition:transform .12s;aspect-ratio:1/1;display:flex;align-items:center;justify-content:center;position:relative;';
+    btn.textContent=emoji;btn.dataset.emoji=emoji;btn.dataset.used='0';
+    btn.onclick=()=>ssPickItem(btn);
+    ch.appendChild(btn);
+  });
+  speak(ssCur.title+'! 순서대로 골라봐요!');
+}
+function ssPickItem(btn){
+  if(_ssLock||btn.dataset.used==='1')return;
+  btn.dataset.used='1';btn.style.opacity='.4';btn.style.transform='scale(.88)';
+  ssSelected.push(btn.dataset.emoji);
+  playPop();
+  /* 내 답안 표시 */
+  const ans=document.getElementById('ss-answer');
+  ans.innerHTML='';
+  [ssCur.steps[0],...ssSelected].forEach((e,i)=>{
+    ans.innerHTML+=e;
+    if(i<ssCur.steps.length-1&&i<ssSelected.length)ans.innerHTML+='<span style="font-size:.5em;opacity:.5">→</span>';
+  });
+  if(ssSelected.length>=ssCur.steps.length-1){
+    /* 모두 골랐으면 정답 체크 */
+    _ssLock=true;
+    const correct=ssCur.steps.slice(1).every((s,i)=>s===ssSelected[i]);
+    setTimeout(()=>{
+      if(correct){
+        playDDDang();throwConfetti();ssStreak++;addStars(3);
+        document.getElementById('ss-streak').textContent='🔥 '+ssStreak+'연속!';
+        /* 전체 순서 보여주기 */
+        const ans=document.getElementById('ss-answer');
+        ans.innerHTML=ssCur.steps.join('<span style="font-size:.5em;opacity:.5">→</span>');
+        speakSeq(['정답!',ssCur.title,'잘했어요!'],600,()=>setTimeout(newSSRound,700));
+      }else{
+        playDdaeng();ssStreak=0;document.getElementById('ss-streak').textContent='🔥 0연속!';
+        speak('아니에요! 다시 해봐요!');
+        setTimeout(()=>{ssSelected=[];document.getElementById('ss-answer').innerHTML='';document.querySelectorAll('#ss-choices button').forEach(b=>{b.dataset.used='0';b.style.opacity='1';b.style.transform='scale(1)';});_ssLock=false;},1200);
+      }
+    },400);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   기억력 순서 (Memory Sequence)
+   - 이모지가 순서대로 번쩍번쩍 → 사라짐 → 같은 순서로 탭
+   - 레벨1: 2개, 레벨6: 7개
+═══════════════════════════════════════════════════ */
+let msqLevel=1,msqSeq=[],msqInput=[],msqPhase='show',_msqLock=false;
+const MSQ_POOL=DB.slice(0,20); /* 첫 20마리 동물 사용 */
+
+function startMemSeq(){
+  msqLevel=1;_msqLock=false;
+  document.getElementById('msq-level').textContent='레벨 1';
+  show('memseq');
+  setTimeout(()=>{speakSeq(['기억력 게임!','동물이 나타나는 순서를 기억해서 눌러봐요!'],800,()=>setTimeout(newMSQRound,400));},300);
+}
+function newMSQRound(){
+  msqInput=[];msqPhase='show';_msqLock=false;
+  const len=Math.min(1+msqLevel,7);
+  /* 겹치지 않게 랜덤 선택 */
+  const pool=[...MSQ_POOL].sort(()=>Math.random()-.5).slice(0,Math.min(len,8));
+  msqSeq=Array.from({length:len},(_,i)=>pool[i%pool.length]);
+  document.getElementById('msq-q').textContent='잘 보고 기억해요!';
+  document.getElementById('msq-tap-hint').textContent='';
+  const grid=document.getElementById('msq-grid');grid.innerHTML='';
+  const progress=document.getElementById('msq-progress');progress.innerHTML='';
+  /* 그리드 생성 */
+  const uniqueAnimals=[...new Map(msqSeq.map(a=>[a.n,a])).values()];
+  uniqueAnimals.forEach(a=>{
+    const btn=document.createElement('button');
+    btn.id='msq-btn-'+a.n;
+    btn.style.cssText='background:#fff;border:4px solid var(--bdr);border-radius:18px;padding:8px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:all .15s;aspect-ratio:1/1;font-size:clamp(30px,9vw,42px);';
+    btn.innerHTML=a.e+'<span style="font-size:clamp(9px,2.5vw,12px);font-weight:900;color:var(--text);">'+a.n+'</span>';
+    btn.onclick=()=>msqTap(a);
+    btn.disabled=true;
+    grid.appendChild(btn);
+  });
+  /* 진행 점 */
+  for(let i=0;i<len;i++){const dot=document.createElement('div');dot.id='msq-dot-'+i;dot.style.cssText='width:12px;height:12px;border-radius:50%;background:var(--bdr);transition:background .2s;';progress.appendChild(dot);}
+  /* 시퀀스 플래시 */
+  const display=document.getElementById('msq-display');display.innerHTML='보여드릴게요... 👀';
+  setTimeout(()=>{msqFlash(0);},600);
+}
+function msqFlash(i){
+  const display=document.getElementById('msq-display');
+  if(i>=msqSeq.length){
+    /* 다 보여줬으면 입력 받기 */
+    display.innerHTML='이제 순서대로 눌러봐요! 👇';
+    document.getElementById('msq-tap-hint').textContent='기억나는 순서대로 눌러요!';
+    document.querySelectorAll('#msq-grid button').forEach(b=>{b.disabled=false;});
+    msqPhase='input';document.getElementById('msq-q').textContent='순서대로 눌러봐요!';
+    return;
+  }
+  const a=msqSeq[i];
+  /* 해당 버튼 강조 */
+  document.querySelectorAll('#msq-grid button').forEach(b=>b.style.background='#fff');
+  const btn=document.getElementById('msq-btn-'+a.n);
+  if(btn){btn.style.background='rgba(255,212,59,.35)';btn.style.borderColor='var(--gold)';btn.style.transform='scale(1.2)';}
+  display.innerHTML=a.e;
+  playTick(i%4);
+  setTimeout(()=>{
+    if(btn){btn.style.background='#fff';btn.style.borderColor='var(--bdr)';btn.style.transform='scale(1)';}
+    setTimeout(()=>msqFlash(i+1),300);
+  },700);
+}
+function msqTap(a){
+  if(msqPhase!=='input'||_msqLock)return;
+  const idx=msqInput.length;
+  const btn=document.getElementById('msq-btn-'+a.n);
+  if(btn){btn.style.transform='scale(.88)';setTimeout(()=>btn.style.transform='scale(1)',120);}
+  playPop();
+  /* 맞는지 체크 */
+  if(a.n===msqSeq[idx].n){
+    const dot=document.getElementById('msq-dot-'+idx);if(dot)dot.style.background='var(--green)';
+    msqInput.push(a);
+    if(msqInput.length>=msqSeq.length){
+      _msqLock=true;playDDDang();throwConfetti();addStars(3);
+      msqLevel=Math.min(msqLevel+1,7);
+      document.getElementById('msq-level').textContent='레벨 '+msqLevel;
+      document.getElementById('msq-q').textContent='🎉 완벽해요!';
+      document.getElementById('msq-display').innerHTML=msqSeq.map(a=>a.e).join('→');
+      speakSeq(['완벽해요!','잘했어요!'],500,()=>setTimeout(newMSQRound,700));
+    }
+  }else{
+    _msqLock=true;
+    if(btn){btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.12)';}
+    playDdaeng();
+    document.getElementById('msq-q').textContent='아이쿠! 다시 볼게요!';
+    speak('아이쿠! 다시 볼게요!');
+    setTimeout(()=>{
+      /* 정답 순서 다시 보여주기 */
+      document.querySelectorAll('#msq-grid button').forEach(b=>{b.style.borderColor='var(--bdr)';b.style.background='#fff';b.disabled=true;});
+      document.querySelectorAll('#msq-progress > div').forEach(d=>d.style.background='var(--bdr)');
+      msqInput=[];msqPhase='show';_msqLock=false;
+      setTimeout(()=>msqFlash(0),400);
+    },1000);
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   동물 분류 (Animal Sort)
+═══════════════════════════════════════════════════ */
+let asCur=null,asScore=0,_asLock=false;
+function startAnimalSort(){
+  asScore=0;_asLock=false;document.getElementById('as-score').textContent='⭐ 0점';
+  show('animalsort');
+  setTimeout(()=>{speakSeq(['동물 분류 게임!','어디에 사는 동물인지 골라봐요!'],700,()=>setTimeout(newASRound,400));},300);
+}
+function newASRound(){
+  _asLock=false;
+  /* 전체 분류에서 랜덤 동물 선택 */
+  const habitats=Object.keys(ANIMAL_HABITATS);
+  const catKey=habitats[~~(Math.random()*habitats.length)];
+  const cat=ANIMAL_HABITATS[catKey];
+  asCur={...cat.animals[~~(Math.random()*cat.animals.length)],habitat:catKey};
+  document.getElementById('as-animal').textContent=asCur.e;
+  document.getElementById('as-q').textContent=asCur.n+'는 어디에 살까요?';
+  const c=document.getElementById('as-bins');c.innerHTML='';
+  habitats.forEach(k=>{
+    const d=ANIMAL_HABITATS[k];
+    const btn=document.createElement('button');
+    btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:20px;padding:12px 6px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:clamp(32px,9vw,44px);';
+    btn.innerHTML=d.e+'<span style="font-size:clamp(11px,3vw,14px);font-weight:900;color:var(--text);">'+k+'</span><span style="font-size:clamp(9px,2.5vw,11px);color:var(--muted);font-weight:700;">'+d.desc+'</span>';
+    btn.onclick=()=>checkAS(k===catKey,btn,k);
+    c.appendChild(btn);
+  });
+  speakSeq([asCur.n,'어디에 살까요?'],700);
+}
+function replayAS(){if(asCur)speak(asCur.n);}
+function checkAS(ok,btn,name){
+  if(_asLock)return;
+  if(ok){_asLock=true;btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';btn.style.transform='scale(1.12)';playDDDang();throwConfetti();asScore+=10;addStars(2);document.getElementById('as-score').textContent='⭐ '+asScore+'점';speakSeq([asCur.n,'는 '+name+' 에 살아요!','맞아요!'],600,()=>setTimeout(newASRound,500));}
+  else{btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();speak('아니에요! 다시 골라봐요!');setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);}
+}
+
+/* ═══════════════════════════════════════════════════
+   뭐가 없어졌지? (What's Missing)
+   - 4개 보여주기 → 1개 사라짐 → 뭐가 없어졌는지 고르기
+   - 레벨 오르면 보여주는 시간이 짧아짐
+═══════════════════════════════════════════════════ */
+let wmLevel=1,wmShown=[],wmMissing=null,wmStreak=0,_wmPhase='show';
+function startWhatsMissing(){
+  wmLevel=1;wmStreak=0;_wmPhase='show';
+  document.getElementById('wm-streak').textContent='🔥 0연속!';
+  show('whats-missing');
+  setTimeout(()=>{speakSeq(['뭐가 없어졌지 게임!','잘 보고 기억해요!'],700,()=>setTimeout(newWMRound,400));},300);
+}
+function newWMRound(){
+  _wmPhase='show';
+  const count=Math.min(3+wmLevel,6); /* 레벨1: 4개, 레벨4+: 6개 */
+  const showTime=Math.max(1200,3000-wmLevel*400); /* 레벨 오르면 짧아짐 */
+  wmShown=DB.sort(()=>Math.random()-.5).slice(0,count);
+  wmMissing=wmShown[~~(Math.random()*wmShown.length)];
+  document.getElementById('wm-q').textContent='잘 보고 기억해요! 👀';
+  document.getElementById('wm-choices').innerHTML='';
+  /* 현재 아이템 전부 표시 */
+  const scene=document.getElementById('wm-scene');scene.innerHTML='';
+  const cols=count<=4?4:3;scene.style.gridTemplateColumns=`repeat(${cols},1fr)`;
+  wmShown.forEach(a=>{
+    const el=document.createElement('div');
+    el.style.cssText='font-size:clamp(44px,12vw,62px);display:flex;align-items:center;justify-content:center;background:#fff;border:3px solid var(--bdr);border-radius:18px;padding:10px;box-shadow:0 4px 10px rgba(0,0,0,.08);aspect-ratio:1/1;';
+    el.textContent=a.e;scene.appendChild(el);
+  });
+  /* showTime 후 하나 제거 */
+  setTimeout(()=>{
+    _wmPhase='guess';
+    document.getElementById('wm-q').textContent='어떤 동물이 없어졌을까요? 🔎';
+    /* 사라진 자리는 빈 박스로 */
+    const idx=wmShown.indexOf(wmMissing);
+    const cells=scene.querySelectorAll('div');
+    if(cells[idx])cells[idx].textContent='❓';
+    /* 보기: 사라진 것 + 3개 오답 */
+    const wrongs=DB.filter(d=>!wmShown.find(s=>s.n===d.n)).sort(()=>Math.random()-.5).slice(0,3);
+    const choices=[...wrongs,wmMissing].sort(()=>Math.random()-.5);
+    const ch=document.getElementById('wm-choices');ch.innerHTML='';
+    choices.forEach(a=>{
+      const btn=document.createElement('button');
+      btn.style.cssText='background:#fff;border:3px solid var(--bdr);border-radius:18px;padding:8px 4px;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,.08);transition:transform .12s;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:clamp(34px,10vw,48px);aspect-ratio:1/1;';
+      btn.innerHTML=a.e+'<span style="font-size:clamp(9px,2.5vw,12px);font-weight:900;color:var(--text);text-align:center;">'+a.n+'</span>';
+      btn.onclick=()=>checkWM(a.n===wmMissing.n,btn);
+      ch.appendChild(btn);
+    });
+    speak('어떤 동물이 없어졌을까요?');
+  },showTime);
+}
+function checkWM(ok,btn){
+  if(_wmPhase!=='guess')return;
+  if(ok){btn.style.borderColor='var(--green)';btn.style.background='rgba(74,222,128,.15)';btn.style.transform='scale(1.15)';playDDDang();throwConfetti();wmStreak++;wmLevel=Math.min(Math.ceil(wmStreak/2)+1,6);addStars(3);document.getElementById('wm-streak').textContent='🔥 '+wmStreak+'연속!';speakSeq([wmMissing.n+'!','맞아요!','잘했어요!'],500,()=>setTimeout(newWMRound,500));}
+  else{btn.style.borderColor='var(--coral)';btn.style.background='rgba(255,107,107,.1)';btn.animate([{transform:'translateX(-5px)'},{transform:'translateX(5px)'},{transform:'translateX(0)'}],{duration:280});playDdaeng();wmStreak=0;document.getElementById('wm-streak').textContent='🔥 0연속!';speak('아니에요! 잘 생각해봐요!');setTimeout(()=>{btn.style.borderColor='var(--bdr)';btn.style.background='';},700);}
+}
+
+/* ── playTick helper (if not already defined from rhythm game) ── */
+if(typeof playTick==='undefined'){
+function playTick(v){
+  initA();if(!ax)return;
+  const freqs=[260,330,390,520];
+  const o=ax.createOscillator(),g=ax.createGain();
+  o.connect(g);g.connect(ax.destination);o.type='sine';o.frequency.value=freqs[v%4];
+  const t=ax.currentTime;
+  g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.3,t+.02);g.gain.linearRampToValueAtTime(0,t+.22);
+  o.start(t);o.stop(t+.25);
+}}
 
 </script>
 
@@ -2541,13 +2116,6 @@ function updateHubOnLoad(){updateHubStats();}
 </div>
 
 <!-- 그림자 맞추기 -->
-<div class="screen hidden" id="shadowgame">
-  <div class="top-bar"><button class="back-btn" onclick="goHub()">← 뒤로</button><div class="top-title">그림자 맞추기 🌑</div><div id="shd-streak" style="font-size:16px;font-weight:900;color:var(--gold)">🔥 0연속!</div></div>
-  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1 1 0;min-height:0;gap:8px;padding:8px 16px;width:100%;">
-    <div id="shd-q" style="font-size:clamp(19px,5.5vw,27px);font-weight:900;color:var(--text);text-align:center;">이 그림자는 누구일까요?</div>
-    <div id="shd-shadow" style="font-size:clamp(90px,28vmin,160px);filter:brightness(0);animation:si-idle 2.4s ease-in-out infinite;"></div>
-  </div>
-  <div id="shd-choices" style="display:grid;grid-template-columns:repeat(2,1fr);gap:14px;width:95%;max-width:560px;padding:0 0 16px;flex-shrink:0;"></div>
-</div>
+
 </body>
 </html>
