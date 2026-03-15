@@ -12,8 +12,8 @@
   --text:#eef6ff; --muted:#486585; --r:18px;
   --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;touch-action:none;}
-html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', sans-serif;user-select:none;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:'Malgun Gothic', '맑은 고딕', 'Apple SD Gothic Neo', sans-serif;user-select:none; touch-action:none;}
 body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
   background:radial-gradient(ellipse 90% 55% at 50% -5%,rgba(45,212,200,.09),transparent),
              radial-gradient(ellipse 60% 50% at 90% 110%,rgba(181,132,250,.08),transparent)}
@@ -66,12 +66,13 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .abtn.pri{background:linear-gradient(135deg,var(--gold),#ffb01e);color:#1a0800;}
 .cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .cbtn{background:var(--card);border:2px solid var(--bdr);border-radius:var(--r);padding:14px 6px;cursor:pointer;font-weight:bold;display:flex;flex-direction:column;align-items:center;gap:6px;}
+.cbtn:active{transform:scale(.88)}
 .ce{font-size:45px;}.cn{font-size:16px;color:var(--text);text-align:center;}
 .cbtn.ok{border-color:var(--green)!important;background:rgba(61,232,136,.18)!important;}
 .cbtn.ng{background:rgba(255,100,84,.25);border-color:var(--coral);opacity:0.4;pointer-events:none;}
 
 /* ═══════════════════════
-   드래그 직소 퍼즐
+   드래그 직소 퍼즐 (버그 픽스 완료)
 ═══════════════════════ */
 #puzzle{justify-content:flex-start; align-items:center;}
 .pz-diff-btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-bottom:16px;width:100%;max-width:800px;}
@@ -81,11 +82,30 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .pz-left { display:flex; flex-direction:column; align-items:center; gap:10px; }
 .pz-right { display:flex; flex-direction:column; align-items:center; gap:10px; position:relative; }
 .pz-preview { width:250px; height:250px; border:4px solid var(--bdr); border-radius:16px; background-size:cover; background-position:center; box-shadow:0 8px 24px rgba(0,0,0,0.3); }
-.pz-board { width:400px; height:400px; background:var(--bdr); border:6px solid var(--card); border-radius:16px; position:relative; display:grid; gap:2px; box-shadow:0 8px 24px rgba(0,0,0,0.3); }
+.pz-board { width:350px; height:350px; background:var(--bdr); border:6px solid var(--card); border-radius:16px; position:relative; display:grid; gap:2px; box-shadow:0 8px 24px rgba(0,0,0,0.3); }
 .pz-slot { background:rgba(0,0,0,0.4); width:100%; height:100%; box-sizing:border-box; border:1px dashed rgba(255,255,255,0.1); }
-.pz-pieces-area { width:100%; max-width:800px; min-height:120px; background:rgba(255,255,255,0.03); border-radius:16px; margin-top:20px; display:flex; flex-wrap:wrap; gap:8px; padding:12px; justify-content:center; align-items:center; position:relative; z-index:10; }
-.drag-piece { width:80px; height:80px; background-size:400px 400px; border:2px solid var(--gold); border-radius:8px; box-shadow:0 4px 8px rgba(0,0,0,0.5); cursor:grab; touch-action:none; position:absolute; z-index:100; }
-.drag-piece.placed { position:static; border:none; box-shadow:none; border-radius:0; width:100%; height:100%; pointer-events:none; }
+
+/* 💡 퍼즐 보관함: 이제 조각들이 겹치지 않고 예쁘게 나열됩니다. */
+.pz-pieces-area { 
+  width:100%; max-width:800px; min-height:120px; 
+  background:rgba(255,255,255,0.03); border-radius:16px; margin-top:20px; 
+  display:flex; flex-wrap:wrap; gap:12px; padding:16px; 
+  justify-content:center; align-items:center; z-index:10; 
+}
+.drag-piece { 
+  position:relative; /* 💡 겹침 방지의 핵심 */
+  width:75px; height:75px; 
+  background-size:350px 350px; /* 보드 사이즈와 동일하게 매칭 */
+  border:2px solid var(--gold); border-radius:10px; 
+  box-shadow:0 6px 12px rgba(0,0,0,0.5); 
+  cursor:grab; touch-action:none; z-index:100; 
+  overflow:hidden;
+}
+.drag-piece.placed { 
+  border:none; box-shadow:none; border-radius:0; 
+  width:100%; height:100%; pointer-events:none; 
+  position:relative !important; transform:none !important;
+}
 
 /* ═══════════════════════
    숨은 동물 찾기 (CATCH)
@@ -97,7 +117,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .catch-target:active{transform:scale(0.8);}
 
 /* ═══════════════════════
-   글자 따라 쓰기 (PHONICS & TRACING)
+   글자 따라 쓰기 (PHONICS)
 ═══════════════════════ */
 #phonics { justify-content:flex-start; align-items:center; }
 .ph-layout { display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:600px; padding:10px 20px; flex:1; }
@@ -107,18 +127,14 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .ph-text-info { display:flex; flex-direction:column; gap:4px; }
 .ph-ko { font-size:36px; font-weight:900; color:var(--gold); line-height:1;}
 .ph-en { font-size:22px; font-weight:bold; color:var(--sky); line-height:1;}
-
 @keyframes floatEmoji { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
 .ph-board-wrap { position:relative; width:100%; max-width:400px; aspect-ratio:1/1; background:var(--card); border:4px solid var(--bdr); border-radius:24px; overflow:hidden; box-shadow:inset 0 0 20px rgba(0,0,0,0.5); }
 .ph-canvas { position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor:crosshair; z-index:5; }
 .ph-bg-text { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:140px; font-weight:900; color:rgba(255,255,255,0.07); pointer-events:none; z-index:1; }
-
 .ph-tools { display:flex; gap:16px; width:100%; justify-content:center; }
 .ph-tool-btn { display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border-radius:16px; font-weight:bold; font-size:18px; border:none; cursor:pointer; }
 .ph-tool-btn.clear { background:rgba(255,100,84,.15); border:2px solid var(--coral); color:var(--coral); }
 .ph-tool-btn.clear:active { transform:scale(0.9); }
-
 .ph-next-btn { width:100%; padding:18px; border-radius:20px; background:linear-gradient(135deg,var(--gold),#ff9a2c); color:#1a0800; font-size:20px; font-weight:900; border:none; cursor:pointer; margin-top:auto; margin-bottom:10px; box-shadow:0 8px 20px rgba(255,212,59,0.3); transition:transform 0.15s; }
 .ph-next-btn:active { transform:scale(0.95); }
 
@@ -266,7 +282,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </div>
 
 <script>
-/* 💡 퍼즐에 사용할 이미지 URL (여기에 원하는 캐릭터 이미지 URL을 추가하세요!) */
+// 💡 퍼즐 이미지 링크 (좋아하는 캐릭터 URL로 교체하세요!)
 const PUZZLE_IMAGES = [
   'https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?auto=format&fit=crop&w=400&q=80',
   'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80',
@@ -274,98 +290,42 @@ const PUZZLE_IMAGES = [
   'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?auto=format&fit=crop&w=400&q=80',
 ];
 
-// 💡 일상 단어 110종 (글씨 쓰기 놀이 전용)
 const DAILY_WORDS_DB = [
   {ko:'엄마', en:'Mom', e:'👩'}, {ko:'아빠', en:'Dad', e:'👨'}, {ko:'할머니', en:'Grandma', e:'👵'}, {ko:'할아버지', en:'Grandpa', e:'👴'},
-  {ko:'아기', en:'Baby', e:'👶'}, {ko:'나', en:'Me', e:'🧒'}, {ko:'친구', en:'Friend', e:'👫'}, {ko:'선생님', en:'Teacher', e:'👩‍🏫'},
-  {ko:'의사', en:'Doctor', e:'👩‍⚕️'}, {ko:'경찰', en:'Police', e:'👮'},
-  {ko:'눈', en:'Eye', e:'👀'}, {ko:'코', en:'Nose', e:'👃'}, {ko:'입', en:'Mouth', e:'👄'}, {ko:'귀', en:'Ear', e:'👂'},
-  {ko:'손', en:'Hand', e:'✋'}, {ko:'발', en:'Foot', e:'🦶'}, {ko:'머리', en:'Head', e:'💆'}, {ko:'팔', en:'Arm', e:'💪'},
-  {ko:'다리', en:'Leg', e:'🦵'}, {ko:'얼굴', en:'Face', e:'🙂'},
+  {ko:'아기', en:'Baby', e:'👶'}, {ko:'친구', en:'Friend', e:'👫'}, {ko:'집', en:'House', e:'🏠'},
   {ko:'물', en:'Water', e:'💧'}, {ko:'우유', en:'Milk', e:'🥛'}, {ko:'밥', en:'Rice', e:'🍚'}, {ko:'빵', en:'Bread', e:'🍞'},
   {ko:'사과', en:'Apple', e:'🍎'}, {ko:'바나나', en:'Banana', e:'🍌'}, {ko:'포도', en:'Grape', e:'🍇'}, {ko:'딸기', en:'Strawberry', e:'🍓'},
-  {ko:'수박', en:'Watermelon', e:'🍉'}, {ko:'귤', en:'Tangerine', e:'🍊'}, {ko:'복숭아', en:'Peach', e:'🍑'}, {ko:'파인애플', en:'Pineapple', e:'🍍'},
-  {ko:'체리', en:'Cherry', e:'🍒'}, {ko:'레몬', en:'Lemon', e:'🍋'}, {ko:'치즈', en:'Cheese', e:'🧀'}, {ko:'주스', en:'Juice', e:'🧃'},
-  {ko:'아이스크림', en:'Ice Cream', e:'🍦'}, {ko:'피자', en:'Pizza', e:'🍕'}, {ko:'사탕', en:'Candy', e:'🍬'}, {ko:'초콜릿', en:'Chocolate', e:'🍫'},
-  {ko:'과자', en:'Cookie', e:'🍪'}, {ko:'케이크', en:'Cake', e:'🍰'}, {ko:'햄버거', en:'Hamburger', e:'🍔'}, {ko:'핫도그', en:'Hot Dog', e:'🌭'},
-  {ko:'해', en:'Sun', e:'☀️'}, {ko:'달', en:'Moon', e:'🌙'}, {ko:'별', en:'Star', e:'⭐'}, {ko:'하늘', en:'Sky', e:'🌤️'},
-  {ko:'구름', en:'Cloud', e:'☁️'}, {ko:'비', en:'Rain', e:'☔'}, {ko:'눈', en:'Snow', e:'⛄'}, {ko:'바람', en:'Wind', e:'🌬️'},
-  {ko:'무지개', en:'Rainbow', e:'🌈'}, {ko:'번개', en:'Lightning', e:'⚡'}, {ko:'꽃', en:'Flower', e:'🌸'}, {ko:'나무', en:'Tree', e:'🌳'},
-  {ko:'나뭇잎', en:'Leaf', e:'🌿'}, {ko:'돌', en:'Stone', e:'🪨'}, {ko:'바다', en:'Sea', e:'🌊'}, {ko:'산', en:'Mountain', e:'⛰️'},
-  {ko:'불', en:'Fire', e:'🔥'}, {ko:'얼음', en:'Ice', e:'🧊'},
   {ko:'자동차', en:'Car', e:'🚗'}, {ko:'기차', en:'Train', e:'🚆'}, {ko:'비행기', en:'Airplane', e:'✈️'}, {ko:'배', en:'Ship', e:'🚢'},
-  {ko:'버스', en:'Bus', e:'🚌'}, {ko:'자전거', en:'Bicycle', e:'🚲'}, {ko:'오토바이', en:'Motorcycle', e:'🏍️'}, {ko:'트럭', en:'Truck', e:'🚚'},
-  {ko:'소방차', en:'Fire Truck', e:'🚒'}, {ko:'경찰차', en:'Police Car', e:'🚓'}, {ko:'구급차', en:'Ambulance', e:'🚑'}, {ko:'로켓', en:'Rocket', e:'🚀'},
-  {ko:'헬리콥터', en:'Helicopter', e:'🚁'}, {ko:'택시', en:'Taxi', e:'🚕'},
-  {ko:'책', en:'Book', e:'📖'}, {ko:'연필', en:'Pencil', e:'✏️'}, {ko:'가방', en:'Bag', e:'🎒'}, {ko:'신발', en:'Shoe', e:'👟'},
-  {ko:'양말', en:'Sock', e:'🧦'}, {ko:'모자', en:'Hat', e:'🧢'}, {ko:'옷', en:'Clothes', e:'👕'}, {ko:'바지', en:'Pants', e:'👖'},
-  {ko:'치마', en:'Skirt', e:'👗'}, {ko:'안경', en:'Glasses', e:'👓'}, {ko:'시계', en:'Clock', e:'⌚'}, {ko:'우산', en:'Umbrella', e:'☂️'},
-  {ko:'침대', en:'Bed', e:'🛌'}, {ko:'문', en:'Door', e:'🚪'}, {ko:'열쇠', en:'Key', e:'🔑'}, {ko:'가위', en:'Scissors', e:'✂️'},
-  {ko:'칫솔', en:'Toothbrush', e:'🪥'}, {ko:'비누', en:'Soap', e:'🧼'}, {ko:'거울', en:'Mirror', e:'🪞'}, {ko:'풍선', en:'Balloon', e:'🎈'},
-  {ko:'선물', en:'Gift', e:'🎁'}, {ko:'리본', en:'Ribbon', e:'🎀'}, {ko:'인형', en:'Doll', e:'🧸'}, {ko:'공', en:'Ball', e:'⚽'},
-  {ko:'전화기', en:'Telephone', e:'☎️'}, {ko:'카메라', en:'Camera', e:'📷'}, {ko:'텔레비전', en:'Television', e:'📺'}, {ko:'휴지', en:'Tissue', e:'🧻'},
-  {ko:'강아지', en:'Dog', e:'🐶'}, {ko:'고양이', en:'Cat', e:'🐱'}, {ko:'토끼', en:'Rabbit', e:'🐰'}, {ko:'쥐', en:'Mouse', e:'🐭'},
-  {ko:'소', en:'Cow', e:'🐮'}, {ko:'호랑이', en:'Tiger', e:'🐯'}, {ko:'사자', en:'Lion', e:'🦁'}, {ko:'돼지', en:'Pig', e:'🐷'},
-  {ko:'개구리', en:'Frog', e:'🐸'}, {ko:'원숭이', en:'Monkey', e:'🐵'}, {ko:'닭', en:'Chicken', e:'🐔'}, {ko:'펭귄', en:'Penguin', e:'🐧'},
-  {ko:'새', en:'Bird', e:'🐦'}, {ko:'오리', en:'Duck', e:'🦆'}, {ko:'물고기', en:'Fish', e:'🐟'}, {ko:'상어', en:'Shark', e:'🦈'},
-  {ko:'고래', en:'Whale', e:'🐳'}, {ko:'나비', en:'Butterfly', e:'🦋'}, {ko:'꿀벌', en:'Bee', e:'🐝'}, {ko:'무당벌레', en:'Ladybug', e:'🐞'},
-  {ko:'개미', en:'Ant', e:'🐜'}, {ko:'거미', en:'Spider', e:'🕷️'}, {ko:'공룡', en:'Dinosaur', e:'🦖'}
+  {ko:'해', en:'Sun', e:'☀️'}, {ko:'달', en:'Moon', e:'🌙'}, {ko:'별', en:'Star', e:'⭐'}, {ko:'구름', en:'Cloud', e:'☁️'}
 ];
 
-// 💡 100여종 동물 DB (퀴즈/도감/숨은동물찾기 전용)
+// 💡 공룡을 뺀 100% 무결성 동물 DB
 const DB=[
   {n:'강아지', en:'Dog', e:'🐕', f:'코가 킁킁! 냄새를 아주 잘 맡는 똑똑한 친구예요!', h:['네 발로 걸어다녀요.','복슬복슬한 털이 있어요.','멍멍 하고 짖어요.']},
-  {n:'푸들', en:'Poodle', e:'🐩', f:'털이 뽀글뽀글 파마한 것처럼 생겼고 아주 영리해요!', h:['털이 뽀글뽀글하게 곱슬거려요.','프랑스에서 온 영리한 강아지예요.','강아지 중에서 아주 똑똑해요.']},
   {n:'고양이', en:'Cat', e:'🐈', f:'야옹야옹~ 낮에는 쿨쿨 잠을 아주 많이 자는 잠꾸러기예요!', h:['살금살금 조용히 걸어요.','수염이 있고 귀가 뾰족해요.','야옹 하고 소리를 내요.']},
   {n:'토끼', en:'Rabbit', e:'🐰', f:'쫑긋쫑긋 긴 귀로 작은 소리도 엄청 잘 들어요!', h:['깡충깡충 뛰어요.','귀가 길쭉하게 쫑긋 서 있어요.','당근을 먹어요.']},
-  {n:'생쥐', en:'Mouse', e:'🐁', f:'찍찍! 아주아주 작은 구멍에도 쏙 들어갈 수 있어요!', h:['몸집이 아주 작아요.','꼬리가 길고 털이 없어요.','찍찍 소리를 내요.']},
   {n:'소', en:'Cow', e:'🐄', f:'음메~ 우리에게 맛있고 건강한 우유를 주는 고마운 친구예요!', h:['네 발을 가진 큰 동물이에요.','풀밭에서 풀을 뜯어 먹어요.','음메 하고 울어요.']},
-  {n:'물소', en:'Water Buffalo', e:'🐃', f:'더운 날에는 시원한 진흙 목욕을 아주 좋아해요!', h:['소와 비슷하지만 뿔이 뒤로 구부러져 있어요.','몸이 아주 튼튼하고 까만색이에요.','더우면 진흙 목욕을 해요.']},
   {n:'돼지', en:'Pig', e:'🐖', f:'꿀꿀! 사실은 목욕을 엄청 좋아하는 깨끗한 친구랍니다!', h:['분홍빛 피부를 가졌어요.','코가 납작하고 동그래요.','꿀꿀 하고 소리를 내요.']},
   {n:'말', en:'Horse', e:'🐎', f:'히힝~ 눈을 감지 않고 서서 쿨쿨 잠을 잘 수 있어요!', h:['다리가 네 개인 큰 동물이에요.','달리기를 아주 잘해요.','히힝 하고 소리를 내요.']},
-  {n:'양', en:'Sheep', e:'🐑', f:'메에~ 구름처럼 보송보송한 털로 따뜻한 옷을 만들어요!', h:['온몸이 하얀 보들보들한 털로 덮였어요.','메에 하고 소리를 내요.','풀밭에서 풀을 먹어요.']},
-  {n:'염소', en:'Goat', e:'🐐', f:'뾰족한 뿔이 있고 높은 바위산도 펄쩍펄쩍 잘 올라가요!', h:['네 발을 가진 동물이에요.','턱에 수염이 있어요.','산비탈도 잘 올라다녀요.']},
-  {n:'낙타', en:'Camel', e:'🐪', f:'등에 있는 볼록한 혹 덕분에 사막에서도 끄떡없어요!', h:['뜨거운 사막에서 살아요.','등에 볼록한 혹이 하나 있어요.','속눈썹이 아주 길어요.']},
   {n:'사자', en:'Lion', e:'🦁', f:'어흥! 용감하게 가족을 지키는 멋진 동물의 왕이에요!', h:['수컷은 얼굴 주변에 멋진 갈기가 있어요.','동물의 왕이라고 불려요.','으르렁 소리가 엄청 커요.']},
   {n:'호랑이', en:'Tiger', e:'🐅', f:'어흥! 멋진 줄무늬 옷을 입은 숲속의 용감한 대장이에요!', h:['주황색 털에 검은 줄무늬가 뚜렷해요.','아시아 밀림에 사는 용맹한 동물이에요.','어흥! 하고 아주 크게 울어요.']},
   {n:'표범', en:'Leopard', e:'🐆', f:'나무를 아주 잘 타서 높은 나무 위에서 쉬는 걸 좋아해요!', h:['나무 위에 올라가는 걸 좋아해요.','몸에 검은 꽃 모양 점무늬가 있어요.','달리기도 아주 빨라요.']},
-  {n:'늑대', en:'Wolf', e:'🐺', f:'아우우~ 밤하늘의 달을 보며 친구들과 노래를 불러요!', h:['강아지보다 크고 야생에서 살아요.','밤이 되면 달을 보며 아우우~ 울어요.','가족과 무리 지어 다녀요.']},
-  {n:'여우', en:'Fox', e:'🦊', f:'꼬리가 아주 풍성하고 무척 영리한 숲속 친구예요!', h:['주황빛 붉은 털을 가졌어요.','영리하기로 유명해요.','날쌔게 뛰어다녀요.']},
   {n:'코끼리', en:'Elephant', e:'🐘', f:'뿌우~ 길쭉한 코가 손처럼 아주 힘이 세고 물놀이도 해요!', h:['육지에서 가장 몸집이 큰 동물이에요.','코가 길어서 손처럼 써요.','귀가 부채처럼 아주 커요.']},
-  {n:'코뿔소', en:'Rhinoceros', e:'🦏', f:'코 위에 아주아주 단단하고 커다란 뿔이 있어요!', h:['몸이 아주 두꺼워요.','코에 큰 뿔이 있어요.','아프리카 초원에서 풀을 먹어요.']},
   {n:'하마', en:'Hippopotamus', e:'🦛', f:'하아~ 입이 엄청 크고 물놀이를 제일 좋아해요!', h:['몸이 아주 크고 통통해요.','강이나 호수에 살아요.','입이 엄청 크게 벌어져요.']},
   {n:'기린', en:'Giraffe', e:'🦒', f:'목이 쭈욱~ 길어서 엄청 높은 나무의 잎도 냠냠 잘 먹어요!',h:['목이 아주 길어요.','몸에 갈색 무늬가 있어요.','높은 나뭇잎을 먹어요.']},
-  {n:'얼룩말', en:'Zebra', e:'🦓', f:'얼룩덜룩 멋진 줄무늬 옷을 입고 초원을 다같이 달려요!',h:['몸에 검은 줄무늬가 있어요.','말처럼 생겼어요.','초원을 무리 지어 달려요.']},
-  {n:'사슴', en:'Deer', e:'🦌', f:'머리에 나뭇가지처럼 멋진 뿔이 쑥쑥 자라나요!', h:['수컷에게 나뭇가지 같은 뿔이 있어요.','눈이 크고 예뻐요.','깡충깡충 뛰는 날쌘 동물이에요.']},
-  {n:'멧돼지', en:'Wild Boar', e:'🐗', f:'튼튼한 코로 땅을 팍팍 파서 맛있는 먹이를 쏙 찾아요!', h:['돼지를 닮은 야생 동물이에요.','털이 거칠고 뻣뻣해요.','어금니가 뾰족하게 튀어나와 있어요.']},
   {n:'곰', en:'Bear', e:'🐻', f:'아주 추운 겨울에는 동굴 속에서 쿨쿨 긴 잠을 자요!', h:['덩치 큰 동물이에요.','꿀과 연어를 좋아해요.','두 발로 일어서기도 해요.']},
-  {n:'북극곰', en:'Polar Bear', e:'🐻‍❄️', f:'추운 얼음 나라에 살고 바다에서 수영을 아주 잘해요!', h:['하얀 털을 가졌어요.','눈과 얼음 위에서 살아요.','수영을 아주 잘해요.']},
   {n:'판다', en:'Panda', e:'🐼', f:'냠냠 쩝쩝! 대나무를 제일 좋아하는 오동통 귀염둥이예요!', h:['흰색과 검은색 털이 반반 섞여 있어요.','눈 주위가 까매서 안경을 쓴 것 같아요.','대나무를 아주 좋아해요.']},
-  {n:'다람쥐', en:'Squirrel', e:'🐿️', f:'볼이 빵빵! 추운 겨울에 먹을 도토리를 땅속에 몰래 숨겨둬요!',h:['꼬리가 빗자루처럼 풍성해요.','나무를 아주 잘 타요.','도토리를 두 손으로 잡고 먹어요.']},
-  {n:'고슴도치', en:'Hedgehog', e:'🦔', f:'앗 따가워! 위험하면 밤송이처럼 동그랗게 몸을 말아요!',h:['등에 뾰족한 가시가 가득해요.','작고 귀여워요.','위험하면 공처럼 굴러요.']},
-  {n:'박쥐', en:'Bat', e:'🦇', f:'깜깜한 밤에도 소리를 잘 듣고 요리조리 잘 날아다녀요!', h:['밤에만 활동해요.','동굴에서 거꾸로 매달려 자요.','날개가 있는 유일한 포유류예요.']},
-  {n:'나무늘보', en:'Sloth', e:'🦥', f:'세상에서 제~일 느릿느릿 천천히 움직이는 친구예요!', h:['세상에서 가장 느린 동물이에요.','나무에 거꾸로 매달려 살아요.','발톱이 갈고리처럼 아주 길어요.']},
-  {n:'해달', en:'Sea Otter', e:'🦦', f:'물 위에 둥둥 누워서 돌맹이로 조개를 쾅쾅 깨서 냠냠 먹어요!',h:['물 위에 누워서 둥둥 떠요.','털이 아주 빽빽해서 젖지 않아요.','잘 때 물에 떠내려가지 않게 친구와 손을 잡고 자요.']},
   {n:'원숭이', en:'Monkey', e:'🐒', f:'우끼끼! 나무 타기를 좋아하고 친구들과 장난도 잘 쳐요!', h:['나무 위를 아주 잘 타요.','바나나를 좋아해요.','장난치는 걸 좋아해요.']},
-  {n:'고릴라', en:'Gorilla', e:'🦍', f:'가슴을 쿵쿵 두드리며 아주아주 강한 힘자랑을 해요!',h:['영장류 중에 덩치가 제일 커요.','팔이 아주 길고 튼튼해요.','가족을 지키는 멋진 아빠예요.']},
-  {n:'오랑우탄', en:'Orangutan', e:'🦧', f:'비가 오면 나뭇잎을 따서 커다란 우산을 만들 줄 알아요!',h:['주황빛 갈색 털이 있어요.','팔이 엄청 길어요.','나무 위에서 생활해요.']},
-  {n:'캥거루', en:'Kangaroo', e:'🦘', f:'엄마 배에 있는 따뜻한 주머니 속에 아기 캥거루가 쏙 타고 있어요!', h:['뒷다리가 아주 강해서 높이 뛰어요.','배에 새끼를 넣는 주머니가 있어요.','호주에 살아요.']},
   {n:'참새', en:'Sparrow', e:'🐦', f:'짹짹! 우리 동네 공원이나 길에서 자주 볼 수 있는 귀여운 새예요!',h:['크기가 아주 작아요.','짹짹 하고 귀여운 소리를 내요.','쌀이나 씨앗을 좋아해요.']},
   {n:'닭', en:'Chicken', e:'🐔', f:'꼬끼오! 아침이 밝았다고 큰 소리로 모두에게 알려줘요!', h:['날개가 있지만 잘 날지 못해요.','머리에 빨간 볏이 있어요.','우리에게 맛있는 달걀을 줘요.']},
-  {n:'병아리', en:'Chick', e:'🐤', f:'삐약삐약! 알에서 막 톡 깨고 나온 노랗고 보송보송한 아기 새예요!', h:['삐약삐약 하고 울어요.','노랗고 보송보송한 털이 있어요.','커서 닭이 되어요.']},
   {n:'독수리', en:'Eagle', e:'🦅', f:'하늘 엄청 높이 날면서 땅에 있는 작은 먹이도 쏙! 찾아내요!', h:['날개를 가진 하늘의 왕이에요.','부리와 발톱이 무척 날카로워요.','시력이 엄청나게 좋아요.']},
-  {n:'부엉이', en:'Owl', e:'🦉', f:'부엉부엉! 목을 등 뒤까지 휙! 하고 돌아볼 수 있어요!', h:['주로 밤에 활동하는 새예요.','눈이 아주 크고 동그래요.','부엉부엉 소리를 내요.']},
-  {n:'백조', en:'Swan', e:'🦢', f:'물 위를 미끄러지듯 스르륵 우아하게 헤엄쳐 다녀요!', h:['목이 숫자 S 모양으로 길어요.','물 위를 우아하게 헤엄쳐요.','아름다운 순백의 깃털을 가졌어요.']},
   {n:'오리', en:'Duck', e:'🦆', f:'꽥꽥! 엉덩이를 씰룩이며 물에 둥둥 떠서 헤엄을 아주 잘 쳐요!', h:['물 위에 떠서 헤엄쳐요.','부리가 넓고 납작해요.','꽥꽥 소리를 내요.']},
-  {n:'플라밍고', en:'Flamingo', e:'🦩', f:'맛있는 분홍색 새우를 많이 먹어서 몸이 예쁜 분홍색이 되었대요!', h:['다리와 목이 아주 길어요.','한 발로 서서 자는 걸 좋아해요.','몸이 화려한 분홍색이에요.']},
-  {n:'앵무새', en:'Parrot', e:'🦜', f:'안녕! 사람의 말을 듣고 앵무새도 똑같이 따라 할 수 있어요!', h:['깃털이 빨강, 노랑, 초록색으로 화려해요.','사람 말을 흉내 내요.','구부러진 부리로 씨앗을 까먹어요.']},
   {n:'펭귄', en:'Penguin', e:'🐧', f:'뒤뚱뒤뚱! 하늘은 날지 못하지만 바다에서 멋지게 수영해요!', h:['새이지만 날지 못해요.','배는 하얗고 등은 검어요.','뒤뚱뒤뚱 귀엽게 걸어다녀요.']},
   {n:'개구리', en:'Frog', e:'🐸', f:'개굴개굴! 긴 혀를 쭈욱 내밀어 날아가는 파리를 쏙 잡아요!',h:['깡충깡충 점프해요.','연못 근처에 살아요.','개굴개굴 울어요.']},
   {n:'악어', en:'Crocodile', e:'🐊', f:'엉금엉금! 입이 엄청 크고 뾰족뾰족한 이빨이 아주 무서워요!',h:['큰 입과 날카로운 이빨이 있어요.','물속과 땅을 모두 다녀요.','강가에 사는 무서운 사냥꾼이에요.']},
   {n:'거북이', en:'Turtle', e:'🐢', f:'딱딱한 껍질 집을 지고 느릿느릿 걷는 할아버지 거북이예요!',h:['단단한 등껍질이 있어요.','아주 천천히 걸어요.','위험하면 몸을 껍질 안에 숨겨요.']},
   {n:'뱀', en:'Snake', e:'🐍', f:'스르륵 스르륵~ 다리도 없이 땅을 스르르 기어다니는 친구예요!',h:['다리가 없어요.','몸을 구불구불 움직여요.','혀를 날름거리며 냄새를 맡아요.']},
   {n:'고래', en:'Whale', e:'🐋', f:'푸우~ 머리 위에 있는 구멍으로 커다란 물기둥을 뿜어내요!', h:['바다에서 사는 아주 큰 동물이에요.','머리 위 구멍으로 물을 뿜어요.','지구에서 가장 큰 동물이에요.']},
-  {n:'돌고래', en:'Dolphin', e:'🐬', f:'바다 위로 폴짝폴짝 점프하며 친구들과 노는 걸 제일 좋아해요!', h:['바다에 사는 아주 똑똑한 친구예요.','초음파를 쏴서 물속을 탐색해요.','물 위로 점프하며 노는 걸 좋아해요.']},
   {n:'물고기', en:'Fish', e:'🐟', f:'뻐끔뻐끔! 지느러미를 살랑살랑 흔들며 물속을 예쁘게 헤엄쳐요!', h:['지느러미를 흔들며 헤엄쳐요.','온몸이 비늘로 덮여 있어요.','강이나 바다에 살아요.']},
   {n:'상어', en:'Shark', e:'🦈', f:'무서운 뾰족 이빨이 부러져도 마법처럼 새로운 이빨이 자라나요!',h:['등에 세모난 지느러미가 있어요.','바다의 무서운 사냥꾼이에요.','이빨이 아주 날카로워요.']},
   {n:'문어', en:'Octopus', e:'🐙', f:'먹물을 쭈욱~ 뿜고 주변 돌멩이처럼 색깔을 바꿔서 몰래 숨어요!', h:['다리가 8개 달려있어요.','위험하면 새까만 먹물을 뿜어요.','주변 돌멩이와 똑같은 색으로 변신해요.']},
@@ -378,7 +338,7 @@ const DB=[
 let unlocked = JSON.parse(localStorage.getItem('animal_dic')||'[]');
 let ax=null;
 
-/* 오디오 엔진 강제 시작 */
+/* 오디오 모바일 방어 코드 적용 */
 function initA(){ 
   try{
     if(!ax) ax=new(window.AudioContext||window.webkitAudioContext)();
@@ -411,13 +371,14 @@ function playDdaeng(){
 }
 
 let mOn=true, mt=null;
+// 💡 BGM: 동요 '작은 별' 멜로디로 교체 (도도솔솔라라솔)
 const ML=[
-  [392.00,1], [329.63,1], [329.63,2], 
-  [349.23,1], [293.66,1], [293.66,2],
-  [261.63,1], [293.66,1], [329.63,1], [349.23,1],
-  [392.00,1], [392.00,1], [392.00,2], [0,1]
+  [523.25,1], [523.25,1], [783.99,1], [783.99,1],
+  [880.00,1], [880.00,1], [783.99,2],
+  [698.46,1], [698.46,1], [659.25,1], [659.25,1],
+  [587.33,1], [587.33,1], [523.25,2]
 ];
-const BT=0.25;
+const BT=0.3;
 function bgm(){
   if(!ax||!mOn)return;
   let t=ax.currentTime+.05;
@@ -470,7 +431,7 @@ let curVoice = null;
 function randomizeVoice() {
   let isBoy = Math.random() > 0.5;
   curVoice = (isBoy && vkoMale) ? vkoMale : vkoFemale;
-  curPitch = isBoy ? (0.6 + Math.random()*0.3) : (1.3 + Math.random()*0.4);
+  curPitch = isBoy ? (0.6 + Math.random()*0.4) : (1.4 + Math.random()*0.4);
   curRate = 1.05 + Math.random()*0.1;
 }
 
@@ -525,16 +486,18 @@ function throwConfetti() {
 }
 
 /* ═══════════════════════
-   1. 동물퀴즈 로직
+   1. 동물퀴즈
 ═══════════════════════ */
 let qLives=7, qCur=null, qHi=0, qPhase='hint';
 let qChoices = []; 
+// 💡 실루엣 식별 극악 난이도 (아주 흐리고 돌려서 시작)
 const BLUR=[35, 15, 5, 0]; 
 const SCL=[.7,.85,1.0,1.1];
 const ROT=[-25, 15, -5, 0];
 
 function startQuiz(){
   randomizeVoice(); 
+  
   const sil=document.getElementById('sil');
   sil.style.transition = 'none'; 
   sil.className = 'sil'; 
@@ -606,7 +569,8 @@ function qCheck(ans, btn){
     sil.classList.add('show');
     if(!unlocked.includes(qCur.n)){ unlocked.push(qCur.n); localStorage.setItem('animal_dic',JSON.stringify(unlocked)); }
     
-    let fullVoiceText = `정답은, ${qCur.n}예요! ${qCur.n}는 영어로, ${qCur.en}! ${qCur.f} 또 하고 싶으면, 노란색 버튼을 눌러요!`;
+    // 💡 영어 발음 추가 및 깔끔한 멘트 (으음, 딩동댕, 연속정답 멘트 등 삭제)
+    let fullVoiceText = `정답은, ${qCur.n}예요! ${qCur.n}는 영어로, ${qCur.en}! ${qCur.f} 더 하고 싶으면, 노란색 버튼을 눌러요!`;
     
     setTimeout(()=>{
       speak(fullVoiceText, () => {
@@ -623,12 +587,21 @@ function qCheck(ans, btn){
   } else {
     btn.classList.add('ng'); 
     playDdaeng(); 
-    setTimeout(() => { speak('아니에요. 다시 한번 골라볼까요?'); }, 400);
+    qLives--; renderHearts();
+    
+    setTimeout(() => {
+      if(qLives<=0){
+        speak('아함~ 동물 친구들이 코오 낮잠 자러 갔어요.');
+        setTimeout(()=>openModal('😴', '낮잠 시간', '다음에 다시 놀아요!', '확인', goHub), 1000);
+      } else { 
+        speak('아니에요. 다시 한번 골라볼까요?'); 
+      }
+    }, 400);
   }
 }
 
 /* ═══════════════════════
-   2. 글씨 쓰기 놀이 (스마트 스케치북)
+   2. 글씨 쓰기 놀이
 ═══════════════════════ */
 let dailyCur = null;
 let drawCanvas = null;
@@ -639,10 +612,8 @@ function startPhonics() {
   show('phonics');
   drawCanvas = document.getElementById('draw-canvas');
   drawCtx = drawCanvas.getContext('2d');
-  
   const rect = drawCanvas.parentElement.getBoundingClientRect();
-  drawCanvas.width = rect.width;
-  drawCanvas.height = rect.height;
+  drawCanvas.width = rect.width; drawCanvas.height = rect.height;
 
   drawCanvas.addEventListener('touchstart', startDrawing, {passive: false});
   drawCanvas.addEventListener('touchmove', draw, {passive: false});
@@ -685,32 +656,20 @@ function startDrawing(e) {
 function draw(e) {
   if (!isDrawing) return;
   e.preventDefault();
-  
   const rect = drawCanvas.getBoundingClientRect();
   const scaleX = drawCanvas.width / rect.width;
   const scaleY = drawCanvas.height / rect.height;
-  
   let clientX = e.touches ? e.touches[0].clientX : e.clientX;
   let clientY = e.touches ? e.touches[0].clientY : e.clientY;
-  
-  const x = (clientX - rect.left) * scaleX;
-  const y = (clientY - rect.top) * scaleY;
+  const x = (clientX - rect.left) * scaleX; const y = (clientY - rect.top) * scaleY;
 
-  drawCtx.lineWidth = 25; 
-  drawCtx.lineCap = 'round';
-  drawCtx.lineJoin = 'round';
-  drawCtx.strokeStyle = '#FFD43B'; 
-
-  drawCtx.lineTo(x, y);
-  drawCtx.stroke();
-  drawCtx.beginPath();
-  drawCtx.moveTo(x, y);
+  drawCtx.lineWidth = 25; drawCtx.lineCap = 'round'; drawCtx.lineJoin = 'round'; drawCtx.strokeStyle = '#FFD43B'; 
+  drawCtx.lineTo(x, y); drawCtx.stroke(); drawCtx.beginPath(); drawCtx.moveTo(x, y);
 }
 
 function stopDrawing(e) {
   if(e) e.preventDefault();
-  isDrawing = false;
-  drawCtx.beginPath();
+  isDrawing = false; drawCtx.beginPath();
 }
 
 function clearCanvas(silent = false) {
@@ -720,7 +679,7 @@ function clearCanvas(silent = false) {
 }
 
 /* ═══════════════════════
-   3. 드래그 직소 퍼즐
+   3. 드래그 직소 퍼즐 (Drag & Drop)
 ═══════════════════════ */
 let pzSize = 2; 
 
@@ -730,7 +689,6 @@ function startJigsawPuzzle(size = pzSize) {
   document.getElementById(`db${size}`).classList.add('active');
 
   let imgUrl = PUZZLE_IMAGES[~~(Math.random() * PUZZLE_IMAGES.length)];
-  
   let preview = document.getElementById('pz-preview');
   preview.style.backgroundImage = `url('${imgUrl}')`;
 
@@ -754,87 +712,93 @@ function startJigsawPuzzle(size = pzSize) {
       let piece = document.createElement('div');
       piece.className = 'drag-piece';
       piece.style.backgroundImage = `url('${imgUrl}')`;
+      // 💡 반응형(%) 백그라운드 매핑
       piece.style.backgroundSize = `${size * 100}% ${size * 100}%`;
-      piece.style.backgroundPosition = `${x * (100 / (size-1))}% ${y * (100 / (size-1))}%`;
+      piece.style.backgroundPosition = `${x * (100 / (size-1 || 1))}% ${y * (100 / (size-1 || 1))}%`;
       piece.dataset.x = x; piece.dataset.y = y;
       
       piecesArr.push(piece);
     }
   }
 
+  // 조각들을 펼쳐서 배치
   piecesArr.sort(()=>Math.random()-0.5).forEach(p => pieceArea.appendChild(p));
 
   setupDragAndDrop();
   show('puzzle');
   randomizeVoice();
-  speak('유나야, 그림 조각을 당겨서 똑같이 맞춰봐요!');
+  speak('유나야, 그림 조각을 끌어당겨서 똑같이 맞춰봐요!');
 }
 
 function setupDragAndDrop() {
   const pieces = document.querySelectorAll('.drag-piece');
   const slots = document.querySelectorAll('.pz-slot');
   let draggedEl = null;
-  let startX, startY, initialLeft, initialTop;
+  let startX, startY;
 
   pieces.forEach(p => {
-    p.addEventListener('touchstart', (e) => {
+    p.addEventListener('touchstart', dragStart, {passive: false});
+    p.addEventListener('touchmove', dragMove, {passive: false});
+    p.addEventListener('touchend', dragEnd);
+    p.addEventListener('mousedown', dragStart);
+    document.addEventListener('mousemove', dragMove);
+    document.addEventListener('mouseup', dragEnd);
+    
+    function dragStart(e) {
+      if(p.classList.contains('placed')) return;
+      if(e.type === 'touchstart') e.preventDefault(); 
       initA(); 
       draggedEl = p;
-      const touch = e.touches[0];
-      const rect = p.getBoundingClientRect();
-      startX = touch.clientX; startY = touch.clientY;
-      initialLeft = rect.left; initialTop = rect.top;
+      const point = e.touches ? e.touches[0] : e;
+      startX = point.clientX; startY = point.clientY;
       
-      p.style.position = 'fixed';
-      p.style.left = initialLeft + 'px';
-      p.style.top = initialTop + 'px';
       p.style.zIndex = 1000;
-      p.style.transform = 'scale(1.1)';
-    });
-
-    p.addEventListener('touchmove', (e) => {
-      if(!draggedEl) return;
-      e.preventDefault(); 
-      const touch = e.touches[0];
-      const dx = touch.clientX - startX;
-      const dy = touch.clientY - startY;
-      draggedEl.style.left = initialLeft + dx + 'px';
-      draggedEl.style.top = initialTop + dy + 'px';
-    });
-
-    p.addEventListener('touchend', (e) => {
-      if(!draggedEl) return;
-      draggedEl.style.transform = 'scale(1)';
-      draggedEl.style.zIndex = 100;
-      
-      const touch = e.changedTouches[0];
-      let droppedOnSlot = false;
-
-      slots.forEach(slot => {
-        const sRect = slot.getBoundingClientRect();
-        if (touch.clientX > sRect.left && touch.clientX < sRect.right &&
-            touch.clientY > sRect.top && touch.clientY < sRect.bottom) {
-          
-          if(slot.dataset.x === draggedEl.dataset.x && slot.dataset.y === draggedEl.dataset.y && slot.children.length === 0) {
-            slot.appendChild(draggedEl);
-            draggedEl.classList.add('placed');
-            draggedEl.style.position = 'relative';
-            draggedEl.style.left = '0'; draggedEl.style.top = '0';
-            playDingDongDang();
-            droppedOnSlot = true;
-            checkJigsawComplete();
-          }
-        }
-      });
-
-      if(!droppedOnSlot) {
-        playDdaeng();
-        draggedEl.style.position = 'relative';
-        draggedEl.style.left = '0'; draggedEl.style.top = '0';
-      }
-      draggedEl = null;
-    });
+      p.style.transition = 'none'; // 드래그 중 부드럽게
+    }
   });
+
+  function dragMove(e) {
+    if(!draggedEl) return;
+    if(e.type === 'touchmove') e.preventDefault(); 
+    const point = e.touches ? e.touches[0] : e;
+    const dx = point.clientX - startX;
+    const dy = point.clientY - startY;
+    // 💡 transform을 이용해 주변 레이아웃 깨짐 없이 이동
+    draggedEl.style.transform = `translate(${dx}px, ${dy}px) scale(1.1)`;
+  }
+
+  function dragEnd(e) {
+    if(!draggedEl) return;
+    
+    const point = e.changedTouches ? e.changedTouches[0] : e;
+    let droppedOnSlot = false;
+
+    slots.forEach(slot => {
+      const sRect = slot.getBoundingClientRect();
+      if (point.clientX > sRect.left && point.clientX < sRect.right &&
+          point.clientY > sRect.top && point.clientY < sRect.bottom) {
+        
+        // 올바른 자리에 맞게 드롭했는지 확인
+        if(slot.dataset.x === draggedEl.dataset.x && slot.dataset.y === draggedEl.dataset.y && slot.children.length === 0) {
+          slot.appendChild(draggedEl);
+          draggedEl.classList.add('placed');
+          draggedEl.style.transform = 'none';
+          playDingDongDang();
+          droppedOnSlot = true;
+          checkJigsawComplete();
+        }
+      }
+    });
+
+    if(!droppedOnSlot) {
+      playDdaeng();
+      // 원래 자리로 스르륵 돌아감
+      draggedEl.style.transition = 'transform 0.2s ease';
+      draggedEl.style.transform = 'translate(0px, 0px) scale(1)';
+    }
+    draggedEl.style.zIndex = 100;
+    draggedEl = null;
+  }
 }
 
 function checkJigsawComplete() {
@@ -949,7 +913,6 @@ function showCollection(){
   });
   show('collection');
 }
-
 </script>
 </body>
 </html>
