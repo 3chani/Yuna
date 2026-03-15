@@ -97,20 +97,29 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .catch-target:active{transform:scale(0.8);}
 
 /* ═══════════════════════
-   글자 놀이 (PHONICS)
+   글자 따라 쓰기 (PHONICS & TRACING)
 ═══════════════════════ */
 #phonics { justify-content:flex-start; align-items:center; }
-.ph-layout { display:flex; flex-direction:column; align-items:center; gap:30px; width:100%; max-width:600px; padding:20px; }
-.ph-emoji { font-size: 180px; text-shadow: 0 10px 30px rgba(0,0,0,0.3); animation: floatEmoji 3s ease-in-out infinite; cursor:pointer; }
-@keyframes floatEmoji { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
-.ph-cards { display:flex; gap:16px; width:100%; justify-content:center; }
-.ph-card { flex:1; max-width: 250px; background:var(--card); border:4px solid var(--bdr); border-radius:24px; padding:24px 10px; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; transition:transform 0.15s; box-shadow:0 8px 20px rgba(0,0,0,0.3); }
-.ph-card:active { transform:scale(0.92); }
-.ph-card.ko { border-color:var(--teal); background:linear-gradient(135deg,#0c1d34,rgba(45,212,200,.15)); }
-.ph-card.en { border-color:var(--purple); background:linear-gradient(135deg,#0c1d34,rgba(181,132,250,.15)); }
-.ph-letter { font-size:55px; font-weight:900; color:var(--gold); line-height:1; }
-.ph-word { font-size:26px; font-weight:bold; color:var(--text); }
-.ph-next-btn { width:90%; max-width:500px; padding:20px; border-radius:24px; background:linear-gradient(135deg,var(--gold),#ff9a2c); color:#1a0800; font-size:22px; font-weight:900; border:none; cursor:pointer; margin-top:10px; box-shadow:0 8px 20px rgba(255,212,59,0.3); transition:transform 0.15s; }
+.ph-layout { display:flex; flex-direction:column; align-items:center; gap:20px; width:100%; max-width:600px; padding:10px 20px; flex:1; }
+.ph-top-card { display:flex; align-items:center; gap:20px; background:var(--card); border:3px solid var(--sky); border-radius:24px; padding:16px 30px; box-shadow:0 8px 20px rgba(0,0,0,0.3); cursor:pointer; }
+.ph-top-card:active { transform:scale(0.95); }
+.ph-emoji { font-size: 80px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.5)); animation: floatEmoji 3s ease-in-out infinite; }
+.ph-text-info { display:flex; flex-direction:column; gap:4px; }
+.ph-ko { font-size:36px; font-weight:900; color:var(--gold); line-height:1;}
+.ph-en { font-size:22px; font-weight:bold; color:var(--sky); line-height:1;}
+
+@keyframes floatEmoji { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+.ph-board-wrap { position:relative; width:100%; max-width:400px; aspect-ratio:1/1; background:var(--card); border:4px solid var(--bdr); border-radius:24px; overflow:hidden; box-shadow:inset 0 0 20px rgba(0,0,0,0.5); }
+.ph-canvas { position:absolute; inset:0; width:100%; height:100%; touch-action:none; cursor:crosshair; z-index:5; }
+.ph-bg-text { position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-size:140px; font-weight:900; color:rgba(255,255,255,0.07); pointer-events:none; z-index:1; }
+
+.ph-tools { display:flex; gap:16px; width:100%; justify-content:center; }
+.ph-tool-btn { display:flex; align-items:center; justify-content:center; gap:8px; padding:12px 24px; border-radius:16px; font-weight:bold; font-size:18px; border:none; cursor:pointer; }
+.ph-tool-btn.clear { background:rgba(255,100,84,.15); border:2px solid var(--coral); color:var(--coral); }
+.ph-tool-btn.clear:active { transform:scale(0.9); }
+
+.ph-next-btn { width:100%; padding:18px; border-radius:20px; background:linear-gradient(135deg,var(--gold),#ff9a2c); color:#1a0800; font-size:20px; font-weight:900; border:none; cursor:pointer; margin-top:auto; margin-bottom:10px; box-shadow:0 8px 20px rgba(255,212,59,0.3); transition:transform 0.15s; }
 .ph-next-btn:active { transform:scale(0.95); }
 
 /* ═══════════════════════
@@ -148,8 +157,8 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
       <div class="hub-info"><div class="hub-name">동물퀴즈</div><div class="hub-desc">누구일까? 맞춰봐요!</div></div>
     </div>
     <div class="hub-btn phonics" onclick="startPhonics()">
-      <div class="hub-icon">🔤</div>
-      <div class="hub-info"><div class="hub-name">말하기 놀이</div><div class="hub-desc">글자와 소리를 배워요!</div></div>
+      <div class="hub-icon">🖍️</div>
+      <div class="hub-info"><div class="hub-name">글씨 쓰기</div><div class="hub-desc">글자를 따라 써요!</div></div>
     </div>
     <div class="hub-btn puzzle" onclick="startJigsawPuzzle()">
       <div class="hub-icon">🧩</div>
@@ -157,7 +166,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
     </div>
     <div class="hub-btn catch" onclick="startCatchGame()">
       <div class="hub-icon">🖐️</div>
-      <div class="hub-info"><div class="hub-name">동물 찾기</div><div class="hub-desc">동물을 빨리 잡아요!</div></div>
+      <div class="hub-info"><div class="hub-name">숨은 동물 찾기</div><div class="hub-desc">동물을 빨리 잡아요!</div></div>
     </div>
     <div class="hub-btn dic" onclick="showCollection()">
       <div class="hub-icon">📖</div>
@@ -170,9 +179,10 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 <div class="screen hidden" id="quiz">
   <div class="top-bar">
     <button class="back-btn" onclick="goHub()">← 뒤로</button>
+    <div class="title-text" id="q-streak" style="font-size:16px;">🔥 0연속 정답!</div>
     <div class="lives-wrap" id="lives-wrap"></div>
   </div>
-  <div class="sil-wrap"><span class="sil" id="sil">❓</span></div>
+  <div class="sil-wrap" onclick="pokeSilhouette()"><span class="sil" id="sil">❓</span></div>
   <div class="hint-box hint-pulse"><div class="hl-tag">힌트</div><div class="ht empty" id="ht">버튼을 눌러봐요! 🔊</div></div>
   <div class="act" id="act"></div>
 </div>
@@ -180,21 +190,24 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 <div class="screen hidden" id="phonics">
   <div class="top-bar">
     <button class="back-btn" onclick="goHub()">← 뒤로</button>
-    <div class="title-text">말하기 놀이</div>
+    <div class="title-text">글씨 쓰기 놀이</div>
   </div>
   <div class="ph-layout">
-    <div class="ph-emoji" id="ph-emoji" onclick="playPhonicsAll()">🐶</div>
-    <div class="ph-cards">
-      <div class="ph-card ko" onclick="playPhonicsKo()">
-        <div class="ph-letter" id="ph-ko-letter">ㄱ</div>
-        <div class="ph-word" id="ph-ko-word">강아지</div>
-      </div>
-      <div class="ph-card en" onclick="playPhonicsEn()">
-        <div class="ph-letter" id="ph-en-letter">D</div>
-        <div class="ph-word" id="ph-en-word">Dog</div>
+    <div class="ph-top-card" onclick="playDailyWord()">
+      <div class="ph-emoji" id="ph-word-emoji">👩</div>
+      <div class="ph-text-info">
+        <div class="ph-ko" id="ph-word-ko">엄마</div>
+        <div class="ph-en" id="ph-word-en">Mom</div>
       </div>
     </div>
-    <button class="ph-next-btn" id="ph-next-btn" onclick="nextPhonics()">다음 친구 만나기 ➔</button>
+    <div class="ph-board-wrap">
+      <div class="ph-bg-text" id="ph-bg-text">엄마</div>
+      <canvas class="ph-canvas" id="draw-canvas"></canvas>
+    </div>
+    <div class="ph-tools">
+      <button class="ph-tool-btn clear" onclick="clearCanvas()">🗑️ 싹 지우기</button>
+    </div>
+    <button class="ph-next-btn" id="ph-next-btn" onclick="nextDailyWord()">다음 단어 쓰기 ➔</button>
   </div>
 </div>
 
@@ -253,6 +266,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </div>
 
 <script>
+/* 💡 퍼즐에 사용할 이미지 URL (여기에 원하는 캐릭터 이미지 URL을 추가하세요!) */
 const PUZZLE_IMAGES = [
   'https://images.unsplash.com/photo-1541364983171-a8ba01e95cfc?auto=format&fit=crop&w=400&q=80',
   'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80',
@@ -260,7 +274,45 @@ const PUZZLE_IMAGES = [
   'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?auto=format&fit=crop&w=400&q=80',
 ];
 
-// 💡 100+종 무결성 동물 DB
+// 💡 일상 단어 110종 (글씨 쓰기 놀이 전용)
+const DAILY_WORDS_DB = [
+  {ko:'엄마', en:'Mom', e:'👩'}, {ko:'아빠', en:'Dad', e:'👨'}, {ko:'할머니', en:'Grandma', e:'👵'}, {ko:'할아버지', en:'Grandpa', e:'👴'},
+  {ko:'아기', en:'Baby', e:'👶'}, {ko:'나', en:'Me', e:'🧒'}, {ko:'친구', en:'Friend', e:'👫'}, {ko:'선생님', en:'Teacher', e:'👩‍🏫'},
+  {ko:'의사', en:'Doctor', e:'👩‍⚕️'}, {ko:'경찰', en:'Police', e:'👮'},
+  {ko:'눈', en:'Eye', e:'👀'}, {ko:'코', en:'Nose', e:'👃'}, {ko:'입', en:'Mouth', e:'👄'}, {ko:'귀', en:'Ear', e:'👂'},
+  {ko:'손', en:'Hand', e:'✋'}, {ko:'발', en:'Foot', e:'🦶'}, {ko:'머리', en:'Head', e:'💆'}, {ko:'팔', en:'Arm', e:'💪'},
+  {ko:'다리', en:'Leg', e:'🦵'}, {ko:'얼굴', en:'Face', e:'🙂'},
+  {ko:'물', en:'Water', e:'💧'}, {ko:'우유', en:'Milk', e:'🥛'}, {ko:'밥', en:'Rice', e:'🍚'}, {ko:'빵', en:'Bread', e:'🍞'},
+  {ko:'사과', en:'Apple', e:'🍎'}, {ko:'바나나', en:'Banana', e:'🍌'}, {ko:'포도', en:'Grape', e:'🍇'}, {ko:'딸기', en:'Strawberry', e:'🍓'},
+  {ko:'수박', en:'Watermelon', e:'🍉'}, {ko:'귤', en:'Tangerine', e:'🍊'}, {ko:'복숭아', en:'Peach', e:'🍑'}, {ko:'파인애플', en:'Pineapple', e:'🍍'},
+  {ko:'체리', en:'Cherry', e:'🍒'}, {ko:'레몬', en:'Lemon', e:'🍋'}, {ko:'치즈', en:'Cheese', e:'🧀'}, {ko:'주스', en:'Juice', e:'🧃'},
+  {ko:'아이스크림', en:'Ice Cream', e:'🍦'}, {ko:'피자', en:'Pizza', e:'🍕'}, {ko:'사탕', en:'Candy', e:'🍬'}, {ko:'초콜릿', en:'Chocolate', e:'🍫'},
+  {ko:'과자', en:'Cookie', e:'🍪'}, {ko:'케이크', en:'Cake', e:'🍰'}, {ko:'햄버거', en:'Hamburger', e:'🍔'}, {ko:'핫도그', en:'Hot Dog', e:'🌭'},
+  {ko:'해', en:'Sun', e:'☀️'}, {ko:'달', en:'Moon', e:'🌙'}, {ko:'별', en:'Star', e:'⭐'}, {ko:'하늘', en:'Sky', e:'🌤️'},
+  {ko:'구름', en:'Cloud', e:'☁️'}, {ko:'비', en:'Rain', e:'☔'}, {ko:'눈', en:'Snow', e:'⛄'}, {ko:'바람', en:'Wind', e:'🌬️'},
+  {ko:'무지개', en:'Rainbow', e:'🌈'}, {ko:'번개', en:'Lightning', e:'⚡'}, {ko:'꽃', en:'Flower', e:'🌸'}, {ko:'나무', en:'Tree', e:'🌳'},
+  {ko:'나뭇잎', en:'Leaf', e:'🌿'}, {ko:'돌', en:'Stone', e:'🪨'}, {ko:'바다', en:'Sea', e:'🌊'}, {ko:'산', en:'Mountain', e:'⛰️'},
+  {ko:'불', en:'Fire', e:'🔥'}, {ko:'얼음', en:'Ice', e:'🧊'},
+  {ko:'자동차', en:'Car', e:'🚗'}, {ko:'기차', en:'Train', e:'🚆'}, {ko:'비행기', en:'Airplane', e:'✈️'}, {ko:'배', en:'Ship', e:'🚢'},
+  {ko:'버스', en:'Bus', e:'🚌'}, {ko:'자전거', en:'Bicycle', e:'🚲'}, {ko:'오토바이', en:'Motorcycle', e:'🏍️'}, {ko:'트럭', en:'Truck', e:'🚚'},
+  {ko:'소방차', en:'Fire Truck', e:'🚒'}, {ko:'경찰차', en:'Police Car', e:'🚓'}, {ko:'구급차', en:'Ambulance', e:'🚑'}, {ko:'로켓', en:'Rocket', e:'🚀'},
+  {ko:'헬리콥터', en:'Helicopter', e:'🚁'}, {ko:'택시', en:'Taxi', e:'🚕'},
+  {ko:'책', en:'Book', e:'📖'}, {ko:'연필', en:'Pencil', e:'✏️'}, {ko:'가방', en:'Bag', e:'🎒'}, {ko:'신발', en:'Shoe', e:'👟'},
+  {ko:'양말', en:'Sock', e:'🧦'}, {ko:'모자', en:'Hat', e:'🧢'}, {ko:'옷', en:'Clothes', e:'👕'}, {ko:'바지', en:'Pants', e:'👖'},
+  {ko:'치마', en:'Skirt', e:'👗'}, {ko:'안경', en:'Glasses', e:'👓'}, {ko:'시계', en:'Clock', e:'⌚'}, {ko:'우산', en:'Umbrella', e:'☂️'},
+  {ko:'침대', en:'Bed', e:'🛌'}, {ko:'문', en:'Door', e:'🚪'}, {ko:'열쇠', en:'Key', e:'🔑'}, {ko:'가위', en:'Scissors', e:'✂️'},
+  {ko:'칫솔', en:'Toothbrush', e:'🪥'}, {ko:'비누', en:'Soap', e:'🧼'}, {ko:'거울', en:'Mirror', e:'🪞'}, {ko:'풍선', en:'Balloon', e:'🎈'},
+  {ko:'선물', en:'Gift', e:'🎁'}, {ko:'리본', en:'Ribbon', e:'🎀'}, {ko:'인형', en:'Doll', e:'🧸'}, {ko:'공', en:'Ball', e:'⚽'},
+  {ko:'전화기', en:'Telephone', e:'☎️'}, {ko:'카메라', en:'Camera', e:'📷'}, {ko:'텔레비전', en:'Television', e:'📺'}, {ko:'휴지', en:'Tissue', e:'🧻'},
+  {ko:'강아지', en:'Dog', e:'🐶'}, {ko:'고양이', en:'Cat', e:'🐱'}, {ko:'토끼', en:'Rabbit', e:'🐰'}, {ko:'쥐', en:'Mouse', e:'🐭'},
+  {ko:'소', en:'Cow', e:'🐮'}, {ko:'호랑이', en:'Tiger', e:'🐯'}, {ko:'사자', en:'Lion', e:'🦁'}, {ko:'돼지', en:'Pig', e:'🐷'},
+  {ko:'개구리', en:'Frog', e:'🐸'}, {ko:'원숭이', en:'Monkey', e:'🐵'}, {ko:'닭', en:'Chicken', e:'🐔'}, {ko:'펭귄', en:'Penguin', e:'🐧'},
+  {ko:'새', en:'Bird', e:'🐦'}, {ko:'오리', en:'Duck', e:'🦆'}, {ko:'물고기', en:'Fish', e:'🐟'}, {ko:'상어', en:'Shark', e:'🦈'},
+  {ko:'고래', en:'Whale', e:'🐳'}, {ko:'나비', en:'Butterfly', e:'🦋'}, {ko:'꿀벌', en:'Bee', e:'🐝'}, {ko:'무당벌레', en:'Ladybug', e:'🐞'},
+  {ko:'개미', en:'Ant', e:'🐜'}, {ko:'거미', en:'Spider', e:'🕷️'}, {ko:'공룡', en:'Dinosaur', e:'🦖'}
+];
+
+// 💡 100여종 동물 DB (퀴즈/도감/숨은동물찾기 전용)
 const DB=[
   {n:'강아지', en:'Dog', e:'🐕', f:'코가 킁킁! 냄새를 아주 잘 맡는 똑똑한 친구예요!', h:['네 발로 걸어다녀요.','복슬복슬한 털이 있어요.','멍멍 하고 짖어요.']},
   {n:'푸들', en:'Poodle', e:'🐩', f:'털이 뽀글뽀글 파마한 것처럼 생겼고 아주 영리해요!', h:['털이 뽀글뽀글하게 곱슬거려요.','프랑스에서 온 영리한 강아지예요.','강아지 중에서 아주 똑똑해요.']},
@@ -274,7 +326,6 @@ const DB=[
   {n:'양', en:'Sheep', e:'🐑', f:'메에~ 구름처럼 보송보송한 털로 따뜻한 옷을 만들어요!', h:['온몸이 하얀 보들보들한 털로 덮였어요.','메에 하고 소리를 내요.','풀밭에서 풀을 먹어요.']},
   {n:'염소', en:'Goat', e:'🐐', f:'뾰족한 뿔이 있고 높은 바위산도 펄쩍펄쩍 잘 올라가요!', h:['네 발을 가진 동물이에요.','턱에 수염이 있어요.','산비탈도 잘 올라다녀요.']},
   {n:'낙타', en:'Camel', e:'🐪', f:'등에 있는 볼록한 혹 덕분에 사막에서도 끄떡없어요!', h:['뜨거운 사막에서 살아요.','등에 볼록한 혹이 하나 있어요.','속눈썹이 아주 길어요.']},
-  
   {n:'사자', en:'Lion', e:'🦁', f:'어흥! 용감하게 가족을 지키는 멋진 동물의 왕이에요!', h:['수컷은 얼굴 주변에 멋진 갈기가 있어요.','동물의 왕이라고 불려요.','으르렁 소리가 엄청 커요.']},
   {n:'호랑이', en:'Tiger', e:'🐅', f:'어흥! 멋진 줄무늬 옷을 입은 숲속의 용감한 대장이에요!', h:['주황색 털에 검은 줄무늬가 뚜렷해요.','아시아 밀림에 사는 용맹한 동물이에요.','어흥! 하고 아주 크게 울어요.']},
   {n:'표범', en:'Leopard', e:'🐆', f:'나무를 아주 잘 타서 높은 나무 위에서 쉬는 걸 좋아해요!', h:['나무 위에 올라가는 걸 좋아해요.','몸에 검은 꽃 모양 점무늬가 있어요.','달리기도 아주 빨라요.']},
@@ -287,7 +338,6 @@ const DB=[
   {n:'얼룩말', en:'Zebra', e:'🦓', f:'얼룩덜룩 멋진 줄무늬 옷을 입고 초원을 다같이 달려요!',h:['몸에 검은 줄무늬가 있어요.','말처럼 생겼어요.','초원을 무리 지어 달려요.']},
   {n:'사슴', en:'Deer', e:'🦌', f:'머리에 나뭇가지처럼 멋진 뿔이 쑥쑥 자라나요!', h:['수컷에게 나뭇가지 같은 뿔이 있어요.','눈이 크고 예뻐요.','깡충깡충 뛰는 날쌘 동물이에요.']},
   {n:'멧돼지', en:'Wild Boar', e:'🐗', f:'튼튼한 코로 땅을 팍팍 파서 맛있는 먹이를 쏙 찾아요!', h:['돼지를 닮은 야생 동물이에요.','털이 거칠고 뻣뻣해요.','어금니가 뾰족하게 튀어나와 있어요.']},
-  
   {n:'곰', en:'Bear', e:'🐻', f:'아주 추운 겨울에는 동굴 속에서 쿨쿨 긴 잠을 자요!', h:['덩치 큰 동물이에요.','꿀과 연어를 좋아해요.','두 발로 일어서기도 해요.']},
   {n:'북극곰', en:'Polar Bear', e:'🐻‍❄️', f:'추운 얼음 나라에 살고 바다에서 수영을 아주 잘해요!', h:['하얀 털을 가졌어요.','눈과 얼음 위에서 살아요.','수영을 아주 잘해요.']},
   {n:'판다', en:'Panda', e:'🐼', f:'냠냠 쩝쩝! 대나무를 제일 좋아하는 오동통 귀염둥이예요!', h:['흰색과 검은색 털이 반반 섞여 있어요.','눈 주위가 까매서 안경을 쓴 것 같아요.','대나무를 아주 좋아해요.']},
@@ -296,12 +346,10 @@ const DB=[
   {n:'박쥐', en:'Bat', e:'🦇', f:'깜깜한 밤에도 소리를 잘 듣고 요리조리 잘 날아다녀요!', h:['밤에만 활동해요.','동굴에서 거꾸로 매달려 자요.','날개가 있는 유일한 포유류예요.']},
   {n:'나무늘보', en:'Sloth', e:'🦥', f:'세상에서 제~일 느릿느릿 천천히 움직이는 친구예요!', h:['세상에서 가장 느린 동물이에요.','나무에 거꾸로 매달려 살아요.','발톱이 갈고리처럼 아주 길어요.']},
   {n:'해달', en:'Sea Otter', e:'🦦', f:'물 위에 둥둥 누워서 돌맹이로 조개를 쾅쾅 깨서 냠냠 먹어요!',h:['물 위에 누워서 둥둥 떠요.','털이 아주 빽빽해서 젖지 않아요.','잘 때 물에 떠내려가지 않게 친구와 손을 잡고 자요.']},
-  
   {n:'원숭이', en:'Monkey', e:'🐒', f:'우끼끼! 나무 타기를 좋아하고 친구들과 장난도 잘 쳐요!', h:['나무 위를 아주 잘 타요.','바나나를 좋아해요.','장난치는 걸 좋아해요.']},
   {n:'고릴라', en:'Gorilla', e:'🦍', f:'가슴을 쿵쿵 두드리며 아주아주 강한 힘자랑을 해요!',h:['영장류 중에 덩치가 제일 커요.','팔이 아주 길고 튼튼해요.','가족을 지키는 멋진 아빠예요.']},
   {n:'오랑우탄', en:'Orangutan', e:'🦧', f:'비가 오면 나뭇잎을 따서 커다란 우산을 만들 줄 알아요!',h:['주황빛 갈색 털이 있어요.','팔이 엄청 길어요.','나무 위에서 생활해요.']},
   {n:'캥거루', en:'Kangaroo', e:'🦘', f:'엄마 배에 있는 따뜻한 주머니 속에 아기 캥거루가 쏙 타고 있어요!', h:['뒷다리가 아주 강해서 높이 뛰어요.','배에 새끼를 넣는 주머니가 있어요.','호주에 살아요.']},
-
   {n:'참새', en:'Sparrow', e:'🐦', f:'짹짹! 우리 동네 공원이나 길에서 자주 볼 수 있는 귀여운 새예요!',h:['크기가 아주 작아요.','짹짹 하고 귀여운 소리를 내요.','쌀이나 씨앗을 좋아해요.']},
   {n:'닭', en:'Chicken', e:'🐔', f:'꼬끼오! 아침이 밝았다고 큰 소리로 모두에게 알려줘요!', h:['날개가 있지만 잘 날지 못해요.','머리에 빨간 볏이 있어요.','우리에게 맛있는 달걀을 줘요.']},
   {n:'병아리', en:'Chick', e:'🐤', f:'삐약삐약! 알에서 막 톡 깨고 나온 노랗고 보송보송한 아기 새예요!', h:['삐약삐약 하고 울어요.','노랗고 보송보송한 털이 있어요.','커서 닭이 되어요.']},
@@ -312,33 +360,25 @@ const DB=[
   {n:'플라밍고', en:'Flamingo', e:'🦩', f:'맛있는 분홍색 새우를 많이 먹어서 몸이 예쁜 분홍색이 되었대요!', h:['다리와 목이 아주 길어요.','한 발로 서서 자는 걸 좋아해요.','몸이 화려한 분홍색이에요.']},
   {n:'앵무새', en:'Parrot', e:'🦜', f:'안녕! 사람의 말을 듣고 앵무새도 똑같이 따라 할 수 있어요!', h:['깃털이 빨강, 노랑, 초록색으로 화려해요.','사람 말을 흉내 내요.','구부러진 부리로 씨앗을 까먹어요.']},
   {n:'펭귄', en:'Penguin', e:'🐧', f:'뒤뚱뒤뚱! 하늘은 날지 못하지만 바다에서 멋지게 수영해요!', h:['새이지만 날지 못해요.','배는 하얗고 등은 검어요.','뒤뚱뒤뚱 귀엽게 걸어다녀요.']},
-
   {n:'개구리', en:'Frog', e:'🐸', f:'개굴개굴! 긴 혀를 쭈욱 내밀어 날아가는 파리를 쏙 잡아요!',h:['깡충깡충 점프해요.','연못 근처에 살아요.','개굴개굴 울어요.']},
   {n:'악어', en:'Crocodile', e:'🐊', f:'엉금엉금! 입이 엄청 크고 뾰족뾰족한 이빨이 아주 무서워요!',h:['큰 입과 날카로운 이빨이 있어요.','물속과 땅을 모두 다녀요.','강가에 사는 무서운 사냥꾼이에요.']},
   {n:'거북이', en:'Turtle', e:'🐢', f:'딱딱한 껍질 집을 지고 느릿느릿 걷는 할아버지 거북이예요!',h:['단단한 등껍질이 있어요.','아주 천천히 걸어요.','위험하면 몸을 껍질 안에 숨겨요.']},
   {n:'뱀', en:'Snake', e:'🐍', f:'스르륵 스르륵~ 다리도 없이 땅을 스르르 기어다니는 친구예요!',h:['다리가 없어요.','몸을 구불구불 움직여요.','혀를 날름거리며 냄새를 맡아요.']},
-
   {n:'고래', en:'Whale', e:'🐋', f:'푸우~ 머리 위에 있는 구멍으로 커다란 물기둥을 뿜어내요!', h:['바다에서 사는 아주 큰 동물이에요.','머리 위 구멍으로 물을 뿜어요.','지구에서 가장 큰 동물이에요.']},
   {n:'돌고래', en:'Dolphin', e:'🐬', f:'바다 위로 폴짝폴짝 점프하며 친구들과 노는 걸 제일 좋아해요!', h:['바다에 사는 아주 똑똑한 친구예요.','초음파를 쏴서 물속을 탐색해요.','물 위로 점프하며 노는 걸 좋아해요.']},
-  {n:'바다표범', en:'Seal', e:'🦭', f:'추운 얼음 위에서 코오 쉬고 바다에 들어가서 물고기를 냠냠 잡아요!',h:['몸이 둥글둥글하고 귀여워요.','수영을 아주 잘해요.','지느러미 같은 발이 있어요.']},
   {n:'물고기', en:'Fish', e:'🐟', f:'뻐끔뻐끔! 지느러미를 살랑살랑 흔들며 물속을 예쁘게 헤엄쳐요!', h:['지느러미를 흔들며 헤엄쳐요.','온몸이 비늘로 덮여 있어요.','강이나 바다에 살아요.']},
-  {n:'복어', en:'Pufferfish', e:'🐡', f:'깜짝 놀라면 몸을 풍선처럼 빵빵하게 부풀려서 동그랗게 변해요!', h:['동글동글하고 귀엽게 생겼어요.','놀라면 공처럼 부풀어 올라요.','몸속에 아주 무서운 독이 있어요.']},
   {n:'상어', en:'Shark', e:'🦈', f:'무서운 뾰족 이빨이 부러져도 마법처럼 새로운 이빨이 자라나요!',h:['등에 세모난 지느러미가 있어요.','바다의 무서운 사냥꾼이에요.','이빨이 아주 날카로워요.']},
   {n:'문어', en:'Octopus', e:'🐙', f:'먹물을 쭈욱~ 뿜고 주변 돌멩이처럼 색깔을 바꿔서 몰래 숨어요!', h:['다리가 8개 달려있어요.','위험하면 새까만 먹물을 뿜어요.','주변 돌멩이와 똑같은 색으로 변신해요.']},
-  {n:'오징어', en:'Squid', e:'🦑', f:'다리가 10개! 물총처럼 물을 뿜으며 바다를 슝~ 하고 헤엄쳐요!', h:['다리가 10개 달려있어요.','머리가 세모 모양이에요.','문어처럼 먹물을 쏠 수 있어요.']},
   {n:'게', en:'Crab', e:'🦀', f:'딱딱한 집게발을 번쩍 들고 옆으로 옆으로 슉슉 걸어 다녀요!', h:['단단한 등껍질을 입고 있어요.','커다란 집게발을 두 개 번쩍 들어요.','바다나 갯벌에서 살아요.']},
-  {n:'새우', en:'Shrimp', e:'🦐', f:'긴 수염을 가지고 통통 튀어 오르는 작고 귀여운 친구예요!', h:['바닷속에서 헤엄치는 작은 갑각류예요.','익히면 빨갛게 변해요.','수염이 아주 길어요.']},
-  
   {n:'나비', en:'Butterfly', e:'🦋', f:'팔랑팔랑~ 예쁜 날개를 펴고 꽃에 앉아 달콤한 꿀을 마셔요!', h:['곤충이에요.','화려하고 예쁜 날개를 가졌어요.','꽃에 앉아 긴 입으로 꿀을 마셔요.']},
-  {n:'애벌레', en:'Caterpillar', e:'🐛', f:'나뭇잎을 아삭아삭 갉아 먹고 나중에 짠! 하고 예쁜 나비가 돼요!', h:['나뭇잎을 아삭아삭 갉아 먹어요.','꼬물꼬물 기어 다녀요.','커서 날개가 생겨요.']},
   {n:'꿀벌', en:'Bee', e:'🐝', f:'윙윙~ 예쁜 꽃에서 꿀을 모아 아주 맛있는 꿀을 만들어요!', h:['노란색과 검은색 줄무늬가 있어요.','꽃에서 꿀을 모아요.','여왕벌과 수만 마리가 벌집에 살아요.']},
-  {n:'무당벌레', en:'Ladybug', e:'🐞', f:'동글동글 빨간 등에 까만 점이 콕콕 박혀 있는 귀여운 곤충이에요!', h:['빨간색 등딱지에 검은색 점이 있어요.','반구처럼 동글동글하게 생겼어요.','날개를 펴고 귀엽게 날아다녀요.']},
   {n:'개미', en:'Ant', e:'🐜', f:'영차영차! 자기보다 무거운 과자 부스러기도 번쩍 드는 힘센 일꾼이에요!', h:['아주 작은 곤충이에요.','땅속에 복잡한 방과 길을 만들어요.','여왕을 모시고 아주 많이 모여 살아요.']}
 ];
 
 let unlocked = JSON.parse(localStorage.getItem('animal_dic')||'[]');
 let ax=null;
 
+/* 오디오 엔진 강제 시작 */
 function initA(){ 
   try{
     if(!ax) ax=new(window.AudioContext||window.webkitAudioContext)();
@@ -485,9 +525,9 @@ function throwConfetti() {
 }
 
 /* ═══════════════════════
-   1. 동물퀴즈
+   1. 동물퀴즈 로직
 ═══════════════════════ */
-let qCur=null, qHi=0, qPhase='hint';
+let qLives=7, qCur=null, qHi=0, qPhase='hint';
 let qChoices = []; 
 const BLUR=[35, 15, 5, 0]; 
 const SCL=[.7,.85,1.0,1.1];
@@ -517,6 +557,11 @@ function startQuiz(){
   }));
   
   setTimeout(() => { qNextHint(true); }, 600);
+}
+
+function renderHearts(){
+  const w=document.getElementById('lives-wrap'); w.innerHTML='';
+  for(let i=0;i<7;i++){ const s=document.createElement('span'); s.className=i<qLives?'heart':'heart lost'; s.textContent=i<qLives?'❤️':'🖤'; w.appendChild(s); }
 }
 
 function renderQuizBtns(){
@@ -561,7 +606,7 @@ function qCheck(ans, btn){
     sil.classList.add('show');
     if(!unlocked.includes(qCur.n)){ unlocked.push(qCur.n); localStorage.setItem('animal_dic',JSON.stringify(unlocked)); }
     
-    let fullVoiceText = `정답은, ${qCur.n}예요! ${qCur.n}는 영어로, ${qCur.en}! ${qCur.f} 또 하고 싶으면, 반짝이는 노란색 버튼을 눌러요!`;
+    let fullVoiceText = `정답은, ${qCur.n}예요! ${qCur.n}는 영어로, ${qCur.en}! ${qCur.f} 또 하고 싶으면, 노란색 버튼을 눌러요!`;
     
     setTimeout(()=>{
       speak(fullVoiceText, () => {
@@ -583,68 +628,99 @@ function qCheck(ans, btn){
 }
 
 /* ═══════════════════════
-   2. 한글/영어 파닉스 놀이
+   2. 글씨 쓰기 놀이 (스마트 스케치북)
 ═══════════════════════ */
-let phCur = null;
-
-function getCho(str) {
-  const cho = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-  const code = str.charCodeAt(0) - 44032;
-  if(code > -1 && code < 11172) return cho[Math.floor(code / 588)];
-  return str.charAt(0);
-}
+let dailyCur = null;
+let drawCanvas = null;
+let drawCtx = null;
+let isDrawing = false;
 
 function startPhonics() {
   show('phonics');
-  nextPhonics();
+  drawCanvas = document.getElementById('draw-canvas');
+  drawCtx = drawCanvas.getContext('2d');
+  
+  const rect = drawCanvas.parentElement.getBoundingClientRect();
+  drawCanvas.width = rect.width;
+  drawCanvas.height = rect.height;
+
+  drawCanvas.addEventListener('touchstart', startDrawing, {passive: false});
+  drawCanvas.addEventListener('touchmove', draw, {passive: false});
+  drawCanvas.addEventListener('touchend', stopDrawing);
+  
+  drawCanvas.addEventListener('mousedown', startDrawing);
+  drawCanvas.addEventListener('mousemove', draw);
+  drawCanvas.addEventListener('mouseup', stopDrawing);
+  drawCanvas.addEventListener('mouseout', stopDrawing);
+
+  nextDailyWord();
 }
 
-function nextPhonics() {
+function nextDailyWord() {
   randomizeVoice();
-  phCur = DB[~~(Math.random()*DB.length)];
+  dailyCur = DAILY_WORDS_DB[~~(Math.random()*DAILY_WORDS_DB.length)];
   
-  const koFirst = getCho(phCur.n);
-  const enFirst = phCur.en.charAt(0).toUpperCase();
+  document.getElementById('ph-word-emoji').textContent = dailyCur.e;
+  document.getElementById('ph-word-ko').textContent = dailyCur.ko;
+  document.getElementById('ph-word-en').textContent = dailyCur.en;
+  document.getElementById('ph-bg-text').textContent = dailyCur.ko;
+  
+  clearCanvas(true);
+  playDailyWord();
+}
 
-  document.getElementById('ph-emoji').textContent = phCur.e;
-  document.getElementById('ph-ko-letter').textContent = koFirst;
-  document.getElementById('ph-ko-word').textContent = phCur.n;
-  document.getElementById('ph-en-letter').textContent = enFirst;
-  document.getElementById('ph-en-word').textContent = phCur.en;
-
-  const nbtn = document.getElementById('ph-next-btn');
-  nbtn.classList.remove('blink-btn');
-
+function playDailyWord() {
   playDingDongDang();
   throwConfetti();
+  speak(`${dailyCur.ko}! 영어로는, ${dailyCur.en}! 글씨를 예쁘게 따라 써볼까요?`);
+}
+
+function startDrawing(e) {
+  e.preventDefault();
+  isDrawing = true;
+  initA();
+  draw(e);
+}
+
+function draw(e) {
+  if (!isDrawing) return;
+  e.preventDefault();
   
-  setTimeout(() => {
-    playPhonicsAll();
-  }, 500);
+  const rect = drawCanvas.getBoundingClientRect();
+  const scaleX = drawCanvas.width / rect.width;
+  const scaleY = drawCanvas.height / rect.height;
+  
+  let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+  let clientY = e.touches ? e.touches[0].clientY : e.clientY;
+  
+  const x = (clientX - rect.left) * scaleX;
+  const y = (clientY - rect.top) * scaleY;
+
+  drawCtx.lineWidth = 25; 
+  drawCtx.lineCap = 'round';
+  drawCtx.lineJoin = 'round';
+  drawCtx.strokeStyle = '#FFD43B'; 
+
+  drawCtx.lineTo(x, y);
+  drawCtx.stroke();
+  drawCtx.beginPath();
+  drawCtx.moveTo(x, y);
 }
 
-function playPhonicsAll() {
-  const koFirst = getCho(phCur.n);
-  const enFirst = phCur.en.charAt(0).toUpperCase();
-  speak(`${koFirst}! ${phCur.n}! 영어로는, ${enFirst}! ${phCur.en}!`, () => {
-    document.getElementById('ph-next-btn').classList.add('blink-btn');
-  });
+function stopDrawing(e) {
+  if(e) e.preventDefault();
+  isDrawing = false;
+  drawCtx.beginPath();
 }
 
-function playPhonicsKo() {
-  playDingDongDang();
-  const koFirst = getCho(phCur.n);
-  speak(`${koFirst}! ${phCur.n}!`);
-}
-
-function playPhonicsEn() {
-  playDingDongDang();
-  const enFirst = phCur.en.charAt(0).toUpperCase();
-  speak(`${enFirst}! ${phCur.en}!`);
+function clearCanvas(silent = false) {
+  if(!silent) playDdaeng(); 
+  drawCtx.clearRect(0, 0, drawCanvas.width, drawCanvas.height);
+  drawCtx.beginPath();
 }
 
 /* ═══════════════════════
-   3. 직소 퍼즐 (Drag & Drop)
+   3. 드래그 직소 퍼즐
 ═══════════════════════ */
 let pzSize = 2; 
 
@@ -691,7 +767,7 @@ function startJigsawPuzzle(size = pzSize) {
   setupDragAndDrop();
   show('puzzle');
   randomizeVoice();
-  speak('유나야, 그림 조각을 끌어당겨서 똑같이 맞춰봐요!');
+  speak('유나야, 그림 조각을 당겨서 똑같이 맞춰봐요!');
 }
 
 function setupDragAndDrop() {
