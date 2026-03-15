@@ -650,34 +650,38 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;bac
 /* ══════════════════════════════
    DATA
 ══════════════════════════════ */
-/* 퍼즐 이미지: 동물·자연·꽃·명화 (아이 친화적, 사람 사진 제외) */
-const PUZZLE_IMAGES=[
-  /* ── 귀여운 동물 ── */
-  {url:'https://images.unsplash.com/photo-1474511320723-9a56873867b5?auto=format&fit=crop&w=400&q=80',label:'여우'},
-  {url:'https://images.unsplash.com/photo-1564349683136-77e08dba1ef7?auto=format&fit=crop&w=400&q=80',label:'고양이'},
-  {url:'https://images.unsplash.com/photo-1583337130417-3346a1be7dee?auto=format&fit=crop&w=400&q=80',label:'강아지'},
-  {url:'https://images.unsplash.com/photo-1437622368342-7a3d73a34c8f?auto=format&fit=crop&w=400&q=80',label:'거북이'},
-  {url:'https://images.unsplash.com/photo-1425082661705-1834bfd0881c?auto=format&fit=crop&w=400&q=80',label:'알파카'},
-  {url:'https://images.unsplash.com/photo-1456926631375-92c8ce872def?auto=format&fit=crop&w=400&q=80',label:'토끼'},
-  {url:'https://images.unsplash.com/photo-1546182990-dffeafbe841d?auto=format&fit=crop&w=400&q=80',label:'호랑이'},
-  {url:'https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=400&q=80',label:'앵무새'},
-  {url:'https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=400&q=80',label:'강아지'},
-  {url:'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=400&q=80',label:'강아지'},
-  {url:'https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=400&q=80',label:'고양이'},
-  {url:'https://images.unsplash.com/photo-1518020382113-a7e8fc38eac9?auto=format&fit=crop&w=400&q=80',label:'개구리'},
-  /* ── 꽃과 자연 ── */
-  {url:'https://images.unsplash.com/photo-1490750967868-88df5691cc8b?auto=format&fit=crop&w=400&q=80',label:'해바라기'},
-  {url:'https://images.unsplash.com/photo-1508193638397-1c4234db14d8?auto=format&fit=crop&w=400&q=80',label:'튤립'},
-  {url:'https://images.unsplash.com/photo-1533038590840-1cde6e668a91?auto=format&fit=crop&w=400&q=80',label:'벚꽃'},
-  {url:'https://images.unsplash.com/photo-1501854140801-50d01698950b?auto=format&fit=crop&w=400&q=80',label:'초원'},
-  {url:'https://images.unsplash.com/photo-1418065460487-3e41a6c84dc5?auto=format&fit=crop&w=400&q=80',label:'숲'},
-  {url:'https://images.unsplash.com/photo-1505118380757-91f5f5632de0?auto=format&fit=crop&w=400&q=80',label:'바다'},
-  /* ── 밝고 화려한 자연/음식 ── */
-  {url:'https://images.unsplash.com/photo-1488459716781-31db52582fe9?auto=format&fit=crop&w=400&q=80',label:'과일'},
-  {url:'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=400&q=80',label:'레몬'},
-  {url:'https://images.unsplash.com/photo-1475319122043-5ca9eeceefaf?auto=format&fit=crop&w=400&q=80',label:'딸기'},
-  {url:'https://images.unsplash.com/photo-1557800636-894a64c1696f?auto=format&fit=crop&w=400&q=80',label:'수박'},
+/* 퍼즐: 이모지 기반 SVG 타일 (저작권 없음, 항상 표시됨) */
+const PUZZLE_SETS=[
+  {label:'강아지',emoji:'🐕',bg:'#fce7f3',items:['🐕','🦴','🐾','🎀','🏠','🌸']},
+  {label:'고양이',emoji:'🐱',bg:'#e0f2fe',items:['🐱','🐟','🎀','🌙','⭐','🪴']},
+  {label:'코끼리',emoji:'🐘',bg:'#f0fdf4',items:['🐘','🌿','🍃','🌻','🌈','🦋']},
+  {label:'토끼',emoji:'🐰',bg:'#fef9c3',items:['🐰','🥕','🌷','🍀','🌸','🌙']},
+  {label:'펭귄',emoji:'🐧',bg:'#eff6ff',items:['🐧','❄️','⛄','🐟','🌊','🏔️']},
+  {label:'곰',emoji:'🐻',bg:'#fff7ed',items:['🐻','🍯','🌲','🍓','🐝','🌿']},
+  {label:'사자',emoji:'🦁',bg:'#fefce8',items:['🦁','🌅','🦓','🐆','🌾','☀️']},
+  {label:'공룡',emoji:'🦕',bg:'#f0fdf4',items:['🦕','🦖','🌋','🍃','🪨','🌿']},
+  {label:'돌고래',emoji:'🐬',bg:'#e0f2fe',items:['🐬','🌊','🐠','⭐','🐙','🦀']},
+  {label:'나비',emoji:'🦋',bg:'#fdf4ff',items:['🦋','🌸','🌺','🌻','🌈','🌿']},
+  {label:'봄',emoji:'🌸',bg:'#fce7f3',items:['🌸','🌷','🦋','🐝','🌱','🌞']},
+  {label:'여름',emoji:'🌊',bg:'#e0f2fe',items:['🌊','🏖️','🍉','☀️','🌴','🦀']},
+  {label:'가을',emoji:'🍂',bg:'#fff7ed',items:['🍂','🍁','🌰','🦔','🎃','🌾']},
+  {label:'겨울',emoji:'❄️',bg:'#eff6ff',items:['❄️','⛄','🎿','🦌','🏔️','🌨️']},
+  {label:'과일',emoji:'🍎',bg:'#fef2f2',items:['🍎','🍌','🍊','🍓','🍇','🍉']},
+  {label:'우주',emoji:'🚀',bg:'#1e1b4b',items:['🚀','⭐','🌙','🪐','👨‍🚀','🌟']},
 ];
+/* 이모지 퍼즐: SVG로 타일 생성 */
+function makePuzzleSVG(set,w,h){
+  const items=set.items;const cols=3;const rows=2;
+  const cw=w/cols,ch=h/rows;
+  let svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}"><rect width="${w}" height="${h}" fill="${set.bg}"/>`;
+  for(let r=0;r<rows;r++)for(let c=0;c<cols;c++){
+    const i=r*cols+c;const emoji=items[i]||'⭐';
+    const fs=Math.floor(Math.min(cw,ch)*.55);
+    const x=c*cw+cw/2;const y=r*ch+ch/2;
+    svg+=`<text x="${x}" y="${y+fs*.35}" font-size="${fs}" text-anchor="middle">${emoji}</text>`;
+  }
+  svg+='</svg>';return svg;
+}
 
 /* 기초글자 DB */
 const BL_KO=[
@@ -834,25 +838,16 @@ const DB=[
   {n:'백조',en:'Swan',e:'🦢',f:'물 위를 우아하게 헤엄쳐요!',h:['목이 S자 모양이에요.','온몸이 하얀 깃털이에요.','호수에 살아요.'],snd:'끼익!',decoys:['꽥꽥','야옹','멍멍']},
   {n:'플라밍고',en:'Flamingo',e:'🦩',f:'분홍색 새우를 먹어서 분홍색이에요!',h:['다리와 목이 길어요.','한 발로 서기도 해요.','분홍색이에요.'],snd:'끼이!',decoys:['꽥꽥','야옹','멍멍']},
   {n:'앵무새',en:'Parrot',e:'🦜',f:'사람 말을 따라 할 수 있어요!',h:['화려한 깃털이 있어요.','말을 흉내 내요.','부리가 구부러져 있어요.'],snd:'안녕!',decoys:['야옹','멍멍','꽅꽅']},
-  {n:'오리너구리',en:'Platypus',e:'🦫',f:'알을 낳는 포유류예요! 세상에서 제일 신기한 동물이에요.',h:['호주에 살아요.','오리 부리와 비버 꼬리를 가졌어요.','알을 낳는 포유류예요.'],snd:'끽끽!',decoys:['야옹','멍멍','꽥꽥']},
-  {n:'아르마딜로',en:'Armadillo',e:'🦔',f:'몸을 완전히 공처럼 말아서 갑옷처럼 지켜요!',h:['딱딱한 껍데기로 덮여 있어요.','위험하면 공처럼 굴러요.','남아메리카에 살아요.'],snd:'끄르르!',decoys:['야옹','멍멍','꽥꽥']},
-  {n:'두루미',en:'Crane',e:'🦢',f:'장수와 행복의 상징이에요!',h:['다리가 아주 길어요.','온몸이 하얗고 빨간 점이 있어요.','우아하게 춤을 춰요.'],snd:'끼이!',decoys:['꽥꽥','야옹','멍멍']},
-  {n:'황새',en:'Stork',e:'🦩',f:'아기를 데려다준다는 전설이 있는 새예요!',h:['다리가 길어요.','온몸이 하얘요.','부리가 길고 빨간색이에요.'],snd:'딸깍!',decoys:['꽥꽥','야옹','멍멍']},
   {n:'물총새',en:'Kingfisher',e:'🐦',f:'물속에 쏜살같이 뛰어들어 물고기를 잡아요!',h:['아주 작고 알록달록한 새예요.','물가에 살아요.','물고기를 잘 잡아요.'],snd:'짹짹!',decoys:['꽥꽥','야옹','멍멍']},
-  {n:'검독수리',en:'Golden Eagle',e:'🦅',f:'하늘의 왕이에요! 날개를 펴면 2미터가 넘어요.',h:['날개가 아주 커요.','갈색 깃털이에요.','하늘 높이 날아요.'],snd:'끼이익!',decoys:['꽥꽥','야옹','멍멍']},
-  {n:'사막여우',en:'Fennec Fox',e:'🦊',f:'귀가 아주 커서 사막에서도 먹이를 찾아요!',h:['귀가 엄청 크고 뾰족해요.','사막에 살아요.','몸이 아주 작고 귀여워요.'],snd:'끅끅!',decoys:['야옹','멍멍','꽅꽅']},
-  {n:'하이에나',en:'Hyena',e:'🐕',f:'웃는 것처럼 소리를 내는 독특한 동물이에요!',h:['사자와 비슷하게 생겼어요.','무리 지어 살아요.','웃는 것 같은 소리를 내요.'],snd:'히히히!',decoys:['멍멍','야옹','꽥꽥']},
+  {n:'하이에나',en:'Hyena',e:'🐕‍🦺',f:'웃는 것처럼 소리를 내는 독특한 동물이에요!',h:['사자와 비슷하게 생겼어요.','무리 지어 살아요.','웃는 것 같은 소리를 내요.'],snd:'히히히!',decoys:['멍멍','야옹','꽥꽥']},
   {n:'바다코끼리',en:'Walrus',e:'🦭',f:'길고 하얀 엄니가 있는 바다 동물이에요!',h:['바다에 살아요.','긴 엄니가 있어요.','지느러미 같은 발이 있어요.'],snd:'우우우!',decoys:['멍멍','야옹','꽥꽥']},
-  {n:'낙지',en:'Octopus',e:'🐙',f:'다리가 여덟 개인 바다 동물이에요!',h:['바다에 살아요.','다리가 여덟 개예요.','먹물을 뿜어요.'],snd:'스르르!',decoys:['야옹','멍멍','꽅꽅']},
+  {n:'낙지',en:'Squid',e:'🦑',f:'다리가 여덟 개인 바다 동물이에요!',h:['바다에 살아요.','다리가 여덟 개예요.','먹물을 뿜어요.'],snd:'스르르!',decoys:['야옹','멍멍','꽅꽅']},
   {n:'해삼',en:'Sea Cucumber',e:'🥒',f:'위험하면 내장을 뱉어서 적을 혼란스럽게 해요!',h:['바다에 살아요.','몸이 오이처럼 길쭉해요.','천천히 기어다녀요.'],snd:'쭈욱!',decoys:['야옹','멍멍','꽅꽅']},
   {n:'산양',en:'Mountain Goat',e:'🐐',f:'가파른 절벽도 거뜬히 올라가는 등산왕이에요!',h:['뿔이 있어요.','산에 살아요.','험한 절벽도 잘 올라가요.'],snd:'메에에!',decoys:['멍멍','야옹','음메']},
-  {n:'퓨마',en:'Puma',e:'🐆',f:'점프 실력이 최고! 6미터나 뛸 수 있어요!',h:['고양이처럼 생겼어요.','혼자 사냥해요.','점프를 아주 잘해요.'],snd:'으르렁!',decoys:['야옹','멍멍','꽅꽅']},
-  {n:'홍학',en:'Flamingo',e:'🦩',f:'새우를 먹어서 몸이 분홍색이 됐어요!',h:['분홍빛이에요.','한 발로 서기도 해요.','다리가 길어요.'],snd:'끼이!',decoys:['꽥꽥','야옹','멍멍']},
-  {n:'청개구리',en:'Tree Frog',e:'🐸',f:'발에 빨판이 있어서 유리창에도 착! 붙어요!',h:['초록색이에요.','나무에 붙어 있어요.','개굴개굴 울어요.'],snd:'개굴개굴!',decoys:['야옹','멍멍','꽅꽅']},
   {n:'도마뱀',en:'Lizard',e:'🦎',f:'꼬리가 잘려도 새 꼬리가 자라나요!',h:['파충류예요.','비늘로 덮여 있어요.','꼬리를 자르고 도망가요.'],snd:'스르륵!',decoys:['야옹','멍멍','꽅꽅']},
-  {n:'카멜레온',en:'Chameleon',e:'🦎',f:'주변 색깔에 맞춰 몸 색이 변해요!',h:['몸 색깔을 바꿀 수 있어요.','두 눈이 따로따로 움직여요.','나무 위에 살아요.'],snd:'스르르!',decoys:['야옹','멍멍','꽅꽅']},
+  {n:'카멜레온',en:'Chameleon',e:'🦕',f:'주변 색깔에 맞춰 몸 색이 변해요!',h:['몸 색깔을 바꿀 수 있어요.','두 눈이 따로따로 움직여요.','나무 위에 살아요.'],snd:'스르르!',decoys:['야옹','멍멍','꽅꽅']},
   {n:'타조',en:'Ostrich',e:'🦤',f:'날지 못하지만 시속 70km로 달려요!',h:['아주 큰 새예요.','날지 못해요.','다리가 아주 길고 빨라요.'],snd:'붕붕!',decoys:['꽥꽥','야옹','멍멍']},
-  {n:'큰부리새',en:'Toucan',e:'🦜',f:'부리가 몸보다 더 긴 화려한 새예요!',h:['부리가 아주 길고 화려해요.','열대우림에 살아요.','빨강 노랑 초록으로 화려해요.'],snd:'까악!',decoys:['꽥꽥','야옹','멍멍']},
+  {n:'큰부리새',en:'Toucan',e:'🦃',f:'부리가 몸보다 더 긴 화려한 새예요!',h:['부리가 아주 길고 화려해요.','열대우림에 살아요.','빨강 노랑 초록으로 화려해요.'],snd:'까악!',decoys:['꽥꽥','야옹','멍멍']},
 ];
 
 /* 단어 쓰기 DB */
@@ -1233,29 +1228,30 @@ function clearCanvasWrite(s=false){if(!s)playDdaeng();if(wrCtx)wrCtx.clearRect(0
 ══════════════════════════ */
 let pzSize=2,pzInterval=null,pzSeconds=0;
 function startJigsawPuzzle(size=pzSize){
-  pzSize=size;document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));document.getElementById(`db${size}`).classList.add('active');
-  const pimg=PUZZLE_IMAGES[~~(Math.random()*PUZZLE_IMAGES.length)];const imgUrl=typeof pimg==='string'?pimg:pimg.url;const pLabel=typeof pimg==='string'?'':pimg.label;
-  document.getElementById('pz-preview').style.backgroundImage=`url('${imgUrl}')`;const lt=document.getElementById('pz-label');if(lt)lt.textContent=pLabel?pLabel+' 퍼즐':'';
-  const board=document.getElementById('pz-board');board.innerHTML='';board.style.gridTemplateColumns=`repeat(${size},1fr)`;board.style.gridTemplateRows=`repeat(${size},1fr)`;
+  pzSize=size;document.querySelectorAll('.diff-btn').forEach(b=>b.classList.remove('active'));
+  const dbEl=document.getElementById(`db${size}`);if(dbEl)dbEl.classList.add('active');
+  const pset=PUZZLE_SETS[~~(Math.random()*PUZZLE_SETS.length)];
+  /* Generate SVG data URL */
+  const svgW=400,svgH=400;
+  const svgStr=makePuzzleSVG(pset,svgW,svgH);
+  const blob=new Blob([svgStr],{type:'image/svg+xml'});
+  const imgUrl=URL.createObjectURL(blob);
+  const lt=document.getElementById('pz-label');if(lt)lt.textContent=pset.label+' 퍼즐';
+  const preview=document.getElementById('pz-preview');preview.style.backgroundImage=`url('${imgUrl}')`;
+  const board=document.getElementById('pz-board');board.innerHTML='';
+  board.style.gridTemplateColumns=`repeat(${size},1fr)`;board.style.gridTemplateRows=`repeat(${size},1fr)`;
   const pa=document.getElementById('pz-pieces-area');pa.innerHTML='';const arr=[];
   for(let y=0;y<size;y++)for(let x=0;x<size;x++){
     const slot=document.createElement('div');slot.className='pz-slot';slot.dataset.x=x;slot.dataset.y=y;board.appendChild(slot);
-    const p=document.createElement('div');p.className='drag-piece';p.style.backgroundImage=`url('${imgUrl}')`;p.style.backgroundSize=`${size*100}% ${size*100}%`;p.style.backgroundPosition=`${x*(100/(size-1||1))}% ${y*(100/(size-1||1))}%`;p.dataset.x=x;p.dataset.y=y;arr.push(p);
+    const p=document.createElement('div');p.className='drag-piece';
+    p.style.backgroundImage=`url('${imgUrl}')`;p.style.backgroundSize=`${size*100}% ${size*100}%`;
+    p.style.backgroundPosition=`${x*(100/(size-1||1))}% ${y*(100/(size-1||1))}%`;
+    p.dataset.x=x;p.dataset.y=y;arr.push(p);
   }
   arr.sort(()=>Math.random()-.5).forEach(p=>pa.appendChild(p));
   clearInterval(pzInterval);pzSeconds=0;document.getElementById('pz-timer').textContent='00:00';
   pzInterval=setInterval(()=>{pzSeconds++;document.getElementById('pz-timer').textContent=String(~~(pzSeconds/60)).padStart(2,'0')+':'+String(pzSeconds%60).padStart(2,'0');},1000);
-  setupPZDrag();show('puzzle');speak('그림 조각을 맞춰봐요!');
-}
-function setupPZDrag(){
-  const slots=document.querySelectorAll('.pz-slot');let dragged=null,sx,sy;
-  document.querySelectorAll('.drag-piece').forEach(p=>{
-    function ds(e){if(p.classList.contains('placed'))return;if(e.type==='touchstart')e.preventDefault();initA();dragged=p;const pt=e.touches?e.touches[0]:e;const r=p.getBoundingClientRect();sx=pt.clientX;sy=pt.clientY;document.body.appendChild(p);p.style.position='fixed';p.style.left=r.left+'px';p.style.top=r.top+'px';p.style.zIndex=9999;p.style.transform='scale(1.18)';p.style.transition='none';}
-    p.addEventListener('touchstart',ds,{passive:false});p.addEventListener('mousedown',ds);
-  });
-  function dm(e){if(!dragged)return;if(e.type==='touchmove')e.preventDefault();const pt=e.touches?e.touches[0]:e;dragged.style.transform=`translate(${pt.clientX-sx}px,${pt.clientY-sy}px) scale(1.18)`;}
-  function de(e){if(!dragged)return;const pt=e.changedTouches?e.changedTouches[0]:e;let ok=false;slots.forEach(slot=>{const r=slot.getBoundingClientRect();if(pt.clientX>r.left&&pt.clientX<r.right&&pt.clientY>r.top&&pt.clientY<r.bottom&&slot.dataset.x===dragged.dataset.x&&slot.dataset.y===dragged.dataset.y&&slot.children.length===0){slot.appendChild(dragged);dragged.classList.add('placed');dragged.style.position='relative';dragged.style.transform='none';dragged.style.left='0';dragged.style.top='0';dragged.style.zIndex=1;playDDDang();ok=true;checkPZComplete();}});if(!ok){playDdaeng();document.getElementById('pz-pieces-area').appendChild(dragged);dragged.style.position='relative';dragged.style.transform='none';dragged.style.left='0';dragged.style.top='0';}dragged.style.zIndex=100;dragged=null;}
-  document.addEventListener('touchmove',dm,{passive:false});document.addEventListener('touchend',de);document.addEventListener('mousemove',dm);document.addEventListener('mouseup',de);
+  setupPZDrag();show('puzzle');speak(pset.label+' 퍼즐! 조각을 맞춰봐요!');
 }
 function checkPZComplete(){if(document.querySelectorAll('.drag-piece.placed').length===pzSize*pzSize){clearInterval(pzInterval);throwConfetti();setTimeout(()=>{speak('우와! 다 맞췄어요! 정말 대단해요!',()=>{const b=document.getElementById('md-btn1');if(b)b.classList.add('blink-btn');});openModal('🏆','퍼즐 완성!','최고예요!','다음 퍼즐',()=>startJigsawPuzzle(pzSize));},500);}}
 
